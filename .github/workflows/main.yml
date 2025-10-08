@@ -17,4 +17,15 @@ jobs:
 
 
             - name: Run tests with maven
-              run: mvn clean install test
+              run: mvn -B -ntp clean verify
+
+            - name: Upload test reports (always)
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+               name: surefire-and-failsafe-reports
+               path: |
+                   **/target/surefire-reports/**
+                   **/target/failsafe-reports/**
+               if-no-files-found: ignore
+               retention-days: 7
