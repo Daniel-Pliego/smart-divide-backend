@@ -15,4 +15,4 @@
 - Después ejecutar el comando para levantar la base de datos
 `docker compose up -d`
 - Después ejecutar el comando para descargar las dependencias de maven
-`\mvnw.cmd clean install -DskipTests`
+`\mvnw.cmd clean install
