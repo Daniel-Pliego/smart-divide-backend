@@ -4,7 +4,7 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: mydatabase
+      MYSQL_DATABASE: smart_divide
       MYSQL_ALLOW_EMPTY_PASSWORD: "YES"
       MYSQL_USER: myuser
       MYSQL_PASSWORD: secret
@@ -17,4 +17,3 @@ services:
       - smart-divide
 networks:
   smart-divide:
-    external: true
