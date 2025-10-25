@@ -22,7 +22,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "group")
+@Entity(name = "group_table")
 public class GroupSchema {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
