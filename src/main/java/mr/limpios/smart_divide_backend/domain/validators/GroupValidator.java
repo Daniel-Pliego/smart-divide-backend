@@ -1,7 +1,6 @@
 package mr.limpios.smart_divide_backend.domain.validators;
 
-import mr.limpios.smart_divide_backend.domain.dto.CreateGroupDTO;
-import mr.limpios.smart_divide_backend.domain.dto.GroupDTO;
+import mr.limpios.smart_divide_backend.infraestructure.dto.CreateGroupDTO;
 import mr.limpios.smart_divide_backend.domain.exceptions.InvalidDataException;
 
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.DATA_REQUIRED;
