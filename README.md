@@ -35,7 +35,3 @@ Dentro de esta carpeta se encuentra el hook `pre-commit`, que realiza las siguie
 - Verifica los archivos .java modificados.
 - Si el formato de los archivos es correcto, continúa con el commit.
 - Si detecta formato incorrecto, formatea los archivos y continua el commit
-
-### Formatear archivo al guardar cambios
-
-Para habilitar el formateo automático al guardar archivos en VS Code, duplica el archivo `recommended-settings.json` ubicado en la carpeta `.vscode` del directorio raíz y renómbralo como `settings.json`.

@@ -1,9 +1,12 @@
 package mr.limpios.smart_divide_backend.aplication.services;
 
-import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.*;
+import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.USER_NOT_FOUND;
 
 import java.util.List;
 import java.util.Objects;
+
+import org.springframework.stereotype.Service;
+
 import mr.limpios.smart_divide_backend.aplication.repositories.GroupRepository;
 import mr.limpios.smart_divide_backend.aplication.repositories.UserRepository;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundException;
@@ -13,7 +16,6 @@ import mr.limpios.smart_divide_backend.domain.models.User;
 import mr.limpios.smart_divide_backend.domain.validators.GroupValidator;
 import mr.limpios.smart_divide_backend.infraestructure.dto.CreateGroupDTO;
 import mr.limpios.smart_divide_backend.infraestructure.dto.GroupResumeDTO;
-import org.springframework.stereotype.Service;
 
 @Service
 public class CreateGroupService {

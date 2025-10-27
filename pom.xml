@@ -115,13 +115,13 @@
 
 				<configuration>
 					<ratchetFrom>origin/main</ratchetFrom>
-					<removeUnusedImports />
-
-					<importOrder>
-						<order>java,javax,org,com</order>
-					</importOrder>
 
 					<java>
+						<removeUnusedImports />
+
+						<importOrder>
+							<order>java,javax,org,com</order>
+						</importOrder>
 						<eclipse>
 							<file>
 								https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml</file>
