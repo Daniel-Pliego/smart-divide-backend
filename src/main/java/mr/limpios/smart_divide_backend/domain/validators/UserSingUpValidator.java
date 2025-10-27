@@ -2,27 +2,28 @@ package mr.limpios.smart_divide_backend.domain.validators;
 
 import mr.limpios.smart_divide_backend.domain.models.User;
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.MISSING_REQUIRED_FIELDS;
+import mr.limpios.smart_divide_backend.domain.exceptions.InvalidDataException;
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.INVALID_EMAIL_FORMAT;
 
 public class UserSingUpValidator {
 
-    public static void validate(User user) throws IllegalArgumentException {
+    public static void validate(User user) throws InvalidDataException {
 
         if (isAllRequiredDataFilled(user)) {
-            throw new IllegalArgumentException(MISSING_REQUIRED_FIELDS);
+            throw new InvalidDataException(MISSING_REQUIRED_FIELDS);
         }
 
-        if (!isEmailFormatValird(user.email())) {
-            throw new IllegalArgumentException(INVALID_EMAIL_FORMAT);
+        if (!isEmailFormatValid(user.email())) {
+            throw new InvalidDataException(INVALID_EMAIL_FORMAT);
         }
     }
 
-    private static boolean isAllRequiredDataFilled(User user) throws IllegalArgumentException {
-        return (user.name().isBlank() && user.lastName().isBlank() && user.email().isBlank()
-                && user.password().isBlank());
+    private static boolean isAllRequiredDataFilled(User user) {
+        return (user.name().isEmpty() || user.lastName().isEmpty()
+                || user.email().isEmpty() && user.password().isEmpty());
     }
 
-    private static boolean isEmailFormatValird(String email) {
+    private static boolean isEmailFormatValid(String email) {
         String emailPattern = "^[\\w\\.-]+@[\\w\\.-]+\\.\\w+";
         return email.matches(emailPattern);
     }

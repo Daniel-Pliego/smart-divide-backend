@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import mr.limpios.smart_divide_backend.aplication.repositories.UserRepository;
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.EMAIL_ALREADY_EXIST;
+import mr.limpios.smart_divide_backend.domain.exceptions.InvalidDataException;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceExistException;
 import mr.limpios.smart_divide_backend.domain.models.User;
 import mr.limpios.smart_divide_backend.domain.validators.UserSingUpValidator;
@@ -23,17 +24,11 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public AuthenticatedDTO signUp(UserSignUpDTO user) {
+    public AuthenticatedDTO signUp(UserSignUpDTO user)
+            throws ResourceExistException, InvalidDataException {
 
-        User userToSave = new User(
-                null,
-                user.name(),
-                user.lastName(),
-                user.email(),
-                passwordEncoder.encode(user.password()),
-                user.photoUrl(),
-                false,
-                null);
+        User userToSave = new User(null, user.name(), user.lastName(), user.email(),
+                passwordEncoder.encode(user.password()), user.photoUrl(), false, null);
 
         UserSingUpValidator.validate(userToSave);
 
@@ -43,14 +38,8 @@ public class AuthService {
 
         User savedUser = userRepository.saveUser(userToSave);
 
-        return new AuthenticatedDTO(
-                savedUser.id(),
-                savedUser.email(),
-                savedUser.name(),
-                savedUser.name() + " " + savedUser.lastName(),
-                savedUser.photoUrl(),
-                null
-        );
+        return new AuthenticatedDTO(savedUser.id(), savedUser.email(), savedUser.name(),
+                savedUser.name() + " " + savedUser.lastName(), savedUser.photoUrl(), null);
     }
 
 }
