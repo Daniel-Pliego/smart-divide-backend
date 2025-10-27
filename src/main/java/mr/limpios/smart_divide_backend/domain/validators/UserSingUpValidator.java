@@ -17,12 +17,12 @@ public class UserSingUpValidator {
         }
     }
 
-    public static boolean isAllRequiredDataFilled(User user) throws IllegalArgumentException {
+    private static boolean isAllRequiredDataFilled(User user) throws IllegalArgumentException {
         return (user.name().isBlank() && user.lastName().isBlank() && user.email().isBlank()
                 && user.password().isBlank());
     }
 
-    public static boolean isEmailFormatValird(String email) {
+    private static boolean isEmailFormatValird(String email) {
         String emailPattern = "^[\\w\\.-]+@[\\w\\.-]+\\.\\w+";
         return email.matches(emailPattern);
     }
