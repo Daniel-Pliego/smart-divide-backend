@@ -20,26 +20,26 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity(name = "card")
 public class CardSchema {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private String id;
 
-    @Column(nullable = false, length = 4)
-    private String lastDigits;
+  @Column(nullable = false, length = 4)
+  private String lastDigits;
 
-    @Column(nullable = false)
-    private String brand;
+  @Column(nullable = false)
+  private String brand;
 
-    @Column(nullable = false, length = 2)
-    private String expMonth;
+  @Column(nullable = false, length = 2)
+  private String expMonth;
 
-    @Column(nullable = false, length = 2)
-    private String expYear;
+  @Column(nullable = false, length = 2)
+  private String expYear;
 
-    @Column(nullable = false)
-    private String token;
+  @Column(nullable = false)
+  private String token;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private UserSchema user;
+  @ManyToOne(optional = false)
+  @JoinColumn(name = "user_id", nullable = false)
+  private UserSchema user;
 }

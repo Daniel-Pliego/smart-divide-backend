@@ -122,12 +122,12 @@
 					</importOrder>
 
 					<java>
-						<googleJavaFormat>
-							<version>1.21.0</version>
-						</googleJavaFormat>
+						<eclipse>
+							<file>
+								https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml</file>
+						</eclipse>
 						<includes>
 							<include>src/main/java/**/*.java</include>
-							<include>src/test/java/**/*.java</include>
 						</includes>
 					</java>
 				</configuration>

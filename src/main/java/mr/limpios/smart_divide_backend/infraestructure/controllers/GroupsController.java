@@ -11,20 +11,18 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class GroupsController {
 
-    private final CreateGroupService createGroupService;
+  private final CreateGroupService createGroupService;
 
-    public GroupsController(CreateGroupService createGroupService) {
-        this.createGroupService = createGroupService;
-    }
+  public GroupsController(CreateGroupService createGroupService) {
+    this.createGroupService = createGroupService;
+  }
 
-    @PostMapping("user/{userId}/groups")
-    public ResponseEntity<WrapperResponse<GroupResumeDTO>> createGroup(
-            @PathVariable String userId,
-            @RequestBody CreateGroupDTO createGroupDTO
-    ) {
-        GroupResumeDTO groupResumeDTO = createGroupService.createGroup(createGroupDTO, userId);
-        return new ResponseEntity<>(
-                new WrapperResponse<>(true, "Group created successfully", groupResumeDTO),
-                HttpStatus.CREATED);
-    }
+  @PostMapping("user/{userId}/groups")
+  public ResponseEntity<WrapperResponse<GroupResumeDTO>> createGroup(@PathVariable String userId,
+      @RequestBody CreateGroupDTO createGroupDTO) {
+    GroupResumeDTO groupResumeDTO = createGroupService.createGroup(createGroupDTO, userId);
+    return new ResponseEntity<>(
+        new WrapperResponse<>(true, "Group created successfully", groupResumeDTO),
+        HttpStatus.CREATED);
+  }
 }
