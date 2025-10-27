@@ -1,0 +1,25 @@
+#!/bin/sh
+
+BLUE='\e[34m'
+YELLOW='\e[1;33m'
+GREEN='\e[32m'
+RESET='\e[0m'
+
+echo -e "${BLUE}Checking code format with Spotless...${RESET}"
+
+OUTPUT=$(mvn spotless:check -q 2>&1)
+CHECK_RESULT=$?
+
+if [ $CHECK_RESULT -ne 0 ]; then
+  echo -e "${YELLOW}Formatting issues found in the following files:${RESET}"
+  echo "$OUTPUT" | grep -E "src[\\/].*\.java" | sort | uniq
+  echo ""
+  echo -e "${BLUE}Applying Spotless formatting...${RESET}"
+  mvn spotless:apply -q >/dev/null 2>&1
+  git add -u
+  echo -e "${GREEN}Formatting applied. Proceeding with commit.${RESET}"
+  echo ""
+else
+  echo -e "${GREEN}Code format check passed. Proceeding with commit.${RESET}"
+  echo ""
+fi
