@@ -16,3 +16,7 @@
 `docker compose up -d`
 - Después ejecutar el comando para descargar las dependencias de maven
 `\mvnw.cmd clean install
+
+## Documentación 
+Para visualizar la documentación de la API visitar: 
+`http://localhost:8080/swagger-ui/index.html`
