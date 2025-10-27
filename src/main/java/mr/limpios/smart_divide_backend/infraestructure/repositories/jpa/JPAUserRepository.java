@@ -7,4 +7,5 @@ import mr.limpios.smart_divide_backend.infraestructure.schemas.UserSchema;
 
 @Repository
 public interface JPAUserRepository extends JpaRepository<UserSchema, String> {
+  UserSchema findByEmail(String email);
 }

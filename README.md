@@ -35,3 +35,8 @@ Dentro de esta carpeta se encuentra el hook `pre-commit`, que realiza las siguie
 - Verifica los archivos .java modificados.
 - Si el formato de los archivos es correcto, continúa con el commit.
 - Si detecta formato incorrecto, formatea los archivos y continua el commit
+
+
+## Documentación 
+Para visualizar la documentación de la API visitar: 
+`http://localhost:8080/swagger-ui/index.html`

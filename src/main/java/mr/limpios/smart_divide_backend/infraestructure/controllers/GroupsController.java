@@ -4,12 +4,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import mr.limpios.smart_divide_backend.aplication.services.CreateGroupService;
 import mr.limpios.smart_divide_backend.infraestructure.dto.CreateGroupDTO;
 import mr.limpios.smart_divide_backend.infraestructure.dto.GroupResumeDTO;
 import mr.limpios.smart_divide_backend.infraestructure.dto.WrapperResponse;
 
 @RestController
+@RequestMapping("user")
+@CrossOrigin(maxAge = 3600, methods = {RequestMethod.OPTIONS, RequestMethod.POST}, origins = {"*"})
+@Tag(name = "Groups", description = "Endpoints for create and view groups")
 public class GroupsController {
 
   private final CreateGroupService createGroupService;
@@ -18,7 +23,8 @@ public class GroupsController {
     this.createGroupService = createGroupService;
   }
 
-  @PostMapping("user/{userId}/groups")
+  @Operation(summary = "Create a new group for a user")
+  @PostMapping("{userId}/groups")
   public ResponseEntity<WrapperResponse<GroupResumeDTO>> createGroup(@PathVariable String userId,
       @RequestBody CreateGroupDTO createGroupDTO) {
     GroupResumeDTO groupResumeDTO = createGroupService.createGroup(createGroupDTO, userId);
