@@ -25,4 +25,18 @@ public class UserRepositoryImp implements UserRepository {
 
         return UserMapper.toModel(userSchema);
     }
+
+    @Override
+    public User findUserByEmail(String email) {
+        UserSchema userSchema = this.jpaUserRepository.findByEmail(email);
+        if (Objects.isNull(userSchema)) {return null;}
+        return UserMapper.toModel(userSchema);
+    }
+
+    @Override
+    public User saveUser(User newUser) {
+        UserSchema userSchema = UserMapper.toSchema(newUser);
+        UserSchema savedUserSchema = this.jpaUserRepository.save(userSchema);
+        return UserMapper.toModel(savedUserSchema);
+    }
 }

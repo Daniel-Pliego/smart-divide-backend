@@ -5,8 +5,9 @@ import mr.limpios.smart_divide_backend.domain.models.User;
 import mr.limpios.smart_divide_backend.infraestructure.schemas.CardSchema;
 import mr.limpios.smart_divide_backend.infraestructure.schemas.UserSchema;
 
-import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -16,8 +17,10 @@ public class UserMapper {
 
     public static UserSchema toSchema(User user) {
 
-        Set<CardSchema> schemaCards = user.cards()
-                .stream().map(CardMapper::toSchema)
+        Set<CardSchema> schemaCards = Optional.ofNullable(user.cards())
+                .orElse(Collections.emptyList()) // si null → lista vacía
+                .stream()
+                .map(CardMapper::toSchema)
                 .collect(Collectors.toSet());
 
         return new UserSchema(
@@ -26,7 +29,7 @@ public class UserMapper {
                 user.lastName(),
                 user.email(),
                 user.password(),
-                user.photUrl(),
+                user.photoUrl(),
                 user.isVerified(),
                 schemaCards
         );
@@ -34,8 +37,10 @@ public class UserMapper {
 
     public static User toModel(UserSchema userSchema) {
 
-        List<Card> modelCards = userSchema.getCards()
-                .stream().map(CardMapper::toModel)
+        List<Card> modelCards = Optional.ofNullable(userSchema.getCards())
+                .orElse(Collections.emptySet()) // si null → set vacío
+                .stream()
+                .map(CardMapper::toModel)
                 .collect(Collectors.toList());
 
         return new User(
