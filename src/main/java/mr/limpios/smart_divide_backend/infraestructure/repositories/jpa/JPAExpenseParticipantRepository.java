@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository;
 import mr.limpios.smart_divide_backend.infraestructure.schemas.ExpenseParticipantSchema;
 
 @Repository
-public interface JPAExpenseParticipantRepository extends JpaRepository<ExpenseParticipantSchema, Integer> {
+public interface JPAExpenseParticipantRepository
+    extends JpaRepository<ExpenseParticipantSchema, Integer> {
 }

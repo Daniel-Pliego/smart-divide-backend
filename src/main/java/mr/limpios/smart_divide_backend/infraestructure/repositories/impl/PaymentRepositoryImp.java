@@ -8,6 +8,6 @@ import mr.limpios.smart_divide_backend.infraestructure.repositories.jpa.JPAPayme
 
 @Repository
 public class PaymentRepositoryImp implements PaymentRepository {
-    @Autowired
-    private JPAPaymentRepository jpaPaymentRepository;
+  @Autowired
+  private JPAPaymentRepository jpaPaymentRepository;
 }
