@@ -4,8 +4,5 @@ import mr.limpios.smart_divide_backend.domain.models.Group;
 
 public interface GroupRepository {
 
-    Group saveGroup(Group group);
-
-
-
+  Group saveGroup(Group group);
 }

@@ -29,37 +29,37 @@ import mr.limpios.smart_divide_backend.domain.models.DivisionType;
 @AllArgsConstructor
 @Entity(name = "expense")
 public class ExpenseSchema {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private String id;
 
-    @Column(nullable = false)
-    private String type;
+  @Column(nullable = false)
+  private String type;
 
-    @Column(nullable = false)
-    private String description;
+  @Column(nullable = false)
+  private String description;
 
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal amount;
+  @Column(nullable = false, precision = 10, scale = 2)
+  private BigDecimal amount;
 
-    @Column(name = "evidence_url")
-    private String evidenceUrl;
+  @Column(name = "evidence_url")
+  private String evidenceUrl;
 
-    @Builder.Default
-    @Column(nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+  @Builder.Default
+  @Column(nullable = false)
+  private LocalDateTime createdAt = LocalDateTime.now();
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private DivisionType divisionType;
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
+  private DivisionType divisionType;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "group_id", nullable = false)
-    private GroupSchema group;
+  @ManyToOne(optional = false)
+  @JoinColumn(name = "group_id", nullable = false)
+  private GroupSchema group;
 
-    @OneToMany(mappedBy = "expense", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ExpenseParticipantSchema> participants;
+  @OneToMany(mappedBy = "expense", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<ExpenseParticipantSchema> participants;
 
-    @OneToMany(mappedBy = "expense", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ExpenseBalanceSchema> balances;
+  @OneToMany(mappedBy = "expense", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<ExpenseBalanceSchema> balances;
 }

@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.info.Info;
 
 @Configuration
 @OpenAPIDefinition(info = @Info(title = "Smart Divide Backend API", version = "v1.0.0",
-        description = "API documentation for Smart Divide Endpoints"))
+    description = "API documentation for Smart Divide Endpoints"))
 public class OpenApiConfig {
 
 }

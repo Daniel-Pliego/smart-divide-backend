@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository;
 import mr.limpios.smart_divide_backend.infraestructure.schemas.ExpenseGroupBalanceSchema;
 
 @Repository
-public interface JPAExpenseGroupBalanceRepository extends JpaRepository<ExpenseGroupBalanceSchema, Integer> {
+public interface JPAExpenseGroupBalanceRepository
+    extends JpaRepository<ExpenseGroupBalanceSchema, Integer> {
 }

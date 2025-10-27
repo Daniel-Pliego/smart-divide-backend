@@ -8,6 +8,6 @@ import mr.limpios.smart_divide_backend.infraestructure.repositories.jpa.JPAExpen
 
 @Repository
 public class ExpenseBalanceRepositoryImp implements ExpenseBalanceRepository {
-    @Autowired
-    private JPAExpenseBalanceRepository jpaExpenseBalanceRepository;
+  @Autowired
+  private JPAExpenseBalanceRepository jpaExpenseBalanceRepository;
 }

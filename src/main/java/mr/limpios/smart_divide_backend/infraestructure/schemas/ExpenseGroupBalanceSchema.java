@@ -22,22 +22,22 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity(name = "expense_group_balance")
 public class ExpenseGroupBalanceSchema {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "creditor_id", nullable = false)
-    private UserSchema creditor;
+  @ManyToOne(optional = false)
+  @JoinColumn(name = "creditor_id", nullable = false)
+  private UserSchema creditor;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "debtor_id", nullable = false)
-    private UserSchema debtor;
+  @ManyToOne(optional = false)
+  @JoinColumn(name = "debtor_id", nullable = false)
+  private UserSchema debtor;
 
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal amount;
+  @Column(nullable = false, precision = 10, scale = 2)
+  private BigDecimal amount;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "group_id", nullable = false)
-    private GroupSchema group;
+  @ManyToOne(optional = false)
+  @JoinColumn(name = "group_id", nullable = false)
+  private GroupSchema group;
 }

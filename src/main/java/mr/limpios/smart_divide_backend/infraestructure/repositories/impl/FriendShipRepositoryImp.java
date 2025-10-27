@@ -8,6 +8,6 @@ import mr.limpios.smart_divide_backend.infraestructure.repositories.jpa.JPAFrien
 
 @Repository
 public class FriendShipRepositoryImp implements FriendshipRepository {
-    @Autowired
-    private JPAFriendShipRepository jpaFriendShipRepository;
+  @Autowired
+  private JPAFriendShipRepository jpaFriendShipRepository;
 }

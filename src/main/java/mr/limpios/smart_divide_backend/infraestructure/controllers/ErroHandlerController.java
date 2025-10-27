@@ -14,22 +14,22 @@ import mr.limpios.smart_divide_backend.infraestructure.dto.WrapperResponse;
 @ControllerAdvice
 public class ErroHandlerController extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(InvalidDataException.class)
-    public ResponseEntity<WrapperResponse<Void>> handleInvalidDataException(Exception exception) {
-        return new ResponseEntity<>(new WrapperResponse<>(false, exception.getMessage(), null),
-                HttpStatus.BAD_REQUEST);
-    }
+  @ExceptionHandler(InvalidDataException.class)
+  public ResponseEntity<WrapperResponse<Void>> handleInvalidDataException(Exception exception) {
+    return new ResponseEntity<>(new WrapperResponse<>(false, exception.getMessage(), null),
+        HttpStatus.BAD_REQUEST);
+  }
 
-    @ExceptionHandler(ResourceExistException.class)
-    public ResponseEntity<WrapperResponse<Void>> handleResourceExistException(Exception exception) {
-        return new ResponseEntity<>(new WrapperResponse<>(false, exception.getMessage(), null),
-                HttpStatus.CONFLICT);
-    }
+  @ExceptionHandler(ResourceExistException.class)
+  public ResponseEntity<WrapperResponse<Void>> handleResourceExistException(Exception exception) {
+    return new ResponseEntity<>(new WrapperResponse<>(false, exception.getMessage(), null),
+        HttpStatus.CONFLICT);
+  }
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<WrapperResponse<Void>> handleResourceNotFoundException(
-            Exception exception) {
-        return new ResponseEntity<>(new WrapperResponse<>(false, exception.getMessage(), null),
-                HttpStatus.NOT_FOUND);
-    }
+  @ExceptionHandler(ResourceNotFoundException.class)
+  public ResponseEntity<WrapperResponse<Void>> handleResourceNotFoundException(
+      Exception exception) {
+    return new ResponseEntity<>(new WrapperResponse<>(false, exception.getMessage(), null),
+        HttpStatus.NOT_FOUND);
+  }
 }

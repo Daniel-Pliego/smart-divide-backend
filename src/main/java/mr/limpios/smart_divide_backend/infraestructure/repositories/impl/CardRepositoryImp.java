@@ -8,6 +8,6 @@ import mr.limpios.smart_divide_backend.infraestructure.repositories.jpa.JPACardR
 
 @Repository
 public class CardRepositoryImp implements CardRepository {
-    @Autowired
-    private JPACardRepository jpaCardRepository;
+  @Autowired
+  private JPACardRepository jpaCardRepository;
 }
