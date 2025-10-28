@@ -35,10 +35,6 @@ public class GroupSchema {
   private String description;
 
   @ManyToOne(optional = false)
-  @JoinColumn(name = "group_icon_id", nullable = false)
-  private GroupIconSchema groupIcon;
-
-  @ManyToOne(optional = false)
   @JoinColumn(name = "owner_id", nullable = false)
   private UserSchema owner;
 

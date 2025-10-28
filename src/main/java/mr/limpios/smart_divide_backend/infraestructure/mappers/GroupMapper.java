@@ -18,17 +18,23 @@ public class GroupMapper {
     Set<UserSchema> membersSchemas =
         group.members().stream().map(UserMapper::toSchema).collect(Collectors.toSet());
 
-    return new GroupSchema(group.id(), group.name(), group.description(),
-        GroupIconMapper.toSchema(group.groupIcon()), UserMapper.toSchema(group.owner()),
-        membersSchemas);
+    return new GroupSchema(
+            group.id(),
+            group.name(),
+            group.description(),
+            UserMapper.toSchema(group.owner()),
+            membersSchemas);
   }
 
   public static Group toModel(GroupSchema groupSchema) {
     List<User> membersModels =
         groupSchema.getMembers().stream().map(UserMapper::toModel).collect(Collectors.toList());
 
-    return new Group(groupSchema.getId(), groupSchema.getName(), groupSchema.getDescription(),
-        GroupIconMapper.toModel(groupSchema.getGroupIcon()),
-        UserMapper.toModel(groupSchema.getOwner()), membersModels);
+    return new Group(
+            groupSchema.getId(),
+            groupSchema.getName(),
+            groupSchema.getDescription(),
+            UserMapper.toModel(groupSchema.getOwner()),
+            membersModels);
   }
 }

@@ -6,6 +6,5 @@ public record Group(
         String id,
         String name,
         String description,
-        GroupIcon groupIcon,
         User owner,
         List<User> members) {}

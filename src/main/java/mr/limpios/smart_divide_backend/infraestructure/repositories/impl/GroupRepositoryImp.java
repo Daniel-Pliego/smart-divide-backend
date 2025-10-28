@@ -9,6 +9,8 @@ import mr.limpios.smart_divide_backend.infraestructure.mappers.GroupMapper;
 import mr.limpios.smart_divide_backend.infraestructure.repositories.jpa.JPAGroupRepository;
 import mr.limpios.smart_divide_backend.infraestructure.schemas.GroupSchema;
 
+import java.util.Objects;
+
 @Repository
 public class GroupRepositoryImp implements GroupRepository {
   @Autowired
@@ -20,4 +22,26 @@ public class GroupRepositoryImp implements GroupRepository {
 
     return GroupMapper.toModel(groupSchema);
   }
+
+  @Override
+  public Group getGroupById(String groupId) {
+     GroupSchema groupSchema = this.jpaGroupRepository.findById(groupId).orElse(null);
+
+     if (Objects.isNull(groupSchema)) {
+         return null;
+     }
+
+     return GroupMapper.toModel(groupSchema);
+   }
+
+   @Override
+   public Group updateGroupById(String groupId, Group group) {
+     GroupSchema groupSchema = this.jpaGroupRepository.getReferenceById(groupId);
+
+     groupSchema.setDescription(group.description());
+     groupSchema.setName(group.name());
+
+     GroupSchema updatedGroupData = this.jpaGroupRepository.save(groupSchema);
+     return GroupMapper.toModel(updatedGroupData);
+   }
 }
