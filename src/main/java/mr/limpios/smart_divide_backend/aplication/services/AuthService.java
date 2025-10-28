@@ -1,6 +1,6 @@
 package mr.limpios.smart_divide_backend.aplication.services;
 
-import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.EMAIL_ALREADY_EXIST;
+import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.EMAIL_ALREADY_EXISTS;
 
 import java.util.Objects;
 
@@ -34,7 +34,7 @@ public class AuthService {
     UserSingUpValidator.validate(userToSave);
 
     if (Objects.nonNull(userRepository.findUserByEmail(userToSave.email()))) {
-      throw new ResourceExistException(EMAIL_ALREADY_EXIST);
+      throw new ResourceExistException(EMAIL_ALREADY_EXISTS);
     }
 
     User savedUser = userRepository.saveUser(userToSave);

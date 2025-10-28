@@ -32,4 +32,5 @@ public class ErroHandlerController extends ResponseEntityExceptionHandler {
     return new ResponseEntity<>(new WrapperResponse<>(false, exception.getMessage(), null),
         HttpStatus.NOT_FOUND);
   }
+
 }

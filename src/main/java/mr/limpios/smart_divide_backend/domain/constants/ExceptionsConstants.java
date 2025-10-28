@@ -5,5 +5,7 @@ public class ExceptionsConstants {
   public static final String DATA_REQUIRED = "Data is required";
   public static final String MISSING_REQUIRED_FIELDS = "Missing required fields";
   public static final String INVALID_EMAIL_FORMAT = "Invalid email format";
-  public static final String EMAIL_ALREADY_EXIST = "Email already exists";
+  public static final String EMAIL_ALREADY_EXISTS = "Email already exists";
+  public static final String FRIENDSHIP_ALREADY_EXISTS =
+      "Friendship already exists between these users";
 }
