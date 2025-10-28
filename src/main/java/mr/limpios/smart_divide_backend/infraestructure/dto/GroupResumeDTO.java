@@ -4,7 +4,6 @@ public record GroupResumeDTO(
         String id,
         String name,
         String description,
-        Integer iconId,
         String ownerId,
         Integer totalDebts,
         Integer totalCredits) {}
