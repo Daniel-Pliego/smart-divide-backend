@@ -1,11 +1,11 @@
 package mr.limpios.smart_divide_backend.aplication.services;
 
-import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.USER_NOT_FOUND;
-
 import java.util.List;
 import java.util.Objects;
 
-import mr.limpios.smart_divide_backend.infraestructure.dto.UpdateGroupResumeDTO;
+import mr.limpios.smart_divide_backend.aplication.repositories.FriendshipRepository;
+import mr.limpios.smart_divide_backend.domain.exceptions.FriendshipNotFoundException;
+import mr.limpios.smart_divide_backend.infraestructure.dto.*;
 import org.springframework.stereotype.Service;
 
 import mr.limpios.smart_divide_backend.aplication.repositories.GroupRepository;
@@ -14,18 +14,20 @@ import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundExcepti
 import mr.limpios.smart_divide_backend.domain.models.Group;
 import mr.limpios.smart_divide_backend.domain.models.User;
 import mr.limpios.smart_divide_backend.domain.validators.GroupValidator;
-import mr.limpios.smart_divide_backend.infraestructure.dto.GroupDataDTO;
-import mr.limpios.smart_divide_backend.infraestructure.dto.GroupResumeDTO;
+
+import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.*;
 
 @Service
 public class GroupService {
 
   private final GroupRepository groupRepository;
   private final UserRepository userRepository;
+  private final FriendshipRepository friendshipRepository;
 
-  public GroupService(GroupRepository groupRepository, UserRepository userRepository) {
+  public GroupService(GroupRepository groupRepository, UserRepository userRepository, FriendshipRepository friendshipRepository) {
     this.groupRepository = groupRepository;
     this.userRepository = userRepository;
+    this.friendshipRepository = friendshipRepository;
   }
 
   public GroupResumeDTO createGroup(GroupDataDTO group, String ownerId) {
@@ -60,6 +62,10 @@ public class GroupService {
 
         Group findedGroup = this.groupRepository.getGroupById(groupId);
 
+        if (Objects.isNull(findedGroup)) {
+            throw new ResourceNotFoundException(GROUP_NOT_FOUND);
+        }
+
         Group updatedGroup = this.groupRepository.updateGroupById(
                 groupId,
                 new Group(
@@ -74,5 +80,37 @@ public class GroupService {
                 updatedGroup.id(),
                 updatedGroup.name(),
                 updatedGroup.description());
+    }
+
+    public UpdatedGroupMembers addMemberToGroup(AddMemberDTO addMemberDTO, String groupId, String ownerId) {
+        User owner = this.userRepository.getUserbyId(ownerId);
+        User memberToAdd = this.userRepository.getUserbyId(addMemberDTO.memberId());
+
+        if (Objects.isNull(owner) || Objects.isNull(memberToAdd)) {
+            throw new ResourceNotFoundException(USER_NOT_FOUND);
+        }
+
+        Group group = groupRepository.getGroupById(groupId);
+
+        if (Objects.isNull(group)) {
+            throw new ResourceNotFoundException(GROUP_NOT_FOUND);
+        }
+
+        Boolean isFriend = this.friendshipRepository.areFriends(ownerId, memberToAdd.id());
+
+        if (!isFriend) {
+            throw new FriendshipNotFoundException(FRIENDSHIP_NOT_FOUND);
+        }
+
+        Group updatedGroup = this.groupRepository.addMemberToGroup(groupId, memberToAdd.id());
+
+        return new UpdatedGroupMembers(
+                updatedGroup.id(),
+                memberToAdd.id(),
+                memberToAdd.name(),
+                memberToAdd.lastName(),
+                memberToAdd.photoUrl()
+        );
+
     }
 }

@@ -7,4 +7,5 @@ public interface GroupRepository {
   Group saveGroup(Group group);
   Group getGroupById(String groupId);
   Group updateGroupById(String groupId, Group group);
+  Group addMemberToGroup(String groupId, String memberId);
 }

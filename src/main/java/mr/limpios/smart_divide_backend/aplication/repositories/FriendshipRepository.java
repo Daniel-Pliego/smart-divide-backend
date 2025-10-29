@@ -9,4 +9,5 @@ public interface FriendshipRepository {
   public void createFriendRequest(Friendship friendship);
 
   public Set<Friendship> getAllFriendshipsByUserId(String userId);
+    Boolean areFriends(String ownerId, String friendId);
 }

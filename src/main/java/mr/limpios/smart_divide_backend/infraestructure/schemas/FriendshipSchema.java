@@ -19,7 +19,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "friendship")
-public class FriendShipSchema {
+public class FriendshipSchema {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
