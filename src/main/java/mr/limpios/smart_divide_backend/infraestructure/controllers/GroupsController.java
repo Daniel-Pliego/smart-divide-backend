@@ -1,6 +1,6 @@
 package mr.limpios.smart_divide_backend.infraestructure.controllers;
 
-import mr.limpios.smart_divide_backend.infraestructure.dto.UpdateGroupResumeDTO;
+import mr.limpios.smart_divide_backend.infraestructure.dto.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,9 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import mr.limpios.smart_divide_backend.aplication.services.GroupService;
-import mr.limpios.smart_divide_backend.infraestructure.dto.GroupDataDTO;
-import mr.limpios.smart_divide_backend.infraestructure.dto.GroupResumeDTO;
-import mr.limpios.smart_divide_backend.infraestructure.dto.WrapperResponse;
 
 @RestController
 @RequestMapping("user")
@@ -47,4 +44,18 @@ public class GroupsController {
               new WrapperResponse<>(true, "Group updated successfully", updateGroupResumeDTO),
               HttpStatus.OK);
   }
+
+  @Operation(summary = "Adds a member to an existing group")
+  @PutMapping("{userId}/groups/{groupId}/members")
+  public ResponseEntity<WrapperResponse<NewMemberDTO>> addMember(
+          @PathVariable String userId,
+          @PathVariable String groupId,
+          @RequestBody AddMemberDTO addMemberDTO) {
+
+      NewMemberDTO newMemberDTO =  groupService.addMemberToGroup(addMemberDTO, groupId, userId);
+      return new ResponseEntity<>(
+              new WrapperResponse<>(true, "Member added successfully", newMemberDTO),
+              HttpStatus.OK);
+  }
+
 }
