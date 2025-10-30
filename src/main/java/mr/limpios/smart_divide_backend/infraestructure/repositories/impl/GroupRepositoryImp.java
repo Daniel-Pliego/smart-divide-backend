@@ -1,5 +1,6 @@
 package mr.limpios.smart_divide_backend.infraestructure.repositories.impl;
 
+import mr.limpios.smart_divide_backend.domain.exceptions.ResourceExistException;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundException;
 import mr.limpios.smart_divide_backend.infraestructure.repositories.jpa.JPAUserRepository;
 import mr.limpios.smart_divide_backend.infraestructure.schemas.UserSchema;
@@ -69,7 +70,7 @@ public class GroupRepositoryImp implements GroupRepository {
 
     Set<UserSchema> members = groupSchema.getMembers();
     if (members.contains(userSchema)) {
-        throw new ResourceNotFoundException(EXISTING_FRIEND_IN_THE_GROUP);
+        throw new ResourceExistException(EXISTING_FRIEND_IN_THE_GROUP);
     }
 
     members.add(userSchema);
