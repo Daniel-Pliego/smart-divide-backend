@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Objects;
 
 import mr.limpios.smart_divide_backend.aplication.repositories.FriendshipRepository;
-import mr.limpios.smart_divide_backend.domain.exceptions.FriendshipNotFoundException;
 import mr.limpios.smart_divide_backend.infraestructure.dto.*;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +14,9 @@ import mr.limpios.smart_divide_backend.domain.models.Group;
 import mr.limpios.smart_divide_backend.domain.models.User;
 import mr.limpios.smart_divide_backend.domain.validators.GroupValidator;
 
-import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.*;
+import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.FRIENDSHIP_NOT_FOUND;
+import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.USER_NOT_FOUND;
+import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.GROUP_NOT_FOUND;
 
 @Service
 public class GroupService {
@@ -82,7 +83,7 @@ public class GroupService {
                 updatedGroup.description());
     }
 
-    public UpdatedGroupMembers addMemberToGroup(AddMemberDTO addMemberDTO, String groupId, String ownerId) {
+    public NewMemberDTO addMemberToGroup(AddMemberDTO addMemberDTO, String groupId, String ownerId) {
         User owner = this.userRepository.getUserbyId(ownerId);
         User memberToAdd = this.userRepository.getUserbyId(addMemberDTO.memberId());
 
@@ -99,12 +100,12 @@ public class GroupService {
         Boolean isFriend = this.friendshipRepository.areFriends(ownerId, memberToAdd.id());
 
         if (!isFriend) {
-            throw new FriendshipNotFoundException(FRIENDSHIP_NOT_FOUND);
+            throw new ResourceNotFoundException(FRIENDSHIP_NOT_FOUND);
         }
 
         Group updatedGroup = this.groupRepository.addMemberToGroup(groupId, memberToAdd.id());
 
-        return new UpdatedGroupMembers(
+        return new NewMemberDTO(
                 updatedGroup.id(),
                 memberToAdd.id(),
                 memberToAdd.name(),

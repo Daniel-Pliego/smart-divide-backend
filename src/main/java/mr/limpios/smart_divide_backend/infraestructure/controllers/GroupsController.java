@@ -47,14 +47,14 @@ public class GroupsController {
 
   @Operation(summary = "Adds a member to an existing group")
   @PutMapping("{userId}/groups/{groupId}/members")
-  public ResponseEntity<WrapperResponse<UpdatedGroupMembers>> addMember(
+  public ResponseEntity<WrapperResponse<NewMemberDTO>> addMember(
           @PathVariable String userId,
           @PathVariable String groupId,
           @RequestBody AddMemberDTO addMemberDTO) {
 
-      UpdatedGroupMembers updatedGroupMembers =  groupService.addMemberToGroup(addMemberDTO, groupId, userId);
+      NewMemberDTO newMemberDTO =  groupService.addMemberToGroup(addMemberDTO, groupId, userId);
       return new ResponseEntity<>(
-              new WrapperResponse<>(true, "Member added successfully", updatedGroupMembers),
+              new WrapperResponse<>(true, "Member added successfully", newMemberDTO),
               HttpStatus.OK);
   }
 

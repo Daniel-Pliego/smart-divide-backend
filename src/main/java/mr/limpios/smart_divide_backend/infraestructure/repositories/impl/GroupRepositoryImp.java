@@ -3,7 +3,6 @@ package mr.limpios.smart_divide_backend.infraestructure.repositories.impl;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundException;
 import mr.limpios.smart_divide_backend.infraestructure.repositories.jpa.JPAUserRepository;
 import mr.limpios.smart_divide_backend.infraestructure.schemas.UserSchema;
-import org.aspectj.apache.bcel.ExceptionConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -28,7 +27,7 @@ public class GroupRepositoryImp implements GroupRepository {
   @Autowired
   public GroupRepositoryImp(JPAGroupRepository jpaGroupRepository, JPAUserRepository jpaUserRepository) {
       this.jpaGroupRepository = jpaGroupRepository;
-      this.jpaUserRepository = jpaUserRepository; // <-- Ahora jpaUserRepository será inicializado
+      this.jpaUserRepository = jpaUserRepository;
   }
 
   @Override

@@ -1,6 +1,5 @@
 package mr.limpios.smart_divide_backend.infraestructure.controllers;
 
-import mr.limpios.smart_divide_backend.domain.exceptions.FriendshipNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -33,12 +32,4 @@ public class ErroHandlerController extends ResponseEntityExceptionHandler {
     return new ResponseEntity<>(new WrapperResponse<>(false, exception.getMessage(), null),
         HttpStatus.NOT_FOUND);
   }
-
-  @ExceptionHandler(FriendshipNotFoundException.class)
-  public ResponseEntity<WrapperResponse<Void>> handleFriendshipNotFoundException(
-          Exception exception) {
-      return new ResponseEntity<>(new WrapperResponse<>(false, exception.getMessage(), null),
-              HttpStatus.BAD_REQUEST);
-  }
-
 }
