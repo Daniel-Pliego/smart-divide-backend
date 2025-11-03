@@ -1,7 +1,6 @@
 package mr.limpios.smart_divide_backend.infraestructure.repositories.impl;
 
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceExistException;
-import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundException;
 import mr.limpios.smart_divide_backend.infraestructure.repositories.jpa.JPAUserRepository;
 import mr.limpios.smart_divide_backend.infraestructure.schemas.UserSchema;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +14,9 @@ import mr.limpios.smart_divide_backend.infraestructure.schemas.GroupSchema;
 
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.EXISTING_FRIEND_IN_THE_GROUP;
-import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.FRIENDSHIP_ALREADY_EXISTS;
 
 @Repository
 public class GroupRepositoryImp implements GroupRepository {
@@ -27,8 +26,8 @@ public class GroupRepositoryImp implements GroupRepository {
 
   @Autowired
   public GroupRepositoryImp(JPAGroupRepository jpaGroupRepository, JPAUserRepository jpaUserRepository) {
-      this.jpaGroupRepository = jpaGroupRepository;
-      this.jpaUserRepository = jpaUserRepository;
+    this.jpaGroupRepository = jpaGroupRepository;
+    this.jpaUserRepository = jpaUserRepository;
   }
 
   @Override
@@ -40,14 +39,14 @@ public class GroupRepositoryImp implements GroupRepository {
 
   @Override
   public Group getGroupById(String groupId) {
-     GroupSchema groupSchema = this.jpaGroupRepository.findById(groupId).orElse(null);
+    GroupSchema groupSchema = this.jpaGroupRepository.findById(groupId).orElse(null);
 
-     if (Objects.isNull(groupSchema)) {
-         return null;
-     }
+    if (Objects.isNull(groupSchema)) {
+      return null;
+    }
 
-     return GroupMapper.toModel(groupSchema);
-   }
+    return GroupMapper.toModel(groupSchema);
+  }
 
   @Override
   public Group updateGroupById(String groupId, Group group) {
@@ -65,16 +64,26 @@ public class GroupRepositoryImp implements GroupRepository {
     GroupSchema groupSchema = this.jpaGroupRepository.findById(groupId).orElse(null);
     UserSchema userSchema = this.jpaUserRepository.findById(memberId).orElse(null);
     if (Objects.isNull(groupSchema) || Objects.isNull(userSchema)) {
-        return null;
+      return null;
     }
 
     Set<UserSchema> members = groupSchema.getMembers();
     if (members.contains(userSchema)) {
-        throw new ResourceExistException(EXISTING_FRIEND_IN_THE_GROUP);
+      throw new ResourceExistException(EXISTING_FRIEND_IN_THE_GROUP);
     }
 
     members.add(userSchema);
     GroupSchema updatedGroupSchema = jpaGroupRepository.save(groupSchema);
     return GroupMapper.toModel(updatedGroupSchema);
   }
+
+  @Override
+  public Set<Group> getGroupsByUserId(String userId) {
+    return this.jpaGroupRepository.findByMembers_Id(userId)
+        .orElse(null)
+        .stream().map(GroupMapper::toModel)
+        .collect(Collectors.toSet());
+
+  }
+
 }

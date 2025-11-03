@@ -2,6 +2,8 @@ package mr.limpios.smart_divide_backend.aplication.services;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import mr.limpios.smart_divide_backend.aplication.repositories.FriendshipRepository;
 import mr.limpios.smart_divide_backend.infraestructure.dto.*;
@@ -15,6 +17,7 @@ import mr.limpios.smart_divide_backend.domain.models.User;
 import mr.limpios.smart_divide_backend.domain.validators.GroupValidator;
 
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.FRIENDSHIP_NOT_FOUND;
+import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.GROUPS_NOT_FOUND_FOR_USER;
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.USER_NOT_FOUND;
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.GROUP_NOT_FOUND;
 
@@ -25,7 +28,8 @@ public class GroupService {
   private final UserRepository userRepository;
   private final FriendshipRepository friendshipRepository;
 
-  public GroupService(GroupRepository groupRepository, UserRepository userRepository, FriendshipRepository friendshipRepository) {
+  public GroupService(GroupRepository groupRepository, UserRepository userRepository,
+      FriendshipRepository friendshipRepository) {
     this.groupRepository = groupRepository;
     this.userRepository = userRepository;
     this.friendshipRepository = friendshipRepository;
@@ -41,77 +45,86 @@ public class GroupService {
     GroupValidator.validate(group);
 
     Group savedGroup = this.groupRepository.saveGroup(
-            new Group(
-                null,
-                group.name(),
-                group.description(),
-                owner,
-                List.of(owner)
-            ));
+        new Group(
+            null,
+            group.name(),
+            group.description(),
+            owner,
+            List.of(owner)));
 
     return new GroupResumeDTO(
-            savedGroup.id(),
-            savedGroup.name(),
-            savedGroup.description(),
-            savedGroup.owner().id(),
-            0,
-            0);
+        savedGroup.id(),
+        savedGroup.name(),
+        savedGroup.description(),
+        savedGroup.owner().id(),
+        0,
+        0);
   }
 
-    public UpdateGroupResumeDTO updateGroup(GroupDataDTO group, String groupId) {
-        GroupValidator.validate(group);
+  public UpdateGroupResumeDTO updateGroup(GroupDataDTO group, String groupId) {
+    GroupValidator.validate(group);
 
-        Group findedGroup = this.groupRepository.getGroupById(groupId);
+    Group findedGroup = this.groupRepository.getGroupById(groupId);
 
-        if (Objects.isNull(findedGroup)) {
-            throw new ResourceNotFoundException(GROUP_NOT_FOUND);
-        }
-
-        Group updatedGroup = this.groupRepository.updateGroupById(
-                groupId,
-                new Group(
-                        findedGroup.id(),
-                        group.name(),
-                        group.description(),
-                        findedGroup.owner(),
-                        findedGroup.members()
-                ));
-
-        return new UpdateGroupResumeDTO(
-                updatedGroup.id(),
-                updatedGroup.name(),
-                updatedGroup.description());
+    if (Objects.isNull(findedGroup)) {
+      throw new ResourceNotFoundException(GROUP_NOT_FOUND);
     }
 
-    public NewMemberDTO addMemberToGroup(AddMemberDTO addMemberDTO, String groupId, String ownerId) {
-        User owner = this.userRepository.getUserbyId(ownerId);
-        User memberToAdd = this.userRepository.getUserbyId(addMemberDTO.memberId());
+    Group updatedGroup = this.groupRepository.updateGroupById(
+        groupId,
+        new Group(
+            findedGroup.id(),
+            group.name(),
+            group.description(),
+            findedGroup.owner(),
+            findedGroup.members()));
 
-        if (Objects.isNull(owner) || Objects.isNull(memberToAdd)) {
-            throw new ResourceNotFoundException(USER_NOT_FOUND);
-        }
+    return new UpdateGroupResumeDTO(
+        updatedGroup.id(),
+        updatedGroup.name(),
+        updatedGroup.description());
+  }
 
-        Group group = groupRepository.getGroupById(groupId);
+  public NewMemberDTO addMemberToGroup(AddMemberDTO addMemberDTO, String groupId, String ownerId) {
+    User owner = this.userRepository.getUserbyId(ownerId);
+    User memberToAdd = this.userRepository.getUserbyId(addMemberDTO.memberId());
 
-        if (Objects.isNull(group)) {
-            throw new ResourceNotFoundException(GROUP_NOT_FOUND);
-        }
-
-        Boolean isFriend = this.friendshipRepository.areFriends(ownerId, memberToAdd.id());
-
-        if (!isFriend) {
-            throw new ResourceNotFoundException(FRIENDSHIP_NOT_FOUND);
-        }
-
-        Group updatedGroup = this.groupRepository.addMemberToGroup(groupId, memberToAdd.id());
-
-        return new NewMemberDTO(
-                updatedGroup.id(),
-                memberToAdd.id(),
-                memberToAdd.name(),
-                memberToAdd.lastName(),
-                memberToAdd.photoUrl()
-        );
-
+    if (Objects.isNull(owner) || Objects.isNull(memberToAdd)) {
+      throw new ResourceNotFoundException(USER_NOT_FOUND);
     }
+
+    Group group = groupRepository.getGroupById(groupId);
+
+    if (Objects.isNull(group)) {
+      throw new ResourceNotFoundException(GROUP_NOT_FOUND);
+    }
+
+    Boolean isFriend = this.friendshipRepository.areFriends(ownerId, memberToAdd.id());
+
+    if (!isFriend) {
+      throw new ResourceNotFoundException(FRIENDSHIP_NOT_FOUND);
+    }
+
+    Group updatedGroup = this.groupRepository.addMemberToGroup(groupId, memberToAdd.id());
+
+    return new NewMemberDTO(
+        updatedGroup.id(),
+        memberToAdd.id(),
+        memberToAdd.name(),
+        memberToAdd.lastName(),
+        memberToAdd.photoUrl());
+
+  }
+
+  public List<GroupDataDTO> getUserGroups(String userId) {
+    Set<Group> groups = groupRepository.getGroupsByUserId(userId);
+    if (groups.isEmpty()) {
+      throw new ResourceNotFoundException(GROUPS_NOT_FOUND_FOR_USER);
+    }
+    return groups.stream()
+        .map(group -> new GroupDataDTO(
+            group.name(),
+            group.description()))
+        .collect(Collectors.toList());
+  }
 }

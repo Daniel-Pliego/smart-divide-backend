@@ -1,5 +1,7 @@
 package mr.limpios.smart_divide_backend.aplication.repositories;
 
+import java.util.Set;
+
 import mr.limpios.smart_divide_backend.domain.models.Group;
 
 public interface GroupRepository {
@@ -8,4 +10,5 @@ public interface GroupRepository {
   Group getGroupById(String groupId);
   Group updateGroupById(String groupId, Group group);
   Group addMemberToGroup(String groupId, String memberId);
+  Set<Group> getGroupsByUserId(String userId);
 }
