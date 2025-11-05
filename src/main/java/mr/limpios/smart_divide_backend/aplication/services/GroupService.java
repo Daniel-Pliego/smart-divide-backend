@@ -118,7 +118,7 @@ public class GroupService {
 
   public List<GroupDataDTO> getUserGroups(String userId) {
     Set<Group> groups = groupRepository.getGroupsByUserId(userId);
-    if (groups.isEmpty()) {
+    if (Objects.isNull(groups)) {
       throw new ResourceNotFoundException(GROUPS_NOT_FOUND_FOR_USER);
     }
     return groups.stream()
