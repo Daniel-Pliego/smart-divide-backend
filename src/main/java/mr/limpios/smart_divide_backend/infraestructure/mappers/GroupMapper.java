@@ -37,4 +37,8 @@ public class GroupMapper {
             UserMapper.toModel(groupSchema.getOwner()),
             membersModels);
   }
+
+  public static Set<Group> toModelSet(Set<GroupSchema> groupsSchema){
+    return groupsSchema.stream().map(GroupMapper::toModel).collect(Collectors.toSet());
+  }
 }
