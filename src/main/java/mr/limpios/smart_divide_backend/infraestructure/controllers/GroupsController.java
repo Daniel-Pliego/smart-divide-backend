@@ -13,7 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import mr.limpios.smart_divide_backend.aplication.services.GroupService;
 
 @RestController
-@RequestMapping("user")
+@RequestMapping("user/{userId}")
 @CrossOrigin(maxAge = 3600, methods = { RequestMethod.OPTIONS, RequestMethod.POST }, origins = { "*" })
 @Tag(name = "Groups", description = "Endpoints for create and view groups")
 public class GroupsController {
@@ -25,7 +25,7 @@ public class GroupsController {
         }
 
         @Operation(summary = "Create a new group for a user")
-        @PostMapping("{userId}/groups")
+        @PostMapping("groups")
         public ResponseEntity<WrapperResponse<GroupResumeDTO>> createGroup(
                         @PathVariable String userId,
                         @RequestBody GroupDataDTO groupDataDTO) {
@@ -36,7 +36,7 @@ public class GroupsController {
         }
 
         @Operation(summary = "update information on an existing group")
-        @PutMapping("{userId}/groups/{groupId}")
+        @PutMapping("groups/{groupId}")
         public ResponseEntity<WrapperResponse<UpdateGroupResumeDTO>> updateGroup(
                         @PathVariable String userId,
                         @PathVariable String groupId,
@@ -49,7 +49,7 @@ public class GroupsController {
         }
 
         @Operation(summary = "Adds a member to an existing group")
-        @PutMapping("{userId}/groups/{groupId}/members")
+        @PutMapping("groups/{groupId}/members")
         public ResponseEntity<WrapperResponse<NewMemberDTO>> addMember(
                         @PathVariable String userId,
                         @PathVariable String groupId,
@@ -62,7 +62,7 @@ public class GroupsController {
         }
 
         @Operation(summary = "Get all groups of a user")
-        @GetMapping("{userId}/groups")
+        @GetMapping("groups")
         public ResponseEntity<WrapperResponse<List<GroupDataDTO>>> getUserGroups(
                         @PathVariable String userId) {
                                 List<GroupDataDTO> groups = groupService.getUserGroups(userId);
