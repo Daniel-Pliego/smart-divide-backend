@@ -2,6 +2,7 @@ package mr.limpios.smart_divide_backend.aplication.services;
 
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.GROUP_NOT_FOUND;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -42,13 +43,13 @@ public class ExpenseService {
             throw new ResourceNotFoundException(GROUP_NOT_FOUND);
         }
 
-        validateGroupMembership(group, userId, addExpenseDTO);
+        Map<String, User> membersMap = getMembersMap(group);
+
+        validateGroupMembership(membersMap, userId, addExpenseDTO);
 
         List<CalculatedBalance> calculatedBalances = strategyFactory
                 .getStrategy(addExpenseDTO.divisionType())
                 .calculate(addExpenseDTO);
-
-        Map<String, User> membersMap = getMembersMap(group);
 
         List<ExpenseParticipant> participants = ExpenseMapper.createParticipantsFromBalances(
                 calculatedBalances,
@@ -65,15 +66,18 @@ public class ExpenseService {
         return ExpenseMapper.toResumeDTO(savedExpense);
     }
 
-    private void validateGroupMembership(Group group, String userId, ExpenseInputDTO dto) {
-        if (!group.hasMember(userId)) {
+    private void validateGroupMembership(Map<String, User> membersMap, String userId, ExpenseInputDTO dto) {
+        if (!membersMap.containsKey(userId)) {
             throw new ResourceNotFoundException("User is not a member of the group");
         }
 
-        boolean allDebtorsAreMembers = dto.balances().stream()
-                .allMatch(b -> group.hasMember(b.debtorId()));
+        HashSet<String> memberIds = new HashSet<>(membersMap.keySet());
+        HashSet<String> dtoMemberIds = dto.balances().stream()
+                .map(b -> b.debtorId())
+                .collect(Collectors.toCollection(HashSet::new));
+        dtoMemberIds.add(userId);
 
-        if (!allDebtorsAreMembers) {
+        if (!memberIds.equals(dtoMemberIds)) {
             throw new ResourceNotFoundException("One or more debtors are not in the group");
         }
     }
