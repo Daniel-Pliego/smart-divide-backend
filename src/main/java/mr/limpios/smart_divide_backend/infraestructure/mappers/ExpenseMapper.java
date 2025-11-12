@@ -10,8 +10,8 @@ import mr.limpios.smart_divide_backend.domain.models.ExpenseBalance;
 import mr.limpios.smart_divide_backend.domain.models.ExpenseParticipant;
 import mr.limpios.smart_divide_backend.domain.models.Group;
 import mr.limpios.smart_divide_backend.domain.models.User;
+import mr.limpios.smart_divide_backend.domain.strategies.CalculatedBalance;
 import mr.limpios.smart_divide_backend.infraestructure.dto.AddExpenseDTO;
-import mr.limpios.smart_divide_backend.infraestructure.dto.AddExpenseDebtorsDTO;
 import mr.limpios.smart_divide_backend.infraestructure.dto.ExpenseResumeDTO;
 import mr.limpios.smart_divide_backend.infraestructure.schemas.ExpenseSchema;
 
@@ -74,7 +74,7 @@ public class ExpenseMapper {
     }
 
     public static List<ExpenseParticipant> createParticipantsFromBalances(
-            List<AddExpenseDebtorsDTO> balances,
+            List<CalculatedBalance> balances,
             Map<String, User> groupMembersMap) {
 
         return balances.stream()
@@ -82,12 +82,12 @@ public class ExpenseMapper {
                         null,
                         groupMembersMap.get(balance.debtorId()),
                         BigDecimal.valueOf(0),
-                        BigDecimal.valueOf(balance.amountToPaid())))
+                        balance.amountToPaid()))
                 .collect(Collectors.toList());
     }
 
     public static List<ExpenseBalance> createExpnseseBalancesFromBalances(
-            List<AddExpenseDebtorsDTO> balances,
+            List<CalculatedBalance> balances,
             Map<String, User> groupMembersMap,
             String creditorId) {
         return balances.stream()
@@ -95,7 +95,7 @@ public class ExpenseMapper {
                         null,
                         groupMembersMap.get(creditorId),
                         groupMembersMap.get(balance.debtorId()),
-                        BigDecimal.valueOf(balance.amountToPaid())))
+                        balance.amountToPaid()))
                 .collect(Collectors.toList());
     }
 

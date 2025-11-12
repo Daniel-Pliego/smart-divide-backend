@@ -7,18 +7,21 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import mr.limpios.smart_divide_backend.aplication.repositories.ExpenseRepository;
 import mr.limpios.smart_divide_backend.aplication.repositories.GroupRepository;
+import mr.limpios.smart_divide_backend.domain.events.ExpenseCreatedEvent;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundException;
 import mr.limpios.smart_divide_backend.domain.models.Expense;
 import mr.limpios.smart_divide_backend.domain.models.ExpenseBalance;
 import mr.limpios.smart_divide_backend.domain.models.ExpenseParticipant;
 import mr.limpios.smart_divide_backend.domain.models.Group;
 import mr.limpios.smart_divide_backend.domain.models.User;
+import mr.limpios.smart_divide_backend.domain.strategies.CalculatedBalance;
 import mr.limpios.smart_divide_backend.domain.strategies.ExpenseStrategyFactory;
 import mr.limpios.smart_divide_backend.infraestructure.dto.AddExpenseDTO;
 import mr.limpios.smart_divide_backend.infraestructure.dto.ExpenseResumeDTO;
@@ -30,6 +33,7 @@ public class ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final GroupRepository groupRepository;
     private final ExpenseStrategyFactory strategyFactory;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public ExpenseResumeDTO addExpense(AddExpenseDTO addExpenseDTO, String userId, String groupId) {
@@ -40,19 +44,23 @@ public class ExpenseService {
 
         validateGroupMembership(group, userId, addExpenseDTO);
 
-        strategyFactory.getStrategy(addExpenseDTO.divisionType()).validate(addExpenseDTO);
+        List<CalculatedBalance> calculatedBalances = strategyFactory
+            .getStrategy(addExpenseDTO.divisionType())
+            .calculate(addExpenseDTO);
 
         Map<String, User> membersMap = getMembersMap(group);
 
         List<ExpenseParticipant> participants = ExpenseMapper.createParticipantsFromBalances(
-                addExpenseDTO.balances(),
+                calculatedBalances,
                 membersMap);
         List<ExpenseBalance> balances = ExpenseMapper.createExpnseseBalancesFromBalances(
-                addExpenseDTO.balances(),
+                calculatedBalances,
                 membersMap, userId);
 
         Expense expense = ExpenseMapper.toEntity(addExpenseDTO, group, participants, balances);
         Expense savedExpense = this.expenseRepository.saveExpense(expense);
+
+        eventPublisher.publishEvent(new ExpenseCreatedEvent(savedExpense));
 
         return ExpenseMapper.toResumeDTO(savedExpense);
     }
