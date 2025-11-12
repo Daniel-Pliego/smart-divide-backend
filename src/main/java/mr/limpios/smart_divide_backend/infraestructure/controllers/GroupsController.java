@@ -37,6 +37,7 @@ public class GroupsController {
 
         @Operation(summary = "update information on an existing group")
         @PutMapping("groups/{groupId}")
+        //TODO remove userId if not needed
         public ResponseEntity<WrapperResponse<UpdateGroupResumeDTO>> updateGroup(
                         @PathVariable String userId,
                         @PathVariable String groupId,

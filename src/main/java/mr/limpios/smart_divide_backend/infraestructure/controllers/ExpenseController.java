@@ -1,5 +1,6 @@
 package mr.limpios.smart_divide_backend.infraestructure.controllers;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,11 +14,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import mr.limpios.smart_divide_backend.aplication.services.ExpenseService;
 import mr.limpios.smart_divide_backend.infraestructure.dto.AddExpenseDTO;
+import mr.limpios.smart_divide_backend.infraestructure.dto.ExpenseResumeDTO;
 import mr.limpios.smart_divide_backend.infraestructure.dto.WrapperResponse;
 
 @RestController
 @RequestMapping("user/{userId}/group/{groupId}/expense")
-@CrossOrigin(maxAge = 3600, methods = { RequestMethod.OPTIONS, RequestMethod.POST, RequestMethod.GET }, origins = {
+@CrossOrigin(maxAge = 3600, methods = { RequestMethod.OPTIONS, RequestMethod.POST }, origins = {
         "*" })
 @Tag(name = "Expense", description = "Endpoints for managing expenses")
 public class ExpenseController {
@@ -31,11 +33,12 @@ public class ExpenseController {
     @PostMapping
     public ResponseEntity<WrapperResponse<Object>> AddExpense(
             @PathVariable String userId,
-            @PathVariable String groupId,   
-            @RequestBody AddExpenseDTO addExpense) {
-        expenseService.addExpense();
-        return ResponseEntity.ok(
-                new WrapperResponse<>(true, "Expense created successfully", null));
+            @PathVariable String groupId,
+            @RequestBody AddExpenseDTO addExpenseDTO) {
+        ExpenseResumeDTO expenseResumeDTO = expenseService.addExpense(addExpenseDTO, userId, groupId);
+        return new ResponseEntity<>(
+                new WrapperResponse<>(true, "Expense created successfully", expenseResumeDTO),
+                HttpStatus.CREATED);
 
     }
 }
