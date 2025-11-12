@@ -7,16 +7,16 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import mr.limpios.smart_divide_backend.domain.exceptions.InvalidDataException;
-import mr.limpios.smart_divide_backend.infraestructure.dto.AddExpenseDTO;
-import mr.limpios.smart_divide_backend.infraestructure.dto.AddExpenseDebtorsDTO;
+import mr.limpios.smart_divide_backend.infraestructure.dto.ExpenseInputDTO;
+import mr.limpios.smart_divide_backend.infraestructure.dto.ExpenseDebtorDTO;
 
 @Component
 public class EqualDivisionStrategy implements ExpenseDivisionStrategy {
 
     @Override
-    public List<CalculatedBalance> calculate(AddExpenseDTO addExpenseDTO) {
+    public List<CalculatedBalance> calculate(ExpenseInputDTO addExpenseDTO) {
         double equalShare = addExpenseDTO.amount() / addExpenseDTO.balances().size();
-        for (AddExpenseDebtorsDTO balance : addExpenseDTO.balances()) {
+        for (ExpenseDebtorDTO balance : addExpenseDTO.balances()) {
             if (Double.compare(balance.amountToPaid(), equalShare) != 0) {
                 throw new InvalidDataException(
                         "For EQUAL division, each debtor must pay the same amount: " + equalShare);

@@ -23,7 +23,7 @@ import mr.limpios.smart_divide_backend.domain.models.Group;
 import mr.limpios.smart_divide_backend.domain.models.User;
 import mr.limpios.smart_divide_backend.domain.strategies.CalculatedBalance;
 import mr.limpios.smart_divide_backend.domain.strategies.ExpenseStrategyFactory;
-import mr.limpios.smart_divide_backend.infraestructure.dto.AddExpenseDTO;
+import mr.limpios.smart_divide_backend.infraestructure.dto.ExpenseInputDTO;
 import mr.limpios.smart_divide_backend.infraestructure.dto.ExpenseResumeDTO;
 import mr.limpios.smart_divide_backend.infraestructure.mappers.ExpenseMapper;
 
@@ -36,7 +36,7 @@ public class ExpenseService {
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
-    public ExpenseResumeDTO addExpense(AddExpenseDTO addExpenseDTO, String userId, String groupId) {
+    public ExpenseResumeDTO addExpense(ExpenseInputDTO addExpenseDTO, String userId, String groupId) {
         Group group = groupRepository.getGroupById(groupId);
         if (Objects.isNull(group)) {
             throw new ResourceNotFoundException(GROUP_NOT_FOUND);
@@ -45,8 +45,8 @@ public class ExpenseService {
         validateGroupMembership(group, userId, addExpenseDTO);
 
         List<CalculatedBalance> calculatedBalances = strategyFactory
-            .getStrategy(addExpenseDTO.divisionType())
-            .calculate(addExpenseDTO);
+                .getStrategy(addExpenseDTO.divisionType())
+                .calculate(addExpenseDTO);
 
         Map<String, User> membersMap = getMembersMap(group);
 
@@ -65,7 +65,7 @@ public class ExpenseService {
         return ExpenseMapper.toResumeDTO(savedExpense);
     }
 
-    private void validateGroupMembership(Group group, String userId, AddExpenseDTO dto) {
+    private void validateGroupMembership(Group group, String userId, ExpenseInputDTO dto) {
         if (!group.hasMember(userId)) {
             throw new ResourceNotFoundException("User is not a member of the group");
         }
@@ -82,5 +82,4 @@ public class ExpenseService {
         return group.members().stream()
                 .collect(Collectors.toMap(User::id, member -> member));
     }
-
 }

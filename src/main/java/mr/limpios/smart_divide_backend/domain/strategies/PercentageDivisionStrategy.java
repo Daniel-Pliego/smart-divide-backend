@@ -8,13 +8,13 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import mr.limpios.smart_divide_backend.domain.exceptions.InvalidDataException;
-import mr.limpios.smart_divide_backend.infraestructure.dto.AddExpenseDTO;
+import mr.limpios.smart_divide_backend.infraestructure.dto.ExpenseInputDTO;
 
 @Component
 public class PercentageDivisionStrategy implements ExpenseDivisionStrategy {
 
     @Override
-    public List<CalculatedBalance> calculate(AddExpenseDTO dto) {
+    public List<CalculatedBalance> calculate(ExpenseInputDTO dto) {
         BigDecimal totalAmount = BigDecimal.valueOf(dto.amount());
         BigDecimal totalPercentage = BigDecimal.ZERO;
         List<CalculatedBalance> shares = new ArrayList<>();
