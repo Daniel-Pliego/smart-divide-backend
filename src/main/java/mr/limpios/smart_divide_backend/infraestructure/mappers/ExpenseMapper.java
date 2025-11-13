@@ -87,7 +87,7 @@ public class ExpenseMapper {
                                 .collect(Collectors.toList());
         }
 
-        public static List<ExpenseBalance> createExpnseseBalancesFromBalances(
+        public static List<ExpenseBalance> createExpenseBalancesFromBalances(
                         List<CalculatedBalance> balances,
                         Map<String, User> groupMembersMap,
                         String creditorId) {

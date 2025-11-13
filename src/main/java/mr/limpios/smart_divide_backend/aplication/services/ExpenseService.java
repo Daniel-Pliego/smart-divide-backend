@@ -54,7 +54,7 @@ public class ExpenseService {
         List<ExpenseParticipant> participants = ExpenseMapper.createParticipantsFromBalances(
                 calculatedBalances,
                 membersMap);
-        List<ExpenseBalance> balances = ExpenseMapper.createExpnseseBalancesFromBalances(
+        List<ExpenseBalance> balances = ExpenseMapper.createExpenseBalancesFromBalances(
                 calculatedBalances,
                 membersMap, userId);
 
@@ -75,7 +75,6 @@ public class ExpenseService {
         HashSet<String> dtoMemberIds = dto.balances().stream()
                 .map(b -> b.debtorId())
                 .collect(Collectors.toCollection(HashSet::new));
-        dtoMemberIds.add(userId);
 
         if (!memberIds.equals(dtoMemberIds)) {
             throw new ResourceNotFoundException("One or more debtors are not in the group");
