@@ -1,5 +1,7 @@
 package mr.limpios.smart_divide_backend.domain.strategies;
 
+import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.DEBTORS_AMOUNT_MISMATCH;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,7 +22,7 @@ public class CustomDivisionStrategy implements ExpenseDivisionStrategy {
 
         if (Double.compare(debtorsDTOTotalAmount, addExpenseDTO.amount()) != 0) {
             throw new InvalidDataException(
-                    "The sum of debtors amounts does not equal the total expense amount");
+                    DEBTORS_AMOUNT_MISMATCH);
         }
 
         return addExpenseDTO.balances().stream()

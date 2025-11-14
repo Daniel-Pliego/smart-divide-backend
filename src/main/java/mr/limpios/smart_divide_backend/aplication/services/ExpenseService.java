@@ -1,6 +1,8 @@
 package mr.limpios.smart_divide_backend.aplication.services;
 
+import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.DEBTORS_NOT_IN_GROUP;
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.GROUP_NOT_FOUND;
+import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.USER_NOT_MEMBER_OF_GROUP;
 
 import java.util.HashSet;
 import java.util.List;
@@ -68,7 +70,7 @@ public class ExpenseService {
 
     private void validateGroupMembership(Map<String, User> membersMap, String userId, ExpenseInputDTO dto) {
         if (!membersMap.containsKey(userId)) {
-            throw new ResourceNotFoundException("User is not a member of the group");
+            throw new ResourceNotFoundException(USER_NOT_MEMBER_OF_GROUP);
         }
 
         HashSet<String> memberIds = new HashSet<>(membersMap.keySet());
@@ -77,7 +79,7 @@ public class ExpenseService {
                 .collect(Collectors.toCollection(HashSet::new));
 
         if (!memberIds.equals(dtoMemberIds)) {
-            throw new ResourceNotFoundException("One or more debtors are not in the group");
+            throw new ResourceNotFoundException(DEBTORS_NOT_IN_GROUP);
         }
     }
 

@@ -1,5 +1,7 @@
 package mr.limpios.smart_divide_backend.domain.strategies;
 
+import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.EQUAL_DIVISION_AMOUNT_MISMATCH;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,7 +21,7 @@ public class EqualDivisionStrategy implements ExpenseDivisionStrategy {
         for (ExpenseDebtorDTO balance : addExpenseDTO.balances()) {
             if (Double.compare(balance.amountToPaid(), equalShare) != 0) {
                 throw new InvalidDataException(
-                        "For EQUAL division, each debtor must pay the same amount: " + equalShare);
+                        EQUAL_DIVISION_AMOUNT_MISMATCH + equalShare);
             }
         }
 

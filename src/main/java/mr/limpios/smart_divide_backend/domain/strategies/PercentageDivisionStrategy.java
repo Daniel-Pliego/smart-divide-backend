@@ -1,5 +1,7 @@
 package mr.limpios.smart_divide_backend.domain.strategies;
 
+import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.PERCENTAGE_DIVISION_TOTAL_MISMATCH;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -32,7 +34,7 @@ public class PercentageDivisionStrategy implements ExpenseDivisionStrategy {
         }
 
         if (totalPercentage.compareTo(BigDecimal.valueOf(100)) != 0) {
-            throw new InvalidDataException("Total percentage must be 100%. Current: " + totalPercentage);
+            throw new InvalidDataException(PERCENTAGE_DIVISION_TOTAL_MISMATCH + totalPercentage);
         }
 
         return shares;
