@@ -7,7 +7,7 @@ public record ExpenseInputDTO(
         String type,
         String description,
         double amount,
-        String evidenUrl,
+        String evidenceUrl,
         DivisionType divisionType,
         List<ExpenseDebtorDTO> balances
 ) {}

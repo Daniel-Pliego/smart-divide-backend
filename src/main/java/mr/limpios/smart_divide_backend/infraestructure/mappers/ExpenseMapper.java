@@ -23,7 +23,7 @@ public class ExpenseMapper {
                 expenseSchema.setType(expense.type());
                 expenseSchema.setDescription(expense.description());
                 expenseSchema.setAmount(expense.amount());
-                expenseSchema.setEvidenceUrl(expense.evidenUrl());
+                expenseSchema.setEvidenceUrl(expense.evidenceUrl());
                 if (expense.createdAt() != null) {
                         expenseSchema.setCreatedAt(expense.createdAt());
                 }
@@ -57,7 +57,7 @@ public class ExpenseMapper {
                                 dto.type(),
                                 dto.description(),
                                 BigDecimal.valueOf(dto.amount()),
-                                dto.evidenUrl(),
+                                dto.evidenceUrl(),
                                 null,
                                 dto.divisionType(),
                                 group,
