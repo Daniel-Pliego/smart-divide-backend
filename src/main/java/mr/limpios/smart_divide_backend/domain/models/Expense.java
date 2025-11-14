@@ -9,7 +9,7 @@ public record Expense(
         String type,
         String description,
         BigDecimal amount,
-        String evidenUrl,
+        String evidenceUrl,
         LocalDateTime createdAt,
         DivisionType divisionType,
         Group group,

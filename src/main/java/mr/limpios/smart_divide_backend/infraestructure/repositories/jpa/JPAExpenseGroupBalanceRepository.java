@@ -1,5 +1,7 @@
 package mr.limpios.smart_divide_backend.infraestructure.repositories.jpa;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -7,5 +9,9 @@ import mr.limpios.smart_divide_backend.infraestructure.schemas.ExpenseGroupBalan
 
 @Repository
 public interface JPAExpenseGroupBalanceRepository
-    extends JpaRepository<ExpenseGroupBalanceSchema, Integer> {
+        extends JpaRepository<ExpenseGroupBalanceSchema, Integer> {
+    Optional<ExpenseGroupBalanceSchema> findByCreditor_IdAndDebtor_IdAndGroup_Id(
+            String creditorId,
+            String debtorId,
+            String groupId);
 }
