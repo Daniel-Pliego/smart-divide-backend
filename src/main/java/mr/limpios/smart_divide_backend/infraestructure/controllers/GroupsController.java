@@ -73,10 +73,10 @@ public class GroupsController {
         }
 
         @Operation(summary = "Get all group transactions")
-        @GetMapping("/{groupId}/transactions")
+        @GetMapping("groups/{groupId}/transactions")
         public ResponseEntity<WrapperResponse<GroupTransactionHistoryDTO>> getGroupTransactions(
                 @PathVariable String groupId,
-                @RequestParam String userId) {
+                @PathVariable String userId) {
 
                 GroupTransactionHistoryDTO history =
                         groupService.getGroupTransactionHistory(groupId, userId);

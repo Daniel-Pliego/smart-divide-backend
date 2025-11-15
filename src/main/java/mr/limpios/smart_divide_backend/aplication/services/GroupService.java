@@ -15,6 +15,7 @@ import mr.limpios.smart_divide_backend.infraestructure.dto.GroupTransactionHisto
 import mr.limpios.smart_divide_backend.infraestructure.dto.UserBalanceDTO;
 import mr.limpios.smart_divide_backend.infraestructure.dto.ExpenseDetailDTO;
 import mr.limpios.smart_divide_backend.infraestructure.dto.PaymentDetailDTO;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import mr.limpios.smart_divide_backend.aplication.repositories.GroupRepository;
@@ -36,7 +37,9 @@ public class GroupService {
   private final GroupRepository groupRepository;
   private final UserRepository userRepository;
   private final FriendshipRepository friendshipRepository;
+  @Lazy
   private final PaymentService paymentService;
+  @Lazy
   private final ExpenseService expenseService;
 
   public GroupService(
@@ -162,7 +165,7 @@ public class GroupService {
     }
 
     List<UserBalanceDTO> userBalances = expenseService.getUserBalancesByGroup(groupId);
-    List<ExpenseDetailDTO> expenses = expenseService.getExpensesByGroup(groupId);
+    List<ExpenseDetailDTO> expenses = expenseService.getExpensesByGroup(groupId,userBalances);
     List<PaymentDetailDTO> payments = paymentService.getPaymentsByGroup(groupId);
 
     return new GroupTransactionHistoryDTO(

@@ -7,8 +7,8 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 public class BalanceInfo {
-    String name;
-    BigDecimal balance;
+    private String name;
+    private BigDecimal balance;
 
 }
 
