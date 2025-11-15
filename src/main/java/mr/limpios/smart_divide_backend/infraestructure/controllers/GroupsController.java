@@ -72,4 +72,16 @@ public class GroupsController {
                                 HttpStatus.OK);
         }
 
+        @Operation(summary = "Get all group transactions")
+        @GetMapping("/{groupId}/transactions")
+        public ResponseEntity<WrapperResponse<GroupTransactionHistoryDTO>> getGroupTransactions(
+                @PathVariable String groupId,
+                @RequestParam String userId) {
+
+                GroupTransactionHistoryDTO history =
+                        groupService.getGroupTransactionHistory(groupId, userId);
+
+                return ResponseEntity.ok(new WrapperResponse<>(true, "Success", history));
+        }
+
 }

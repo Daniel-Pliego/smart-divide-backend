@@ -6,7 +6,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import mr.limpios.smart_divide_backend.aplication.repositories.FriendshipRepository;
-import mr.limpios.smart_divide_backend.infraestructure.dto.*;
+import mr.limpios.smart_divide_backend.infraestructure.dto.GroupResumeDTO;
+import mr.limpios.smart_divide_backend.infraestructure.dto.GroupDataDTO;
+import mr.limpios.smart_divide_backend.infraestructure.dto.UpdateGroupResumeDTO;
+import mr.limpios.smart_divide_backend.infraestructure.dto.NewMemberDTO;
+import mr.limpios.smart_divide_backend.infraestructure.dto.AddMemberDTO;
+import mr.limpios.smart_divide_backend.infraestructure.dto.GroupTransactionHistoryDTO;
+import mr.limpios.smart_divide_backend.infraestructure.dto.UserBalanceDTO;
+import mr.limpios.smart_divide_backend.infraestructure.dto.ExpenseDetailDTO;
+import mr.limpios.smart_divide_backend.infraestructure.dto.PaymentDetailDTO;
 import org.springframework.stereotype.Service;
 
 import mr.limpios.smart_divide_backend.aplication.repositories.GroupRepository;
@@ -20,6 +28,7 @@ import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstan
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.GROUPS_NOT_FOUND_FOR_USER;
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.USER_NOT_FOUND;
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.GROUP_NOT_FOUND;
+import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.USER_NOT_MEMBER_OF_GROUP;
 
 @Service
 public class GroupService {
@@ -27,12 +36,21 @@ public class GroupService {
   private final GroupRepository groupRepository;
   private final UserRepository userRepository;
   private final FriendshipRepository friendshipRepository;
+  private final PaymentService paymentService;
+  private final ExpenseService expenseService;
 
-  public GroupService(GroupRepository groupRepository, UserRepository userRepository,
-      FriendshipRepository friendshipRepository) {
+  public GroupService(
+          GroupRepository groupRepository,
+          UserRepository userRepository,
+          FriendshipRepository friendshipRepository,
+          PaymentService paymentService,
+          ExpenseService expenseService
+  ) {
     this.groupRepository = groupRepository;
     this.userRepository = userRepository;
     this.friendshipRepository = friendshipRepository;
+    this.paymentService = paymentService;
+    this.expenseService = expenseService;
   }
 
   public GroupResumeDTO createGroup(GroupDataDTO group, String ownerId) {
@@ -126,5 +144,36 @@ public class GroupService {
             group.name(),
             group.description()))
         .collect(Collectors.toList());
+  }
+
+  public GroupTransactionHistoryDTO getGroupTransactionHistory(String groupId, String userId) {
+    Group group = this.groupRepository.getGroupById(groupId);
+
+    if (Objects.isNull(group)) {
+      throw new ResourceNotFoundException(GROUP_NOT_FOUND);
+    }
+
+    boolean isMember = group.members().stream()
+            .anyMatch(member -> member.id().equals(userId))
+            || group.owner().id().equals(userId);
+
+    if (!isMember) {
+      throw new ResourceNotFoundException(USER_NOT_MEMBER_OF_GROUP);
+    }
+
+    List<UserBalanceDTO> userBalances = expenseService.getUserBalancesByGroup(groupId);
+    List<ExpenseDetailDTO> expenses = expenseService.getExpensesByGroup(groupId);
+    List<PaymentDetailDTO> payments = paymentService.getPaymentsByGroup(groupId);
+
+    return new GroupTransactionHistoryDTO(
+            group.id(),
+            group.name(),
+            group.description(),
+            group.owner().id(),
+            "general",
+            userBalances,
+            payments,
+            expenses
+    );
   }
 }
