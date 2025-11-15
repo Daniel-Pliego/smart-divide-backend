@@ -1,6 +1,8 @@
 package mr.limpios.smart_divide_backend.infraestructure.repositories.impl;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -30,5 +32,12 @@ public class ExpenseGroupBalanceRepositoryImp implements ExpenseGroupBalanceRepo
       String groupId) {
     return jpaExpenseGroupBalanceRepository.findByCreditor_IdAndDebtor_IdAndGroup_Id(creditorId, debtorId, groupId)
         .map(ExpenseGroupBalanceMapper::toModel);
+  }
+
+  @Override
+  public List<ExpenseGroupBalance> findByGroupId(String groupId) {
+    return jpaExpenseGroupBalanceRepository.findByGroupId(groupId).stream()
+            .map(ExpenseGroupBalanceMapper::toModel)
+            .collect(Collectors.toList());
   }
 }

@@ -5,6 +5,9 @@ import org.springframework.stereotype.Repository;
 
 import mr.limpios.smart_divide_backend.infraestructure.schemas.ExpenseSchema;
 
+import java.util.List;
+
 @Repository
 public interface JPAExpenseRepository extends JpaRepository<ExpenseSchema, String> {
+    List<ExpenseSchema> findByGroupId(String groupId);
 }
