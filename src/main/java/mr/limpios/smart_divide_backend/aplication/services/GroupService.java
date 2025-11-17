@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import mr.limpios.smart_divide_backend.aplication.repositories.FriendshipRepository;
-import mr.limpios.smart_divide_backend.infraestructure.dto.*;
+import mr.limpios.smart_divide_backend.domain.dto.*;
 import org.springframework.stereotype.Service;
 
 import mr.limpios.smart_divide_backend.aplication.repositories.GroupRepository;

@@ -1,6 +1,6 @@
 package mr.limpios.smart_divide_backend.infraestructure.controllers;
 
-import mr.limpios.smart_divide_backend.infraestructure.dto.*;
+import mr.limpios.smart_divide_backend.domain.dto.*;
 
 import java.util.List;
 

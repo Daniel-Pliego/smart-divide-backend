@@ -3,7 +3,7 @@ package mr.limpios.smart_divide_backend.domain.validators;
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.DATA_REQUIRED;
 
 import mr.limpios.smart_divide_backend.domain.exceptions.InvalidDataException;
-import mr.limpios.smart_divide_backend.infraestructure.dto.GroupDataDTO;
+import mr.limpios.smart_divide_backend.domain.dto.GroupDataDTO;
 
 public class GroupValidator {
 
