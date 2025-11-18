@@ -12,8 +12,8 @@ import mr.limpios.smart_divide_backend.domain.exceptions.InvalidDataException;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceExistException;
 import mr.limpios.smart_divide_backend.domain.models.User;
 import mr.limpios.smart_divide_backend.domain.validators.UserSingUpValidator;
-import mr.limpios.smart_divide_backend.infraestructure.dto.AuthenticatedDTO;
-import mr.limpios.smart_divide_backend.infraestructure.dto.UserSignUpDTO;
+import mr.limpios.smart_divide_backend.domain.dto.AuthenticatedDTO;
+import mr.limpios.smart_divide_backend.domain.dto.UserSignUpDTO;
 
 @Service
 public class AuthService {

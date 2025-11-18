@@ -10,7 +10,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import mr.limpios.smart_divide_backend.domain.exceptions.InvalidDataException;
-import mr.limpios.smart_divide_backend.infraestructure.dto.ExpenseInputDTO;
+import mr.limpios.smart_divide_backend.domain.dto.ExpenseInputDTO;
 
 @Component
 public class PercentageDivisionStrategy implements ExpenseDivisionStrategy {

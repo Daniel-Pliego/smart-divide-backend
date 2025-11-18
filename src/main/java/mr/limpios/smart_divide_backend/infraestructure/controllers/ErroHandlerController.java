@@ -9,7 +9,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import mr.limpios.smart_divide_backend.domain.exceptions.InvalidDataException;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceExistException;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundException;
-import mr.limpios.smart_divide_backend.infraestructure.dto.WrapperResponse;
+import mr.limpios.smart_divide_backend.domain.dto.WrapperResponse;
 
 @ControllerAdvice
 public class ErroHandlerController extends ResponseEntityExceptionHandler {

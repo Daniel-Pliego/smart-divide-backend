@@ -11,8 +11,8 @@ import mr.limpios.smart_divide_backend.domain.models.ExpenseParticipant;
 import mr.limpios.smart_divide_backend.domain.models.Group;
 import mr.limpios.smart_divide_backend.domain.models.User;
 import mr.limpios.smart_divide_backend.domain.strategies.CalculatedBalance;
-import mr.limpios.smart_divide_backend.infraestructure.dto.ExpenseInputDTO;
-import mr.limpios.smart_divide_backend.infraestructure.dto.ExpenseResumeDTO;
+import mr.limpios.smart_divide_backend.domain.dto.ExpenseInputDTO;
+import mr.limpios.smart_divide_backend.domain.dto.ExpenseResumeDTO;
 import mr.limpios.smart_divide_backend.infraestructure.schemas.ExpenseSchema;
 
 public class ExpenseMapper {

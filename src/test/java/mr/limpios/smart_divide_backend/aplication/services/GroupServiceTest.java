@@ -22,8 +22,8 @@ import mr.limpios.smart_divide_backend.aplication.repositories.UserRepository;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundException;
 import mr.limpios.smart_divide_backend.domain.models.Group;
 import mr.limpios.smart_divide_backend.domain.models.User;
-import mr.limpios.smart_divide_backend.infraestructure.dto.AddMemberDTO;
-import mr.limpios.smart_divide_backend.infraestructure.dto.GroupDataDTO;
+import mr.limpios.smart_divide_backend.domain.dto.AddMemberDTO;
+import mr.limpios.smart_divide_backend.domain.dto.GroupDataDTO;
 import mr.limpios.smart_divide_backend.infraestructure.repositories.impl.FriendShipRepositoryImp;
 
 @ExtendWith(MockitoExtension.class)

@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import mr.limpios.smart_divide_backend.aplication.repositories.FriendshipRepository;
-import mr.limpios.smart_divide_backend.infraestructure.dto.*;
+import mr.limpios.smart_divide_backend.domain.dto.*;
 import org.springframework.stereotype.Service;
 
 import mr.limpios.smart_divide_backend.aplication.repositories.GroupRepository;
@@ -126,5 +126,21 @@ public class GroupService {
             group.name(),
             group.description()))
         .collect(Collectors.toList());
+  }
+
+  public List<MemberResumeDTO> getGroupMembers(String groupId) {
+      Group group = groupRepository.getGroupById(groupId);
+
+      if (Objects.isNull(group)) {
+          throw new ResourceNotFoundException(GROUP_NOT_FOUND);
+      }
+
+      return group.members().stream()
+              .map(member -> new MemberResumeDTO(
+                      member.id(),
+                      member.name(),
+                      member.lastName(),
+                      member.photoUrl()))
+              .collect(Collectors.toList());
   }
 }
