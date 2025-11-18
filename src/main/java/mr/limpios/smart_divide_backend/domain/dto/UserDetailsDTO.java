@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.infraestructure.dto;
+package mr.limpios.smart_divide_backend.domain.dto;
 
 import java.util.Set;
 

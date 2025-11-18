@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import mr.limpios.smart_divide_backend.aplication.services.AuthService;
-import mr.limpios.smart_divide_backend.infraestructure.dto.AuthenticatedDTO;
-import mr.limpios.smart_divide_backend.infraestructure.dto.UserSignUpDTO;
-import mr.limpios.smart_divide_backend.infraestructure.dto.WrapperResponse;
+import mr.limpios.smart_divide_backend.domain.dto.AuthenticatedDTO;
+import mr.limpios.smart_divide_backend.domain.dto.UserSignUpDTO;
+import mr.limpios.smart_divide_backend.domain.dto.WrapperResponse;
 
 @RestController
 @RequestMapping("auth")
