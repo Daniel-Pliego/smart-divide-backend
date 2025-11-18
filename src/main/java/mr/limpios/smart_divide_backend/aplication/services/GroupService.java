@@ -127,4 +127,20 @@ public class GroupService {
             group.description()))
         .collect(Collectors.toList());
   }
+
+  public List<MemberResumeDTO> getGroupMembers(String groupId) {
+      Group group = groupRepository.getGroupById(groupId);
+
+      if (Objects.isNull(group)) {
+          throw new ResourceNotFoundException(GROUP_NOT_FOUND);
+      }
+
+      return group.members().stream()
+              .map(member -> new MemberResumeDTO(
+                      member.id(),
+                      member.name(),
+                      member.lastName(),
+                      member.photoUrl()))
+              .collect(Collectors.toList());
+  }
 }
