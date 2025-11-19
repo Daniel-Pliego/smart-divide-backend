@@ -6,9 +6,9 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import mr.limpios.smart_divide_backend.aplication.assemblers.ExpenseModelAssembler;
+import mr.limpios.smart_divide_backend.aplication.utils.CollectionUtils;
 import mr.limpios.smart_divide_backend.domain.validators.ExpenseValidator;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -24,8 +24,7 @@ import mr.limpios.smart_divide_backend.domain.models.ExpenseBalance;
 import mr.limpios.smart_divide_backend.domain.models.ExpenseParticipant;
 import mr.limpios.smart_divide_backend.domain.models.Group;
 import mr.limpios.smart_divide_backend.domain.models.User;
-import mr.limpios.smart_divide_backend.domain.strategies.ParticipantsPayersOfExpenses;
-import mr.limpios.smart_divide_backend.domain.strategies.ExpenseValidationStrategyFactory;
+import mr.limpios.smart_divide_backend.domain.validators.strategies.ExpenseValidationStrategyFactory;
 import mr.limpios.smart_divide_backend.domain.dto.ExpenseInputDTO;
 
 @Service
@@ -43,19 +42,24 @@ public class ExpenseService {
             throw new ResourceNotFoundException(GROUP_NOT_FOUND);
         }
 
-        Map<String, User> membersMap = getMembersMap(group);
+        Map<String, User> membersMap = CollectionUtils.toMap(
+                group.members(),
+                User::id,
+                user -> user
+        );
+
         ExpenseValidator.validateGroupMembership(membersMap, userId, addExpenseDTO);
 
-        ParticipantsPayersOfExpenses participantsPayersOfExpenses = strategyFactory
+        strategyFactory
                 .getStrategy(addExpenseDTO.divisionType())
                 .validate(addExpenseDTO);
 
         List<ExpenseParticipant> ParticipantsPayersOfExpenses = ExpenseModelAssembler.createExpenseParticipantsFromValidatedParticipants(
-                participantsPayersOfExpenses,
+                addExpenseDTO,
                 membersMap);
 
         List<ExpenseBalance> balances = ExpenseModelAssembler.createExpenseBalanceFromValidatedParticipants(
-                participantsPayersOfExpenses,
+                addExpenseDTO,
                 membersMap);
 
         Expense expense = new Expense(
@@ -72,10 +76,5 @@ public class ExpenseService {
 
         Expense savedExpense = this.expenseRepository.saveExpense(expense);
         eventPublisher.publishEvent(new ExpenseCreatedEvent(savedExpense));
-    }
-
-    private Map<String, User> getMembersMap(Group group) {
-        return group.members().stream()
-                .collect(Collectors.toMap(User::id, member -> member));
     }
 }

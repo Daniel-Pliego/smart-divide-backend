@@ -1,20 +1,31 @@
 package mr.limpios.smart_divide_backend.aplication.assemblers;
 
+import mr.limpios.smart_divide_backend.aplication.utils.CollectionUtils;
+import mr.limpios.smart_divide_backend.domain.dto.ExpenseDebtorDTO;
+import mr.limpios.smart_divide_backend.domain.dto.ExpenseInputDTO;
 import mr.limpios.smart_divide_backend.domain.models.*;
-import mr.limpios.smart_divide_backend.domain.strategies.ParticipantsPayersOfExpenses;
-import mr.limpios.smart_divide_backend.domain.strategies.ValidatedMembers;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class ExpenseModelAssembler {
     public static List<ExpenseParticipant> createExpenseParticipantsFromValidatedParticipants(
-            ParticipantsPayersOfExpenses participantsPayersOfExpenses,
+            ExpenseInputDTO addExpenseDTO,
             Map<String, User> groupMembersMap) {
 
-        Map<String, BigDecimal> payersMap = getMembersMap(participantsPayersOfExpenses.payers());
-        Map<String, BigDecimal> participantsMap = getMembersMap(participantsPayersOfExpenses.participants());
+        Map<String, BigDecimal> payersMap = CollectionUtils.toMap(
+                addExpenseDTO.payers(),
+                ExpenseDebtorDTO::debtorId,
+                payer -> BigDecimal.valueOf(payer.amount())
+        );
+
+        Map<String, BigDecimal> participantsMap = CollectionUtils.toMap(
+                addExpenseDTO.participants(),
+                ExpenseDebtorDTO::debtorId,
+                participant -> BigDecimal.valueOf(participant.amount())
+        );
 
         Set<String> allMemberIds = new HashSet<>();
         allMemberIds.addAll(payersMap.keySet());
@@ -37,24 +48,9 @@ public class ExpenseModelAssembler {
         return result;
     }
 
-    private static Map<String, BigDecimal> getMembersMap(List<ValidatedMembers> members) {
-        return members.stream()
-                .collect(Collectors.toMap(
-                        ValidatedMembers::memberId,
-                        ValidatedMembers::amount
-                ));
-    }
-
-    private static List<String> getCreditors(Map<String, BigDecimal> balances) {
+    private static List<String> filterIds(Map<String, BigDecimal> balances, Predicate<BigDecimal> predicate) {
         return balances.entrySet().stream()
-                .filter(e -> e.getValue().compareTo(BigDecimal.ZERO) > 0)
-                .map(Map.Entry::getKey)
-                .toList();
-    }
-
-    private static List<String> getDebtors(Map<String, BigDecimal> balances) {
-        return balances.entrySet().stream()
-                .filter(e -> e.getValue().compareTo(BigDecimal.ZERO) < 0)
+                .filter(e -> predicate.test(e.getValue()))
                 .map(Map.Entry::getKey)
                 .toList();
     }
@@ -76,16 +72,25 @@ public class ExpenseModelAssembler {
     }
 
     public static List<ExpenseBalance> createExpenseBalanceFromValidatedParticipants(
-            ParticipantsPayersOfExpenses participantsPayersOfExpenses,
+            ExpenseInputDTO addExpenseDTO,
             Map<String, User> groupMembersMap) {
 
-        Map<String, BigDecimal> payersMap = getMembersMap(participantsPayersOfExpenses.payers());
-        Map<String, BigDecimal> participantsMap = getMembersMap(participantsPayersOfExpenses.participants());
+        Map<String, BigDecimal> payersMap = CollectionUtils.toMap(
+                addExpenseDTO.payers(),
+                ExpenseDebtorDTO::debtorId,
+                payer -> BigDecimal.valueOf(payer.amount())
+        );
+
+        Map<String, BigDecimal> participantsMap = CollectionUtils.toMap(
+                addExpenseDTO.participants(),
+                ExpenseDebtorDTO::debtorId,
+                participant -> BigDecimal.valueOf(participant.amount())
+        );
 
         Map<String, BigDecimal> balances = balanceCalculation(payersMap, participantsMap);
 
-        List<String> creditors = getCreditors(balances);
-        List<String> debtors = getDebtors(balances);
+        List<String> creditors = filterIds(balances, b -> b.compareTo(BigDecimal.ZERO) > 0);
+        List<String> debtors   = filterIds(balances, b -> b.compareTo(BigDecimal.ZERO) < 0);
 
         List<ExpenseBalance> result = new ArrayList<>();
         int iCred = 0;

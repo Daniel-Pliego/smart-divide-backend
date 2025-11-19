@@ -2,6 +2,7 @@ package mr.limpios.smart_divide_backend.aplication.listeners;
 
 import java.math.BigDecimal;
 
+import mr.limpios.smart_divide_backend.aplication.services.ExpenseGroupBalanceService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -18,6 +19,7 @@ import mr.limpios.smart_divide_backend.domain.models.Group;
 @AllArgsConstructor
 public class ExpenseEventListener {
     private final ExpenseGroupBalanceRepository balanceRepository;
+    private final ExpenseGroupBalanceService  expenseGroupBalanceService;
 
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void handleExpenseCreated(ExpenseCreatedEvent event) {
@@ -25,6 +27,11 @@ public class ExpenseEventListener {
 
         for (ExpenseBalance expBalance : expense.balances()) {
             updateOrCreateGroupBalance(expBalance, expense.group());
+            expenseGroupBalanceService.normalize(
+                    expBalance.creditor(),
+                    expBalance.debtor(),
+                    expense.group()
+            );
         }
     }
 
@@ -55,5 +62,7 @@ public class ExpenseEventListener {
                     group);
             balanceRepository.saveExpenseGroupBalance(newGlobalBalance);
         }
+
+
     }
 }

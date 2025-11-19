@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.domain.strategies;
+package mr.limpios.smart_divide_backend.domain.validators.strategies;
 
 import java.util.Map;
 
