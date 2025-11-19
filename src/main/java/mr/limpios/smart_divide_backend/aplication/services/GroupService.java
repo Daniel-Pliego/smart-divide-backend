@@ -71,6 +71,7 @@ public class GroupService {
             group.name(),
             group.description(),
             owner,
+            "",
             List.of(owner)));
 
     return new GroupResumeDTO(
@@ -98,6 +99,7 @@ public class GroupService {
             group.name(),
             group.description(),
             findedGroup.owner(),
+            findedGroup.type(),
             findedGroup.members()));
 
     return new UpdateGroupResumeDTO(
@@ -157,14 +159,13 @@ public class GroupService {
     }
 
     boolean isMember = group.members().stream()
-            .anyMatch(member -> member.id().equals(userId))
-            || group.owner().id().equals(userId);
+            .anyMatch(member -> member.id().equals(userId));
 
     if (!isMember) {
       throw new ResourceNotFoundException(USER_NOT_MEMBER_OF_GROUP);
     }
 
-    List<UserBalanceDTO> userBalances = expenseService.getUserBalancesByGroup(groupId);
+    List<UserBalanceDTO> userBalances = expenseService.getUserBalancesByGroup(groupId,userId);
     List<ExpenseDetailDTO> expenses = expenseService.getExpensesByGroup(groupId,userBalances);
     List<PaymentDetailDTO> payments = paymentService.getPaymentsByGroup(groupId);
 
@@ -173,7 +174,7 @@ public class GroupService {
             group.name(),
             group.description(),
             group.owner().id(),
-            "general",
+            group.type(),
             userBalances,
             payments,
             expenses

@@ -14,15 +14,12 @@ import java.util.HashSet;
 import java.util.stream.Collectors;
 
 import mr.limpios.smart_divide_backend.aplication.repositories.ExpenseGroupBalanceRepository;
-import mr.limpios.smart_divide_backend.aplication.repositories.PaymentRepository;
-import mr.limpios.smart_divide_backend.domain.models.Payment;
 import mr.limpios.smart_divide_backend.domain.models.User;
 import mr.limpios.smart_divide_backend.domain.models.ExpenseParticipant;
 import mr.limpios.smart_divide_backend.domain.models.Group;
 import mr.limpios.smart_divide_backend.domain.models.ExpenseBalance;
 import mr.limpios.smart_divide_backend.domain.models.Expense;
 import mr.limpios.smart_divide_backend.domain.models.ExpenseGroupBalance;
-import mr.limpios.smart_divide_backend.domain.models.BalanceInfo;
 import mr.limpios.smart_divide_backend.infraestructure.dto.UserBalanceDTO;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -49,7 +46,6 @@ public class ExpenseService {
     private final ExpenseStrategyFactory strategyFactory;
     private final ApplicationEventPublisher eventPublisher;
     private final ExpenseGroupBalanceRepository balanceRepository;
-    private final PaymentRepository paymentRepository;
 
     @Transactional
     public ExpenseResumeDTO addExpense(ExpenseInputDTO addExpenseDTO, String userId, String groupId) {
@@ -101,71 +97,35 @@ public class ExpenseService {
                 .collect(Collectors.toMap(User::id, member -> member));
     }
 
-    public List<UserBalanceDTO> getUserBalancesByGroup(String groupId) {
-        List<ExpenseGroupBalance> balances = balanceRepository.findByGroupId(groupId);
+    public List<UserBalanceDTO> getUserBalancesByGroup(String groupId, String userId) {
+        List<ExpenseGroupBalance> asCreditor =
+                balanceRepository.findByGroupIdAndCreditorId(groupId, userId);
 
-        List<Payment> payments = paymentRepository.findByGroupId(groupId);
-
-        Map<String, BalanceInfo> userBalanceMap = new HashMap<>();
-
-        for (ExpenseGroupBalance balance : balances) {
-            String creditorId = balance.creditor().id();
-            userBalanceMap.putIfAbsent(creditorId, new BalanceInfo(
-                    balance.creditor().name() + " " + balance.creditor().lastName(),
-                    BigDecimal.ZERO
-            ));
-            userBalanceMap.get(creditorId).setBalance(
-                    userBalanceMap.get(creditorId).getBalance().add(balance.amount())
-            );
-
-            String debtorId = balance.debtor().id();
-            userBalanceMap.putIfAbsent(debtorId, new BalanceInfo(
-                    balance.debtor().name() + " " + balance.debtor().lastName(),
-                    BigDecimal.ZERO
-            ));
-            userBalanceMap.get(debtorId).setBalance(
-                    userBalanceMap.get(debtorId).getBalance().subtract(balance.amount())
-            );
-        }
-
-        for (Payment payment : payments) {
-            String fromUserId = payment.fromUser().id();
-            userBalanceMap.putIfAbsent(fromUserId, new BalanceInfo(
-                    payment.fromUser().name() + " " + payment.fromUser().lastName(),
-                    BigDecimal.ZERO
-            ));
-            userBalanceMap.get(fromUserId).setBalance(
-                    userBalanceMap.get(fromUserId).getBalance().add(payment.amount())
-            );
-
-            String toUserId = payment.toUser().id();
-            userBalanceMap.putIfAbsent(toUserId, new BalanceInfo(
-                    payment.toUser().name() + " " + payment.toUser().lastName(),
-                    BigDecimal.ZERO
-            ));
-            userBalanceMap.get(toUserId).setBalance(
-                    userBalanceMap.get(toUserId).getBalance().subtract(payment.amount())
-            );
-        }
+        List<ExpenseGroupBalance> asDebtor =
+                balanceRepository.findByGroupIdAndDebtorId(groupId, userId);
 
         List<UserBalanceDTO> result = new ArrayList<>();
         int index = 1;
 
-        for (Map.Entry<String, BalanceInfo> entry : userBalanceMap.entrySet()) {
+        for (ExpenseGroupBalance balance : asCreditor) {
             result.add(new UserBalanceDTO(
                     index++,
-                    entry.getKey(),
-                    entry.getValue().getName(),
-                    entry.getValue().getBalance()
+                    balance.debtor().id(),
+                    balance.debtor().name() + " " + balance.debtor().lastName(),
+                    balance.amount().negate()
+            ));
+        }
+
+        for (ExpenseGroupBalance balance : asDebtor) {
+            result.add(new UserBalanceDTO(
+                    index++,
+                    balance.creditor().id(),
+                    balance.creditor().name() + " " + balance.creditor().lastName(),
+                    balance.amount()
             ));
         }
 
         return result;
-    }
-
-    public List<ExpenseDetailDTO> getExpensesByGroup(String groupId) {
-        List<UserBalanceDTO> userBalances = getUserBalancesByGroup(groupId);
-        return getExpensesByGroup(groupId, userBalances);
     }
 
     public List<ExpenseDetailDTO> getExpensesByGroup(

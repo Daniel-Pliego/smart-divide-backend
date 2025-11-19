@@ -1,5 +1,6 @@
 package mr.limpios.smart_divide_backend.infraestructure.repositories.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,8 +36,40 @@ public class ExpenseGroupBalanceRepositoryImp implements ExpenseGroupBalanceRepo
   }
 
   @Override
-  public List<ExpenseGroupBalance> findByGroupId(String groupId) {
-    return jpaExpenseGroupBalanceRepository.findByGroupId(groupId).stream()
+  public List<ExpenseGroupBalance> findByGroupId(String groupId, String userId) {
+    List<ExpenseGroupBalanceSchema> asCreditor =
+            jpaExpenseGroupBalanceRepository.findByGroupIdAndCreditorId(groupId, userId);
+
+    List<ExpenseGroupBalanceSchema> asDebtor =
+            jpaExpenseGroupBalanceRepository.findByGroupIdAndDebtorId(groupId, userId);
+
+    List<ExpenseGroupBalance> result = new ArrayList<>();
+
+    result.addAll(asCreditor.stream()
+            .map(ExpenseGroupBalanceMapper::toModel)
+            .toList());
+
+    result.addAll(asDebtor.stream()
+            .map(ExpenseGroupBalanceMapper::toModel)
+            .toList());
+
+    return result;
+  }
+
+  @Override
+  public List<ExpenseGroupBalance> findByGroupIdAndCreditorId(String groupId, String creditorId) {
+    return jpaExpenseGroupBalanceRepository
+            .findByGroupIdAndCreditorId(groupId, creditorId)
+            .stream()
+            .map(ExpenseGroupBalanceMapper::toModel)
+            .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<ExpenseGroupBalance> findByGroupIdAndDebtorId(String groupId, String debtorId) {
+    return jpaExpenseGroupBalanceRepository
+            .findByGroupIdAndDebtorId(groupId, debtorId)
+            .stream()
             .map(ExpenseGroupBalanceMapper::toModel)
             .collect(Collectors.toList());
   }

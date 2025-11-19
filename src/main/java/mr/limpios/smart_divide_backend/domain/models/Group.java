@@ -7,6 +7,7 @@ public record Group(
                 String name,
                 String description,
                 User owner,
+                String type,
                 List<User> members) {
 
         public boolean hasMember(String memberId) {

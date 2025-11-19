@@ -23,6 +23,7 @@ public class GroupMapper {
         group.name(),
         group.description(),
         UserMapper.toSchema(group.owner()),
+        group.type(),
         membersSchemas);
   }
 
@@ -34,6 +35,7 @@ public class GroupMapper {
         groupSchema.getName(),
         groupSchema.getDescription(),
         UserMapper.toModel(groupSchema.getOwner()),
+        groupSchema.getType(),
         membersModels);
   }
 

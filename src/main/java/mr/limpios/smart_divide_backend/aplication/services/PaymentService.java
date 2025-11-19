@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PaymentService {
@@ -21,17 +22,12 @@ public class PaymentService {
     public List<PaymentDetailDTO> getPaymentsByGroup(String groupId) {
         List<Payment> payments = paymentRepository.findByGroupId(groupId);
 
-        int index = 1;
-        List<PaymentDetailDTO> result = new ArrayList<>();
-
-        for (Payment payment : payments) {
-            result.add(buildPaymentDetailDTO(payment, index++));
-        }
-
-        return result;
+        return payments.stream()
+                .map(this::buildPaymentDetailDTO)
+                .collect(Collectors.toList());
     }
 
-    private PaymentDetailDTO buildPaymentDetailDTO(Payment payment, int index) {
+    private PaymentDetailDTO buildPaymentDetailDTO(Payment payment) {
 
         PaymentUserDTO fromUser = new PaymentUserDTO(
                 payment.fromUser().name(),
@@ -44,7 +40,7 @@ public class PaymentService {
         );
 
         return new PaymentDetailDTO(
-                index,
+                payment.id(),
                 fromUser,
                 toUser,
                 payment.amount(),
