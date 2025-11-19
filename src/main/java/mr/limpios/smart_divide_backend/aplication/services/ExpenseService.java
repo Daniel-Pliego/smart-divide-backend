@@ -1,15 +1,15 @@
 package mr.limpios.smart_divide_backend.aplication.services;
 
-import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.DEBTORS_NOT_IN_GROUP;
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.GROUP_NOT_FOUND;
-import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.USER_NOT_MEMBER_OF_GROUP;
 
-import java.util.HashSet;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
+import mr.limpios.smart_divide_backend.aplication.assemblers.ExpenseModelAssembler;
+import mr.limpios.smart_divide_backend.aplication.utils.CollectionUtils;
+import mr.limpios.smart_divide_backend.domain.validators.ExpenseValidator;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
@@ -24,67 +24,57 @@ import mr.limpios.smart_divide_backend.domain.models.ExpenseBalance;
 import mr.limpios.smart_divide_backend.domain.models.ExpenseParticipant;
 import mr.limpios.smart_divide_backend.domain.models.Group;
 import mr.limpios.smart_divide_backend.domain.models.User;
-import mr.limpios.smart_divide_backend.domain.strategies.CalculatedBalance;
-import mr.limpios.smart_divide_backend.domain.strategies.ExpenseStrategyFactory;
+import mr.limpios.smart_divide_backend.domain.validators.strategies.ExpenseValidationStrategyFactory;
 import mr.limpios.smart_divide_backend.domain.dto.ExpenseInputDTO;
-import mr.limpios.smart_divide_backend.domain.dto.ExpenseResumeDTO;
-import mr.limpios.smart_divide_backend.infraestructure.mappers.ExpenseMapper;
 
 @Service
 @AllArgsConstructor
 public class ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final GroupRepository groupRepository;
-    private final ExpenseStrategyFactory strategyFactory;
+    private final ExpenseValidationStrategyFactory strategyFactory;
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
-    public ExpenseResumeDTO addExpense(ExpenseInputDTO addExpenseDTO, String userId, String groupId) {
+    public void addExpense(ExpenseInputDTO addExpenseDTO, String userId, String groupId) {
         Group group = groupRepository.getGroupById(groupId);
         if (Objects.isNull(group)) {
             throw new ResourceNotFoundException(GROUP_NOT_FOUND);
         }
 
-        Map<String, User> membersMap = getMembersMap(group);
+        Map<String, User> membersMap = CollectionUtils.toMap(
+                group.members(),
+                User::id,
+                user -> user
+        );
 
-        validateGroupMembership(membersMap, userId, addExpenseDTO);
+        ExpenseValidator.validateGroupMembership(membersMap, userId, addExpenseDTO);
 
-        List<CalculatedBalance> calculatedBalances = strategyFactory
+        strategyFactory
                 .getStrategy(addExpenseDTO.divisionType())
-                .calculate(addExpenseDTO);
+                .validate(addExpenseDTO);
 
-        List<ExpenseParticipant> participants = ExpenseMapper.createParticipantsFromBalances(
-                calculatedBalances,
+        List<ExpenseParticipant> ParticipantsPayersOfExpenses = ExpenseModelAssembler.createExpenseParticipantsFromValidatedParticipants(
+                addExpenseDTO,
                 membersMap);
-        List<ExpenseBalance> balances = ExpenseMapper.createExpenseBalancesFromBalances(
-                calculatedBalances,
-                membersMap, userId);
 
-        Expense expense = ExpenseMapper.toEntity(addExpenseDTO, group, participants, balances);
+        List<ExpenseBalance> balances = ExpenseModelAssembler.createExpenseBalanceFromValidatedParticipants(
+                addExpenseDTO,
+                membersMap);
+
+        Expense expense = new Expense(
+                null,
+                addExpenseDTO.type(),
+                addExpenseDTO.description(),
+                BigDecimal.valueOf(addExpenseDTO.amount()),
+                addExpenseDTO.evidenceUrl(),
+                null,
+                addExpenseDTO.divisionType(),
+                group,
+                ParticipantsPayersOfExpenses,
+                balances);
+
         Expense savedExpense = this.expenseRepository.saveExpense(expense);
-
         eventPublisher.publishEvent(new ExpenseCreatedEvent(savedExpense));
-
-        return ExpenseMapper.toResumeDTO(savedExpense);
-    }
-
-    private void validateGroupMembership(Map<String, User> membersMap, String userId, ExpenseInputDTO dto) {
-        if (!membersMap.containsKey(userId)) {
-            throw new ResourceNotFoundException(USER_NOT_MEMBER_OF_GROUP);
-        }
-
-        HashSet<String> memberIds = new HashSet<>(membersMap.keySet());
-        HashSet<String> dtoMemberIds = dto.balances().stream()
-                .map(b -> b.debtorId())
-                .collect(Collectors.toCollection(HashSet::new));
-
-        if (!memberIds.equals(dtoMemberIds)) {
-            throw new ResourceNotFoundException(DEBTORS_NOT_IN_GROUP);
-        }
-    }
-
-    private Map<String, User> getMembersMap(Group group) {
-        return group.members().stream()
-                .collect(Collectors.toMap(User::id, member -> member));
     }
 }
