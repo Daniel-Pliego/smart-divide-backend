@@ -16,4 +16,5 @@ public class ExceptionsConstants {
     public static final String PAYERS_NOT_IN_GROUP = "One or more payers are not in the group";
     public static final String DEBTORS_AMOUNT_MISMATCH = "The sum of debtors amounts does not equal the total expense amount";
     public static final String PAYERS_AMOUNT_MISMATCH = "The sum of payers amounts does not equal the total expense amount";
-    public static final String EQUAL_DIVISION_AMOUNT_MISMATCH = "For EQUAL division, each debtor must pay the same amount";}
+    public static final String EQUAL_DIVISION_AMOUNT_MISMATCH = "For EQUAL division, each debtor must pay the same amount";
+    public static final String UNAUTHORIZED_ACCESS = "Unauthorized access";}
