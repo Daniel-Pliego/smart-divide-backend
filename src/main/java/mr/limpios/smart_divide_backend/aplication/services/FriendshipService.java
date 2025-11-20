@@ -13,7 +13,7 @@ import mr.limpios.smart_divide_backend.aplication.repositories.UserRepository;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundException;
 import mr.limpios.smart_divide_backend.domain.models.Friendship;
 import mr.limpios.smart_divide_backend.domain.models.User;
-import mr.limpios.smart_divide_backend.infraestructure.dto.FriendshipDTO;
+import mr.limpios.smart_divide_backend.domain.dto.FriendshipDTO;
 
 @Service
 public class FriendshipService {

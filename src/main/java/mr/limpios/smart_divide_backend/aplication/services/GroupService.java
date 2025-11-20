@@ -6,16 +6,19 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import mr.limpios.smart_divide_backend.aplication.repositories.FriendshipRepository;
-import mr.limpios.smart_divide_backend.infraestructure.dto.GroupResumeDTO;
-import mr.limpios.smart_divide_backend.infraestructure.dto.GroupDataDTO;
-import mr.limpios.smart_divide_backend.infraestructure.dto.UpdateGroupResumeDTO;
-import mr.limpios.smart_divide_backend.infraestructure.dto.NewMemberDTO;
-import mr.limpios.smart_divide_backend.infraestructure.dto.AddMemberDTO;
-import mr.limpios.smart_divide_backend.infraestructure.dto.GroupTransactionHistoryDTO;
-import mr.limpios.smart_divide_backend.infraestructure.dto.UserBalanceDTO;
-import mr.limpios.smart_divide_backend.infraestructure.dto.ExpenseDetailDTO;
-import mr.limpios.smart_divide_backend.infraestructure.dto.PaymentDetailDTO;
+import mr.limpios.smart_divide_backend.domain.dto.GroupResumeDTO;
+import mr.limpios.smart_divide_backend.domain.dto.GroupDataDTO;
+import mr.limpios.smart_divide_backend.domain.dto.UpdateGroupResumeDTO;
+import mr.limpios.smart_divide_backend.domain.dto.NewMemberDTO;
+import mr.limpios.smart_divide_backend.domain.dto.AddMemberDTO;
+import mr.limpios.smart_divide_backend.domain.dto.GroupTransactionHistoryDTO;
+import mr.limpios.smart_divide_backend.domain.dto.UserBalanceDTO;
+import mr.limpios.smart_divide_backend.domain.dto.ExpenseDetailDTO;
+import mr.limpios.smart_divide_backend.domain.dto.PaymentDetailDTO;
 import org.springframework.context.annotation.Lazy;
+
+import mr.limpios.smart_divide_backend.domain.dto.*;
+
 import org.springframework.stereotype.Service;
 
 import mr.limpios.smart_divide_backend.aplication.repositories.GroupRepository;
@@ -165,8 +168,8 @@ public class GroupService {
       throw new ResourceNotFoundException(USER_NOT_MEMBER_OF_GROUP);
     }
 
-    List<UserBalanceDTO> userBalances = expenseService.getUserBalancesByGroup(groupId,userId);
-    List<ExpenseDetailDTO> expenses = expenseService.getExpensesByGroup(groupId,userBalances);
+    List<UserBalanceDTO> userBalances = expenseService.getUserBalancesByGroup(groupId, userId);
+    List<ExpenseDetailDTO> expenses = expenseService.getExpensesByGroup(groupId, userBalances);
     List<PaymentDetailDTO> payments = paymentService.getPaymentsByGroup(groupId);
 
     return new GroupTransactionHistoryDTO(
@@ -179,5 +182,22 @@ public class GroupService {
             payments,
             expenses
     );
+  }
+
+  public List<MemberResumeDTO> getGroupMembers(String groupId) {
+      Group group = groupRepository.getGroupById(groupId);
+
+      if (Objects.isNull(group)) {
+          throw new ResourceNotFoundException(GROUP_NOT_FOUND);
+      }
+
+      return group.members().stream()
+              .map(member -> new MemberResumeDTO(
+                      member.id(),
+                      member.name(),
+                      member.lastName(),
+                      member.photoUrl()))
+              .collect(Collectors.toList());
+
   }
 }

@@ -1,0 +1,29 @@
+package mr.limpios.smart_divide_backend.domain.validators.strategies;
+
+import mr.limpios.smart_divide_backend.domain.exceptions.InvalidDataException;
+import mr.limpios.smart_divide_backend.domain.dto.ExpenseInputDTO;
+import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.DEBTORS_AMOUNT_MISMATCH;
+
+@Component
+public class SumMatchValidationStrategy extends AbstractExpenseValidationStrategy {
+
+    @Override
+    public void validate(ExpenseInputDTO dto) {
+        validateParticipants(dto);
+        super.validatePayers(dto);
+    }
+
+    private void validateParticipants(ExpenseInputDTO dto) {
+        BigDecimal totalExpenseAmount = BigDecimal.valueOf(dto.amount());
+        BigDecimal totalDivision = super.getSumOfAmount(dto.participants());
+
+        if (totalDivision.compareTo(totalExpenseAmount) != 0) {
+            throw new InvalidDataException(DEBTORS_AMOUNT_MISMATCH);
+        }
+    }
+}

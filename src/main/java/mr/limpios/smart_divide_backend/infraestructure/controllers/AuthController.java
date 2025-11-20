@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import mr.limpios.smart_divide_backend.aplication.services.AuthService;
-import mr.limpios.smart_divide_backend.infraestructure.dto.AuthenticatedDTO;
-import mr.limpios.smart_divide_backend.infraestructure.dto.UserSignUpDTO;
-import mr.limpios.smart_divide_backend.infraestructure.dto.WrapperResponse;
+import mr.limpios.smart_divide_backend.domain.dto.Auth.AuthenticatedDTO;
+import mr.limpios.smart_divide_backend.domain.dto.Auth.UserSignInDTO;
+import mr.limpios.smart_divide_backend.domain.dto.Auth.UserSignUpDTO;
+import mr.limpios.smart_divide_backend.domain.dto.WrapperResponse;
 
 @RestController
 @RequestMapping("auth")
@@ -36,5 +37,16 @@ public class AuthController {
     WrapperResponse<AuthenticatedDTO> response =
         new WrapperResponse<>(true, "User created", entity);
     return new ResponseEntity<>(response, HttpStatus.CREATED);
+  }
+
+  @Operation(summary = "Authenticates a user and returns a JWT token")
+  @PostMapping("sign-in")
+  public ResponseEntity<WrapperResponse<AuthenticatedDTO>> signIn(
+      @RequestBody UserSignInDTO loginRequestDTO) {
+
+    AuthenticatedDTO entity = authService.signIn(loginRequestDTO);
+    WrapperResponse<AuthenticatedDTO> response =
+        new WrapperResponse<>(true, "User authenticated", entity);
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 }

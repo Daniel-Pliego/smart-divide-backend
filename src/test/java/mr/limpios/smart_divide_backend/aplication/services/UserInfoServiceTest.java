@@ -18,8 +18,8 @@ import mr.limpios.smart_divide_backend.aplication.repositories.UserRepository;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundException;
 import mr.limpios.smart_divide_backend.domain.models.Card;
 import mr.limpios.smart_divide_backend.domain.models.User;
-import mr.limpios.smart_divide_backend.infraestructure.dto.CardDetailsDTO;
-import mr.limpios.smart_divide_backend.infraestructure.dto.UserDetailsDTO;
+import mr.limpios.smart_divide_backend.domain.dto.CardDetailsDTO;
+import mr.limpios.smart_divide_backend.domain.dto.UserDetailsDTO;
 
 @ExtendWith(MockitoExtension.class)
 public class UserInfoServiceTest {

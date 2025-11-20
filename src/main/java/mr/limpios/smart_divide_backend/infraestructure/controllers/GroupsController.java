@@ -1,16 +1,25 @@
 package mr.limpios.smart_divide_backend.infraestructure.controllers;
 
-import mr.limpios.smart_divide_backend.infraestructure.dto.*;
+import mr.limpios.smart_divide_backend.domain.dto.*;
 
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import mr.limpios.smart_divide_backend.aplication.services.GroupService;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("user/{userId}")
@@ -82,6 +91,17 @@ public class GroupsController {
                         groupService.getGroupTransactionHistory(groupId, userId);
 
                 return ResponseEntity.ok(new WrapperResponse<>(true, "Success", history));
+        }
+        @Operation(summary = "Get the list of members of a specific group")
+        @GetMapping("groups/{groupId}/members")
+        public ResponseEntity<WrapperResponse<List<MemberResumeDTO>>> getGroupMembers(
+                        @PathVariable String userId,
+                        @PathVariable String groupId){
+            List<MemberResumeDTO> members = groupService.getGroupMembers(groupId);
+            return new ResponseEntity<>(
+                    new WrapperResponse<>(true, "Group members retrieved successfully", members),
+                    HttpStatus.OK);
+
         }
 
 }

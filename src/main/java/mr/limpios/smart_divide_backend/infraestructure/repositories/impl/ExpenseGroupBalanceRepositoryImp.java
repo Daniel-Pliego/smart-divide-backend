@@ -36,27 +36,6 @@ public class ExpenseGroupBalanceRepositoryImp implements ExpenseGroupBalanceRepo
   }
 
   @Override
-  public List<ExpenseGroupBalance> findByGroupId(String groupId, String userId) {
-    List<ExpenseGroupBalanceSchema> asCreditor =
-            jpaExpenseGroupBalanceRepository.findByGroupIdAndCreditorId(groupId, userId);
-
-    List<ExpenseGroupBalanceSchema> asDebtor =
-            jpaExpenseGroupBalanceRepository.findByGroupIdAndDebtorId(groupId, userId);
-
-    List<ExpenseGroupBalance> result = new ArrayList<>();
-
-    result.addAll(asCreditor.stream()
-            .map(ExpenseGroupBalanceMapper::toModel)
-            .toList());
-
-    result.addAll(asDebtor.stream()
-            .map(ExpenseGroupBalanceMapper::toModel)
-            .toList());
-
-    return result;
-  }
-
-  @Override
   public List<ExpenseGroupBalance> findByGroupIdAndCreditorId(String groupId, String creditorId) {
     return jpaExpenseGroupBalanceRepository
             .findByGroupIdAndCreditorId(groupId, creditorId)
@@ -73,4 +52,11 @@ public class ExpenseGroupBalanceRepositoryImp implements ExpenseGroupBalanceRepo
             .map(ExpenseGroupBalanceMapper::toModel)
             .collect(Collectors.toList());
   }
+
+    @Override
+    public void deleteExpenseGroupBalance(Integer id) {
+        jpaExpenseGroupBalanceRepository.deleteById(id);
+    }
+
+
 }

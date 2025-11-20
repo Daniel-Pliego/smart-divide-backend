@@ -13,9 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import mr.limpios.smart_divide_backend.aplication.services.ExpenseService;
-import mr.limpios.smart_divide_backend.infraestructure.dto.ExpenseInputDTO;
-import mr.limpios.smart_divide_backend.infraestructure.dto.ExpenseResumeDTO;
-import mr.limpios.smart_divide_backend.infraestructure.dto.WrapperResponse;
+import mr.limpios.smart_divide_backend.domain.dto.ExpenseInputDTO;
+import mr.limpios.smart_divide_backend.domain.dto.WrapperResponse;
 
 @RestController
 @RequestMapping("user/{userId}/group/{groupId}/expense")
@@ -35,9 +34,9 @@ public class ExpenseController {
             @PathVariable String userId,
             @PathVariable String groupId,
             @RequestBody ExpenseInputDTO expenseInputDTO) {
-        ExpenseResumeDTO expenseResumeDTO = expenseService.addExpense(expenseInputDTO, userId, groupId);
+        expenseService.addExpense(expenseInputDTO, userId, groupId);
         return new ResponseEntity<>(
-                new WrapperResponse<>(true, "Expense created successfully", expenseResumeDTO),
+                new WrapperResponse<>(true, "Expense created successfully", null),
                 HttpStatus.CREATED);
 
     }

@@ -2,11 +2,10 @@ package mr.limpios.smart_divide_backend.aplication.services;
 
 import mr.limpios.smart_divide_backend.aplication.repositories.PaymentRepository;
 import mr.limpios.smart_divide_backend.domain.models.Payment;
-import mr.limpios.smart_divide_backend.infraestructure.dto.PaymentDetailDTO;
-import mr.limpios.smart_divide_backend.infraestructure.dto.PaymentUserDTO;
+import mr.limpios.smart_divide_backend.domain.dto.PaymentDetailDTO;
+import mr.limpios.smart_divide_backend.domain.dto.PaymentUserDTO;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

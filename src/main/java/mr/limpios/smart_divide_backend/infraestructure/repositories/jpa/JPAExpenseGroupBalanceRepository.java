@@ -16,7 +16,6 @@ public interface JPAExpenseGroupBalanceRepository
             String debtorId,
             String groupId);
 
-    List<ExpenseGroupBalanceSchema> findByGroupId(String groupId,String userId);
     List<ExpenseGroupBalanceSchema> findByGroupIdAndCreditorId(String groupId, String creditorId);
     List<ExpenseGroupBalanceSchema> findByGroupIdAndDebtorId(String groupId, String debtorId);
 }

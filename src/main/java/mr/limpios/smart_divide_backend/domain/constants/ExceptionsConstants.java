@@ -13,7 +13,8 @@ public class ExceptionsConstants {
     public static final String GROUPS_NOT_FOUND_FOR_USER = "No groups found for the user";
     public static final String USER_NOT_MEMBER_OF_GROUP = "User is not a member of the group";
     public static final String DEBTORS_NOT_IN_GROUP = "One or more debtors are not in the group";
+    public static final String PAYERS_NOT_IN_GROUP = "One or more payers are not in the group";
     public static final String DEBTORS_AMOUNT_MISMATCH = "The sum of debtors amounts does not equal the total expense amount";
-    public static final String EQUAL_DIVISION_AMOUNT_MISMATCH = "For EQUAL division, each debtor must pay the same amount: ";
-    public static final String PERCENTAGE_DIVISION_TOTAL_MISMATCH = "Total percentage must be 100%. Current: ";
-}
+    public static final String PAYERS_AMOUNT_MISMATCH = "The sum of payers amounts does not equal the total expense amount";
+    public static final String EQUAL_DIVISION_AMOUNT_MISMATCH = "For EQUAL division, each debtor must pay the same amount";
+    public static final String UNAUTHORIZED_ACCESS = "Unauthorized access";}
