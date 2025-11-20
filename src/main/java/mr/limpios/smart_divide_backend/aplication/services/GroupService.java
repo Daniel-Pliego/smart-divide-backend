@@ -1,38 +1,36 @@
 package mr.limpios.smart_divide_backend.aplication.services;
 
+import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.FRIENDSHIP_NOT_FOUND;
+import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.GROUPS_NOT_FOUND_FOR_USER;
+import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.GROUP_NOT_FOUND;
+import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.USER_NOT_FOUND;
+import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.USER_NOT_MEMBER_OF_GROUP;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import mr.limpios.smart_divide_backend.aplication.repositories.FriendshipRepository;
-import mr.limpios.smart_divide_backend.domain.dto.GroupResumeDTO;
-import mr.limpios.smart_divide_backend.domain.dto.GroupDataDTO;
-import mr.limpios.smart_divide_backend.domain.dto.UpdateGroupResumeDTO;
-import mr.limpios.smart_divide_backend.domain.dto.NewMemberDTO;
-import mr.limpios.smart_divide_backend.domain.dto.AddMemberDTO;
-import mr.limpios.smart_divide_backend.domain.dto.GroupTransactionHistoryDTO;
-import mr.limpios.smart_divide_backend.domain.dto.UserBalanceDTO;
-import mr.limpios.smart_divide_backend.domain.dto.ExpenseDetailDTO;
-import mr.limpios.smart_divide_backend.domain.dto.PaymentDetailDTO;
 import org.springframework.context.annotation.Lazy;
-
-import mr.limpios.smart_divide_backend.domain.dto.*;
-
 import org.springframework.stereotype.Service;
 
+import mr.limpios.smart_divide_backend.aplication.repositories.FriendshipRepository;
 import mr.limpios.smart_divide_backend.aplication.repositories.GroupRepository;
 import mr.limpios.smart_divide_backend.aplication.repositories.UserRepository;
+import mr.limpios.smart_divide_backend.domain.dto.*;
+import mr.limpios.smart_divide_backend.domain.dto.AddMemberDTO;
+import mr.limpios.smart_divide_backend.domain.dto.ExpenseDetailDTO;
+import mr.limpios.smart_divide_backend.domain.dto.GroupDataDTO;
+import mr.limpios.smart_divide_backend.domain.dto.GroupResumeDTO;
+import mr.limpios.smart_divide_backend.domain.dto.GroupTransactionHistoryDTO;
+import mr.limpios.smart_divide_backend.domain.dto.NewMemberDTO;
+import mr.limpios.smart_divide_backend.domain.dto.PaymentDetailDTO;
+import mr.limpios.smart_divide_backend.domain.dto.UpdateGroupResumeDTO;
+import mr.limpios.smart_divide_backend.domain.dto.UserBalanceDTO;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundException;
 import mr.limpios.smart_divide_backend.domain.models.Group;
 import mr.limpios.smart_divide_backend.domain.models.User;
 import mr.limpios.smart_divide_backend.domain.validators.GroupValidator;
-
-import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.FRIENDSHIP_NOT_FOUND;
-import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.GROUPS_NOT_FOUND_FOR_USER;
-import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.USER_NOT_FOUND;
-import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.GROUP_NOT_FOUND;
-import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.USER_NOT_MEMBER_OF_GROUP;
 
 @Service
 public class GroupService {
@@ -45,13 +43,9 @@ public class GroupService {
   @Lazy
   private final ExpenseService expenseService;
 
-  public GroupService(
-          GroupRepository groupRepository,
-          UserRepository userRepository,
-          FriendshipRepository friendshipRepository,
-          PaymentService paymentService,
-          ExpenseService expenseService
-  ) {
+  public GroupService(GroupRepository groupRepository, UserRepository userRepository,
+      FriendshipRepository friendshipRepository, PaymentService paymentService,
+      ExpenseService expenseService) {
     this.groupRepository = groupRepository;
     this.userRepository = userRepository;
     this.friendshipRepository = friendshipRepository;
@@ -68,22 +62,11 @@ public class GroupService {
 
     GroupValidator.validate(group);
 
-    Group savedGroup = this.groupRepository.saveGroup(
-        new Group(
-            null,
-            group.name(),
-            group.description(),
-            owner,
-            "",
-            List.of(owner)));
+    Group savedGroup = this.groupRepository
+        .saveGroup(new Group(null, group.name(), group.description(), owner, "", List.of(owner)));
 
-    return new GroupResumeDTO(
-        savedGroup.id(),
-        savedGroup.name(),
-        savedGroup.description(),
-        savedGroup.owner().id(),
-        0,
-        0);
+    return new GroupResumeDTO(savedGroup.id(), savedGroup.name(), savedGroup.description(),
+        savedGroup.owner().id(), 0, 0);
   }
 
   public UpdateGroupResumeDTO updateGroup(GroupDataDTO group, String groupId) {
@@ -95,19 +78,11 @@ public class GroupService {
       throw new ResourceNotFoundException(GROUP_NOT_FOUND);
     }
 
-    Group updatedGroup = this.groupRepository.updateGroupById(
-        groupId,
-        new Group(
-            findedGroup.id(),
-            group.name(),
-            group.description(),
-            findedGroup.owner(),
-            findedGroup.type(),
-            findedGroup.members()));
+    Group updatedGroup =
+        this.groupRepository.updateGroupById(groupId, new Group(findedGroup.id(), group.name(),
+            group.description(), findedGroup.owner(), findedGroup.type(), findedGroup.members()));
 
-    return new UpdateGroupResumeDTO(
-        updatedGroup.id(),
-        updatedGroup.name(),
+    return new UpdateGroupResumeDTO(updatedGroup.id(), updatedGroup.name(),
         updatedGroup.description());
   }
 
@@ -133,12 +108,8 @@ public class GroupService {
 
     Group updatedGroup = this.groupRepository.addMemberToGroup(groupId, memberToAdd.id());
 
-    return new NewMemberDTO(
-        updatedGroup.id(),
-        memberToAdd.id(),
-        memberToAdd.name(),
-        memberToAdd.lastName(),
-        memberToAdd.photoUrl());
+    return new NewMemberDTO(updatedGroup.id(), memberToAdd.id(), memberToAdd.name(),
+        memberToAdd.lastName(), memberToAdd.photoUrl());
 
   }
 
@@ -147,10 +118,7 @@ public class GroupService {
     if (Objects.isNull(groups)) {
       throw new ResourceNotFoundException(GROUPS_NOT_FOUND_FOR_USER);
     }
-    return groups.stream()
-        .map(group -> new GroupDataDTO(
-            group.name(),
-            group.description()))
+    return groups.stream().map(group -> new GroupDataDTO(group.name(), group.description()))
         .collect(Collectors.toList());
   }
 
@@ -161,8 +129,7 @@ public class GroupService {
       throw new ResourceNotFoundException(GROUP_NOT_FOUND);
     }
 
-    boolean isMember = group.members().stream()
-            .anyMatch(member -> member.id().equals(userId));
+    boolean isMember = group.members().stream().anyMatch(member -> member.id().equals(userId));
 
     if (!isMember) {
       throw new ResourceNotFoundException(USER_NOT_MEMBER_OF_GROUP);
@@ -172,32 +139,19 @@ public class GroupService {
     List<ExpenseDetailDTO> expenses = expenseService.getExpensesByGroup(groupId, userBalances);
     List<PaymentDetailDTO> payments = paymentService.getPaymentsByGroup(groupId);
 
-    return new GroupTransactionHistoryDTO(
-            group.id(),
-            group.name(),
-            group.description(),
-            group.owner().id(),
-            group.type(),
-            userBalances,
-            payments,
-            expenses
-    );
+    return new GroupTransactionHistoryDTO(group.id(), group.name(), group.description(),
+        group.owner().id(), group.type(), userBalances, payments, expenses);
   }
 
   public List<MemberResumeDTO> getGroupMembers(String groupId) {
-      Group group = groupRepository.getGroupById(groupId);
+    Group group = groupRepository.getGroupById(groupId);
 
-      if (Objects.isNull(group)) {
-          throw new ResourceNotFoundException(GROUP_NOT_FOUND);
-      }
+    if (Objects.isNull(group)) {
+      throw new ResourceNotFoundException(GROUP_NOT_FOUND);
+    }
 
-      return group.members().stream()
-              .map(member -> new MemberResumeDTO(
-                      member.id(),
-                      member.name(),
-                      member.lastName(),
-                      member.photoUrl()))
-              .collect(Collectors.toList());
+    return group.members().stream().map(member -> new MemberResumeDTO(member.id(), member.name(),
+        member.lastName(), member.photoUrl())).collect(Collectors.toList());
 
   }
 }

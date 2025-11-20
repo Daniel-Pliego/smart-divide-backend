@@ -10,12 +10,11 @@ import mr.limpios.smart_divide_backend.infraestructure.schemas.ExpenseGroupBalan
 
 @Repository
 public interface JPAExpenseGroupBalanceRepository
-        extends JpaRepository<ExpenseGroupBalanceSchema, Integer> {
-    Optional<ExpenseGroupBalanceSchema> findByCreditor_IdAndDebtor_IdAndGroup_Id(
-            String creditorId,
-            String debtorId,
-            String groupId);
+    extends JpaRepository<ExpenseGroupBalanceSchema, Integer> {
+  Optional<ExpenseGroupBalanceSchema> findByCreditor_IdAndDebtor_IdAndGroup_Id(String creditorId,
+      String debtorId, String groupId);
 
-    List<ExpenseGroupBalanceSchema> findByGroupIdAndCreditorId(String groupId, String creditorId);
-    List<ExpenseGroupBalanceSchema> findByGroupIdAndDebtorId(String groupId, String debtorId);
+  List<ExpenseGroupBalanceSchema> findByGroupIdAndCreditorId(String groupId, String creditorId);
+
+  List<ExpenseGroupBalanceSchema> findByGroupIdAndDebtorId(String groupId, String debtorId);
 }

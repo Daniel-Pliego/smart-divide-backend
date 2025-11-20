@@ -1,6 +1,5 @@
 package mr.limpios.smart_divide_backend.infraestructure.repositories.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,8 +19,7 @@ public class ExpenseGroupBalanceRepositoryImp implements ExpenseGroupBalanceRepo
   private JPAExpenseGroupBalanceRepository jpaExpenseGroupBalanceRepository;
 
   @Override
-  public ExpenseGroupBalance saveExpenseGroupBalance(
-      ExpenseGroupBalance expenseGroupBalance) {
+  public ExpenseGroupBalance saveExpenseGroupBalance(ExpenseGroupBalance expenseGroupBalance) {
     ExpenseGroupBalanceSchema expenseGroupBalanceSchema = this.jpaExpenseGroupBalanceRepository
         .save(ExpenseGroupBalanceMapper.toSchema(expenseGroupBalance));
 
@@ -29,34 +27,29 @@ public class ExpenseGroupBalanceRepositoryImp implements ExpenseGroupBalanceRepo
   }
 
   @Override
-  public Optional<ExpenseGroupBalance> findByCreditorAndDebtorAndGroup(String creditorId, String debtorId,
-      String groupId) {
-    return jpaExpenseGroupBalanceRepository.findByCreditor_IdAndDebtor_IdAndGroup_Id(creditorId, debtorId, groupId)
+  public Optional<ExpenseGroupBalance> findByCreditorAndDebtorAndGroup(String creditorId,
+      String debtorId, String groupId) {
+    return jpaExpenseGroupBalanceRepository
+        .findByCreditor_IdAndDebtor_IdAndGroup_Id(creditorId, debtorId, groupId)
         .map(ExpenseGroupBalanceMapper::toModel);
   }
 
   @Override
   public List<ExpenseGroupBalance> findByGroupIdAndCreditorId(String groupId, String creditorId) {
-    return jpaExpenseGroupBalanceRepository
-            .findByGroupIdAndCreditorId(groupId, creditorId)
-            .stream()
-            .map(ExpenseGroupBalanceMapper::toModel)
-            .collect(Collectors.toList());
+    return jpaExpenseGroupBalanceRepository.findByGroupIdAndCreditorId(groupId, creditorId).stream()
+        .map(ExpenseGroupBalanceMapper::toModel).collect(Collectors.toList());
   }
 
   @Override
   public List<ExpenseGroupBalance> findByGroupIdAndDebtorId(String groupId, String debtorId) {
-    return jpaExpenseGroupBalanceRepository
-            .findByGroupIdAndDebtorId(groupId, debtorId)
-            .stream()
-            .map(ExpenseGroupBalanceMapper::toModel)
-            .collect(Collectors.toList());
+    return jpaExpenseGroupBalanceRepository.findByGroupIdAndDebtorId(groupId, debtorId).stream()
+        .map(ExpenseGroupBalanceMapper::toModel).collect(Collectors.toList());
   }
 
-    @Override
-    public void deleteExpenseGroupBalance(Integer id) {
-        jpaExpenseGroupBalanceRepository.deleteById(id);
-    }
+  @Override
+  public void deleteExpenseGroupBalance(Integer id) {
+    jpaExpenseGroupBalanceRepository.deleteById(id);
+  }
 
 
 }

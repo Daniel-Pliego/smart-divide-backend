@@ -3,180 +3,127 @@ package mr.limpios.smart_divide_backend.aplication.services;
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.GROUP_NOT_FOUND;
 
 import java.math.BigDecimal;
-import java.util.Optional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.ArrayList;
+import java.util.Optional;
 import java.util.stream.Collectors;
-
-import mr.limpios.smart_divide_backend.aplication.repositories.ExpenseGroupBalanceRepository;
-import mr.limpios.smart_divide_backend.domain.models.User;
-import mr.limpios.smart_divide_backend.domain.models.ExpenseParticipant;
-import mr.limpios.smart_divide_backend.domain.models.Group;
-import mr.limpios.smart_divide_backend.domain.models.ExpenseBalance;
-import mr.limpios.smart_divide_backend.domain.models.Expense;
-import mr.limpios.smart_divide_backend.domain.models.ExpenseGroupBalance;
-import mr.limpios.smart_divide_backend.domain.dto.UserBalanceDTO;
-import mr.limpios.smart_divide_backend.domain.dto.ExpenseDetailDTO;
-import mr.limpios.smart_divide_backend.domain.dto.ExpensePayerDTO;
-
 import java.util.stream.Stream;
-
-import mr.limpios.smart_divide_backend.aplication.assemblers.ExpenseModelAssembler;
-import mr.limpios.smart_divide_backend.aplication.utils.CollectionUtils;
-import mr.limpios.smart_divide_backend.domain.validators.ExpenseValidator;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import mr.limpios.smart_divide_backend.aplication.assemblers.ExpenseModelAssembler;
+import mr.limpios.smart_divide_backend.aplication.repositories.ExpenseGroupBalanceRepository;
 import mr.limpios.smart_divide_backend.aplication.repositories.ExpenseRepository;
 import mr.limpios.smart_divide_backend.aplication.repositories.GroupRepository;
+import mr.limpios.smart_divide_backend.aplication.utils.CollectionUtils;
+import mr.limpios.smart_divide_backend.domain.dto.ExpenseDetailDTO;
+import mr.limpios.smart_divide_backend.domain.dto.ExpenseInputDTO;
+import mr.limpios.smart_divide_backend.domain.dto.ExpensePayerDTO;
+import mr.limpios.smart_divide_backend.domain.dto.UserBalanceDTO;
 import mr.limpios.smart_divide_backend.domain.events.ExpenseCreatedEvent;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundException;
-
-
+import mr.limpios.smart_divide_backend.domain.models.Expense;
+import mr.limpios.smart_divide_backend.domain.models.ExpenseBalance;
+import mr.limpios.smart_divide_backend.domain.models.ExpenseGroupBalance;
+import mr.limpios.smart_divide_backend.domain.models.ExpenseParticipant;
+import mr.limpios.smart_divide_backend.domain.models.Group;
+import mr.limpios.smart_divide_backend.domain.models.User;
+import mr.limpios.smart_divide_backend.domain.validators.ExpenseValidator;
 import mr.limpios.smart_divide_backend.domain.validators.strategies.ExpenseValidationStrategyFactory;
-import mr.limpios.smart_divide_backend.domain.dto.ExpenseInputDTO;
 
 
 @Service
 @AllArgsConstructor
 public class ExpenseService {
-    private final ExpenseRepository expenseRepository;
-    private final GroupRepository groupRepository;
-    private final ExpenseValidationStrategyFactory strategyFactory;
-    private final ApplicationEventPublisher eventPublisher;
-    private final ExpenseGroupBalanceRepository balanceRepository;
+  private final ExpenseRepository expenseRepository;
+  private final GroupRepository groupRepository;
+  private final ExpenseValidationStrategyFactory strategyFactory;
+  private final ApplicationEventPublisher eventPublisher;
+  private final ExpenseGroupBalanceRepository balanceRepository;
 
-    @Transactional
-    public void addExpense(ExpenseInputDTO addExpenseDTO, String userId, String groupId) {
-        Group group = groupRepository.getGroupById(groupId);
-        if (Objects.isNull(group)) {
-            throw new ResourceNotFoundException(GROUP_NOT_FOUND);
-        }
-
-        Map<String, User> membersMap = CollectionUtils.toMap(
-                group.members(),
-                User::id,
-                user -> user
-        );
-
-        ExpenseValidator.validateGroupMembership(membersMap, userId, addExpenseDTO);
-
-        strategyFactory
-                .getStrategy(addExpenseDTO.divisionType())
-                .validate(addExpenseDTO);
-
-        List<ExpenseParticipant> ParticipantsPayersOfExpenses = ExpenseModelAssembler.createExpenseParticipantsFromValidatedParticipants(
-                addExpenseDTO,
-                membersMap);
-
-        List<ExpenseBalance> balances = ExpenseModelAssembler.createExpenseBalanceFromValidatedParticipants(
-                addExpenseDTO,
-                membersMap);
-
-        Expense expense = new Expense(
-                null,
-                addExpenseDTO.type(),
-                addExpenseDTO.description(),
-                BigDecimal.valueOf(addExpenseDTO.amount()),
-                addExpenseDTO.evidenceUrl(),
-                null,
-                addExpenseDTO.divisionType(),
-                group,
-                ParticipantsPayersOfExpenses,
-                balances);
-
-        Expense savedExpense = this.expenseRepository.saveExpense(expense);
-        eventPublisher.publishEvent(new ExpenseCreatedEvent(savedExpense));
+  @Transactional
+  public void addExpense(ExpenseInputDTO addExpenseDTO, String userId, String groupId) {
+    Group group = groupRepository.getGroupById(groupId);
+    if (Objects.isNull(group)) {
+      throw new ResourceNotFoundException(GROUP_NOT_FOUND);
     }
 
-    public List<UserBalanceDTO> getUserBalancesByGroup(String groupId, String userId) {
-        List<ExpenseGroupBalance> asCreditor =
-                balanceRepository.findByGroupIdAndCreditorId(groupId, userId);
+    Map<String, User> membersMap = CollectionUtils.toMap(group.members(), User::id, user -> user);
 
-        List<ExpenseGroupBalance> asDebtor =
-                balanceRepository.findByGroupIdAndDebtorId(groupId, userId);
+    ExpenseValidator.validateGroupMembership(membersMap, userId, addExpenseDTO);
 
-        Stream<UserBalanceDTO> creditorStream = asCreditor.stream()
-                .map(balance -> new UserBalanceDTO(
-                        balance.debtor().id(),
-                        balance.debtor().name() + " " + balance.debtor().lastName(),
-                        balance.amount()
-                ));
+    strategyFactory.getStrategy(addExpenseDTO.divisionType()).validate(addExpenseDTO);
 
-        Stream<UserBalanceDTO> debtorStream = asDebtor.stream()
-                .map(balance -> new UserBalanceDTO(
-                        balance.creditor().id(),
-                        balance.creditor().name() + " " + balance.creditor().lastName(),
-                        balance.amount().negate()
-                ));
+    List<ExpenseParticipant> ParticipantsPayersOfExpenses = ExpenseModelAssembler
+        .createExpenseParticipantsFromValidatedParticipants(addExpenseDTO, membersMap);
 
-        return Stream.concat(creditorStream, debtorStream)
-                .collect(Collectors.groupingBy(
-                        UserBalanceDTO::userId,
-                        Collectors.reducing((dto1, dto2) -> new UserBalanceDTO(
-                                dto1.userId(),
-                                dto1.name(),
-                                dto1.balance().add(dto2.balance())
-                        ))
-                ))
-                .values().stream()
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .toList();
+    List<ExpenseBalance> balances = ExpenseModelAssembler
+        .createExpenseBalanceFromValidatedParticipants(addExpenseDTO, membersMap);
+
+    Expense expense = new Expense(null, addExpenseDTO.type(), addExpenseDTO.description(),
+        BigDecimal.valueOf(addExpenseDTO.amount()), addExpenseDTO.evidenceUrl(), null,
+        addExpenseDTO.divisionType(), group, ParticipantsPayersOfExpenses, balances);
+
+    Expense savedExpense = this.expenseRepository.saveExpense(expense);
+    eventPublisher.publishEvent(new ExpenseCreatedEvent(savedExpense));
+  }
+
+  public List<UserBalanceDTO> getUserBalancesByGroup(String groupId, String userId) {
+    List<ExpenseGroupBalance> asCreditor =
+        balanceRepository.findByGroupIdAndCreditorId(groupId, userId);
+
+    List<ExpenseGroupBalance> asDebtor =
+        balanceRepository.findByGroupIdAndDebtorId(groupId, userId);
+
+    Stream<UserBalanceDTO> creditorStream =
+        asCreditor.stream().map(balance -> new UserBalanceDTO(balance.debtor().id(),
+            balance.debtor().name() + " " + balance.debtor().lastName(), balance.amount()));
+
+    Stream<UserBalanceDTO> debtorStream = asDebtor.stream()
+        .map(balance -> new UserBalanceDTO(balance.creditor().id(),
+            balance.creditor().name() + " " + balance.creditor().lastName(),
+            balance.amount().negate()));
+
+    return Stream.concat(creditorStream, debtorStream)
+        .collect(Collectors.groupingBy(UserBalanceDTO::userId,
+            Collectors.reducing((dto1, dto2) -> new UserBalanceDTO(dto1.userId(), dto1.name(),
+                dto1.balance().add(dto2.balance())))))
+        .values().stream().filter(Optional::isPresent).map(Optional::get).toList();
+  }
+
+  public List<ExpenseDetailDTO> getExpensesByGroup(String groupId,
+      List<UserBalanceDTO> userBalances) {
+    List<Expense> expenses = expenseRepository.findByGroupId(groupId);
+
+    Map<String, BigDecimal> balanceMap = userBalances.stream()
+        .collect(Collectors.toMap(UserBalanceDTO::userId, UserBalanceDTO::balance));
+
+    List<ExpenseDetailDTO> result = new ArrayList<>();
+
+    for (Expense expense : expenses) {
+      result.add(buildExpenseDetailDTO(expense, balanceMap));
     }
 
-    public List<ExpenseDetailDTO> getExpensesByGroup(
-            String groupId,
-            List<UserBalanceDTO> userBalances
-    ) {
-        List<Expense> expenses = expenseRepository.findByGroupId(groupId);
+    return result;
+  }
 
-        Map<String, BigDecimal> balanceMap = userBalances.stream()
-                .collect(Collectors.toMap(
-                        UserBalanceDTO::userId,
-                        UserBalanceDTO::balance
-                ));
+  private ExpenseDetailDTO buildExpenseDetailDTO(Expense expense,
+      Map<String, BigDecimal> balanceMap) {
+    List<ExpensePayerDTO> payers = new ArrayList<>();
 
-        List<ExpenseDetailDTO> result = new ArrayList<>();
-
-        for (Expense expense : expenses) {
-            result.add(buildExpenseDetailDTO(expense, balanceMap));
-        }
-
-        return result;
+    for (ExpenseParticipant participant : expense.participants()) {
+      payers.add(new ExpensePayerDTO(participant.payer().id(), participant.payer().name(),
+          participant.payer().lastName(), participant.amountPaid(),
+          balanceMap.getOrDefault(participant.payer().id(), BigDecimal.ZERO)));
     }
 
-    private ExpenseDetailDTO buildExpenseDetailDTO(
-            Expense expense,
-            Map<String, BigDecimal> balanceMap
-    ) {
-        List<ExpensePayerDTO> payers = new ArrayList<>();
-
-        for (ExpenseParticipant participant : expense.participants()) {
-            payers.add(new ExpensePayerDTO(
-                    participant.payer().id(),
-                    participant.payer().name(),
-                    participant.payer().lastName(),
-                    participant.amountPaid(),
-                    balanceMap.getOrDefault(
-                            participant.payer().id(),
-                            BigDecimal.ZERO
-                    )
-            ));
-        }
-
-        return new ExpenseDetailDTO(
-                expense.type(),
-                expense.description(),
-                expense.amount(),
-                expense.createdAt(),
-                payers
-        );
-    }
+    return new ExpenseDetailDTO(expense.type(), expense.description(), expense.amount(),
+        expense.createdAt(), payers);
+  }
 
 }
