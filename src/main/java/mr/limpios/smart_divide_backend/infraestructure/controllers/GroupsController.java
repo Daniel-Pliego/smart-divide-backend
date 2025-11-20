@@ -34,7 +34,7 @@ public class GroupsController {
   @Operation(summary = "Create a new group for a user")
   @PostMapping("groups")
   public ResponseEntity<WrapperResponse<GroupResumeDTO>> createGroup(@PathVariable String userId,
-      @RequestBody GroupDataDTO groupDataDTO) {
+      @RequestBody CreateGroupDTO groupDataDTO) {
     GroupResumeDTO groupResumeDTO = groupService.createGroup(groupDataDTO, userId);
     return new ResponseEntity<>(
         new WrapperResponse<>(true, "Group created successfully", groupResumeDTO),
@@ -46,7 +46,7 @@ public class GroupsController {
   // TODO remove userId if not needed
   public ResponseEntity<WrapperResponse<UpdateGroupResumeDTO>> updateGroup(
       @PathVariable String userId, @PathVariable String groupId,
-      @RequestBody GroupDataDTO groupDataDTO) {
+      @RequestBody CreateGroupDTO groupDataDTO) {
 
     UpdateGroupResumeDTO updateGroupResumeDTO = groupService.updateGroup(groupDataDTO, groupId);
     return new ResponseEntity<>(
@@ -66,9 +66,9 @@ public class GroupsController {
 
   @Operation(summary = "Get all groups of a user")
   @GetMapping("groups")
-  public ResponseEntity<WrapperResponse<List<GroupDataDTO>>> getUserGroups(
+  public ResponseEntity<WrapperResponse<List<GroupResumeDTO>>> getUserGroups(
       @PathVariable String userId) {
-    List<GroupDataDTO> groups = groupService.getUserGroups(userId);
+    List<GroupResumeDTO> groups = groupService.getUserGroups(userId);
     return new ResponseEntity<>(
         new WrapperResponse<>(true, "User groups retrieved successfully", groups), HttpStatus.OK);
   }
