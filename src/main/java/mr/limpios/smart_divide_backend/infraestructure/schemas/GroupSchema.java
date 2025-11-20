@@ -38,6 +38,9 @@ public class GroupSchema {
   @JoinColumn(name = "owner_id", nullable = false)
   private UserSchema owner;
 
+  @Column(nullable = false)
+  private String type;
+
   @ManyToMany
   @JoinTable(name = "group_members", joinColumns = @JoinColumn(name = "group_id"),
       inverseJoinColumns = @JoinColumn(name = "user_id"))

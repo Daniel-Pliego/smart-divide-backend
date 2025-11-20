@@ -1,5 +1,8 @@
 package mr.limpios.smart_divide_backend.infraestructure.repositories.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -22,5 +25,11 @@ public class ExpenseRepositoryImp implements ExpenseRepository {
     ExpenseSchema expenseSchema = this.jpaExpenseRepository.save(ExpenseMapper.toSchema(expense));
 
     return ExpenseMapper.toModel(expenseSchema);
+  }
+
+  @Override
+  public List<Expense> findByGroupId(String groupId) {
+    return jpaExpenseRepository.findByGroupId(groupId).stream().map(ExpenseMapper::toModel)
+        .collect(Collectors.toList());
   }
 }

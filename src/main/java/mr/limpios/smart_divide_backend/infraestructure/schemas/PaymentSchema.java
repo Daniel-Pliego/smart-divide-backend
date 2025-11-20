@@ -22,7 +22,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "payment")
-public class Payment {
+public class PaymentSchema {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
