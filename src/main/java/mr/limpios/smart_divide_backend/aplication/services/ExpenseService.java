@@ -36,7 +36,6 @@ import mr.limpios.smart_divide_backend.domain.models.User;
 import mr.limpios.smart_divide_backend.domain.validators.ExpenseValidator;
 import mr.limpios.smart_divide_backend.domain.validators.strategies.ExpenseValidationStrategyFactory;
 
-
 @Service
 @AllArgsConstructor
 public class ExpenseService {
@@ -97,7 +96,7 @@ public class ExpenseService {
   }
 
   public List<ExpenseDetailDTO> getExpensesByGroup(String groupId,
-      List<UserBalanceDTO> userBalances) {
+      List<UserBalanceDTO> userBalances, String userId) {
     List<Expense> expenses = expenseRepository.findByGroupId(groupId);
 
     Map<String, BigDecimal> balanceMap = userBalances.stream()
@@ -106,24 +105,27 @@ public class ExpenseService {
     List<ExpenseDetailDTO> result = new ArrayList<>();
 
     for (Expense expense : expenses) {
-      result.add(buildExpenseDetailDTO(expense, balanceMap));
+      result.add(buildExpenseDetailDTO(expense, balanceMap, userId));
     }
 
     return result;
   }
 
   private ExpenseDetailDTO buildExpenseDetailDTO(Expense expense,
-      Map<String, BigDecimal> balanceMap) {
-    List<ExpensePayerDTO> payers = new ArrayList<>();
+      Map<String, BigDecimal> balanceMap, String userId) {
+    List<ExpensePayerDTO> payers =
+        expense.participants().stream().filter(p -> p.amountPaid().compareTo(BigDecimal.ZERO) > 0)
+            .map(p -> new ExpensePayerDTO(p.payer().id(), p.payer().name(), p.payer().lastName(),
+                p.amountPaid()))
+            .toList();
+    ExpenseParticipant payer = expense.participants().stream()
+        .filter(p -> p.payer().id().equals(userId)).findFirst().orElse(null);
 
-    for (ExpenseParticipant participant : expense.participants()) {
-      payers.add(new ExpensePayerDTO(participant.payer().id(), participant.payer().name(),
-          participant.payer().lastName(), participant.amountPaid(),
-          balanceMap.getOrDefault(participant.payer().id(), BigDecimal.ZERO)));
-    }
+    BigDecimal userBalance =
+        payer != null ? payer.amountPaid().subtract(payer.mustPaid()) : BigDecimal.ZERO;
 
     return new ExpenseDetailDTO(expense.type(), expense.description(), expense.amount(),
-        expense.createdAt(), payers);
+        expense.createdAt(), payers, userBalance);
   }
 
 }
