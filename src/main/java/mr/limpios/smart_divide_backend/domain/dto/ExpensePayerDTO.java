@@ -6,6 +6,5 @@ public record ExpensePayerDTO(
         String userId,
         String name,
         String lastName,
-        BigDecimal amountPaid,
-        BigDecimal userBalance
+        BigDecimal amountPaid
 ) {}

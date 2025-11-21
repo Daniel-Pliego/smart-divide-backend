@@ -9,5 +9,6 @@ public record ExpenseDetailDTO(
         String description,
         BigDecimal amount,
         LocalDateTime createdAt,
-        List<ExpensePayerDTO> payers
+        List<ExpensePayerDTO> payers,
+        BigDecimal userBalance
 ) {}
