@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import mr.limpios.smart_divide_backend.aplication.repositories.GroupRepository;
+import mr.limpios.smart_divide_backend.aplication.repositories.ExpenseGroupBalanceRepository;
 import mr.limpios.smart_divide_backend.aplication.repositories.UserRepository;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundException;
 import mr.limpios.smart_divide_backend.domain.models.Group;
@@ -38,6 +39,9 @@ public class GroupServiceTest {
 
     @Mock
     private FriendShipRepositoryImp friendshipRepository;
+
+    @Mock
+    private ExpenseGroupBalanceRepository expenseGroupBalanceRepository;
 
     @InjectMocks
     private GroupService groupService;
