@@ -6,6 +6,7 @@ import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstan
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.USER_NOT_FOUND;
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.USER_NOT_MEMBER_OF_GROUP;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -14,19 +15,11 @@ import java.util.stream.Collectors;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import mr.limpios.smart_divide_backend.aplication.repositories.ExpenseGroupBalanceRepository;
 import mr.limpios.smart_divide_backend.aplication.repositories.FriendshipRepository;
 import mr.limpios.smart_divide_backend.aplication.repositories.GroupRepository;
 import mr.limpios.smart_divide_backend.aplication.repositories.UserRepository;
 import mr.limpios.smart_divide_backend.domain.dto.*;
-import mr.limpios.smart_divide_backend.domain.dto.AddMemberDTO;
-import mr.limpios.smart_divide_backend.domain.dto.ExpenseDetailDTO;
-import mr.limpios.smart_divide_backend.domain.dto.GroupDataDTO;
-import mr.limpios.smart_divide_backend.domain.dto.GroupResumeDTO;
-import mr.limpios.smart_divide_backend.domain.dto.GroupTransactionHistoryDTO;
-import mr.limpios.smart_divide_backend.domain.dto.NewMemberDTO;
-import mr.limpios.smart_divide_backend.domain.dto.PaymentDetailDTO;
-import mr.limpios.smart_divide_backend.domain.dto.UpdateGroupResumeDTO;
-import mr.limpios.smart_divide_backend.domain.dto.UserBalanceDTO;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundException;
 import mr.limpios.smart_divide_backend.domain.models.Group;
 import mr.limpios.smart_divide_backend.domain.models.User;
@@ -38,22 +31,25 @@ public class GroupService {
   private final GroupRepository groupRepository;
   private final UserRepository userRepository;
   private final FriendshipRepository friendshipRepository;
+  private final ExpenseGroupBalanceRepository expenseGroupBalanceRepository;
   @Lazy
   private final PaymentService paymentService;
   @Lazy
   private final ExpenseService expenseService;
 
   public GroupService(GroupRepository groupRepository, UserRepository userRepository,
-      FriendshipRepository friendshipRepository, PaymentService paymentService,
+      FriendshipRepository friendshipRepository,
+      ExpenseGroupBalanceRepository expenseGroupBalanceRepository, PaymentService paymentService,
       ExpenseService expenseService) {
     this.groupRepository = groupRepository;
     this.userRepository = userRepository;
     this.friendshipRepository = friendshipRepository;
     this.paymentService = paymentService;
+    this.expenseGroupBalanceRepository = expenseGroupBalanceRepository;
     this.expenseService = expenseService;
   }
 
-  public GroupResumeDTO createGroup(GroupDataDTO group, String ownerId) {
+  public GroupResumeDTO createGroup(CreateGroupDTO group, String ownerId) {
     User owner = this.userRepository.getUserbyId(ownerId);
 
     if (Objects.isNull(owner)) {
@@ -62,14 +58,14 @@ public class GroupService {
 
     GroupValidator.validate(group);
 
-    Group savedGroup = this.groupRepository
-        .saveGroup(new Group(null, group.name(), group.description(), owner, "", List.of(owner)));
+    Group savedGroup = this.groupRepository.saveGroup(
+        new Group(null, group.name(), group.description(), owner, group.type(), List.of(owner)));
 
-    return new GroupResumeDTO(savedGroup.id(), savedGroup.name(), savedGroup.description(),
-        savedGroup.owner().id(), 0, 0);
+    return new GroupResumeDTO(savedGroup.id(), savedGroup.name(), savedGroup.type(),
+        new BigDecimal(0), new BigDecimal(0));
   }
 
-  public UpdateGroupResumeDTO updateGroup(GroupDataDTO group, String groupId) {
+  public UpdateGroupResumeDTO updateGroup(CreateGroupDTO group, String groupId) {
     GroupValidator.validate(group);
 
     Group findedGroup = this.groupRepository.getGroupById(groupId);
@@ -113,13 +109,24 @@ public class GroupService {
 
   }
 
-  public List<GroupDataDTO> getUserGroups(String userId) {
+  public List<GroupResumeDTO> getUserGroups(String userId) {
+
     Set<Group> groups = groupRepository.getGroupsByUserId(userId);
-    if (Objects.isNull(groups)) {
+
+    if (groups == null || groups.isEmpty()) {
       throw new ResourceNotFoundException(GROUPS_NOT_FOUND_FOR_USER);
     }
-    return groups.stream().map(group -> new GroupDataDTO(group.name(), group.description()))
-        .collect(Collectors.toList());
+
+    return groups.stream().map(group -> {
+
+      BigDecimal totalCredits =
+          expenseGroupBalanceRepository.getTotalCreditsByGroupAndDebtor(group.id(), userId);
+      BigDecimal totalDebts =
+          expenseGroupBalanceRepository.getTotalDebtsByGroupAndDebtor(group.id(), userId);
+
+      return new GroupResumeDTO(group.id(), group.name(), group.type(), totalDebts, totalCredits);
+
+    }).collect(Collectors.toList());
   }
 
   public GroupTransactionHistoryDTO getGroupTransactionHistory(String groupId, String userId) {

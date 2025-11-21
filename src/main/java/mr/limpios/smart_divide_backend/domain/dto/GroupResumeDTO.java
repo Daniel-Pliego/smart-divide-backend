@@ -1,9 +1,10 @@
 package mr.limpios.smart_divide_backend.domain.dto;
 
+import java.math.BigDecimal;
+
 public record GroupResumeDTO(
         String id,
         String name,
-        String description,
-        String ownerId,
-        Integer totalDebts,
-        Integer totalCredits) {}
+        String type,        
+        BigDecimal totalDebts,
+        BigDecimal totalCredits) {}

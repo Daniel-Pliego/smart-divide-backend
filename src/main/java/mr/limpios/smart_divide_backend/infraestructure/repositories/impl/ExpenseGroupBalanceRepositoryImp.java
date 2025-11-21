@@ -1,5 +1,6 @@
 package mr.limpios.smart_divide_backend.infraestructure.repositories.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -51,5 +52,14 @@ public class ExpenseGroupBalanceRepositoryImp implements ExpenseGroupBalanceRepo
     jpaExpenseGroupBalanceRepository.deleteById(id);
   }
 
+  @Override
+  public BigDecimal getTotalDebtsByGroupAndDebtor(String groupId, String userId) {
+    return jpaExpenseGroupBalanceRepository.sumDebtsByGroupAndDebtor(groupId, userId);
+  }
+
+  @Override
+  public BigDecimal getTotalCreditsByGroupAndDebtor(String groupId, String userId) {
+    return jpaExpenseGroupBalanceRepository.sumCreditsByGroupAndDebtor(groupId, userId);
+  }
 
 }
