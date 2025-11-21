@@ -16,6 +16,8 @@ public interface ExpenseGroupBalanceRepository {
 
   List<ExpenseGroupBalance> findByGroupIdAndDebtorId(String groupId, String debtorId);
 
+  List<ExpenseGroupBalance> findByGroupIdAndParticipant(String groupId, String participantId);
+
   void deleteExpenseGroupBalance(Integer id);
 
   BigDecimal getTotalDebtsByGroupAndDebtor(String groupId, String userId);

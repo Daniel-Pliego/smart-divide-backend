@@ -8,7 +8,6 @@ import mr.limpios.smart_divide_backend.domain.dto.ExpenseDebtorDTO;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
 
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.*;
 

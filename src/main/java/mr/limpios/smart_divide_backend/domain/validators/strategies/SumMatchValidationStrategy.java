@@ -5,7 +5,6 @@ import mr.limpios.smart_divide_backend.domain.dto.ExpenseInputDTO;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.DEBTORS_AMOUNT_MISMATCH;
 

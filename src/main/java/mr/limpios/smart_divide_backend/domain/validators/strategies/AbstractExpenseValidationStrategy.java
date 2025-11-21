@@ -7,7 +7,6 @@ import mr.limpios.smart_divide_backend.domain.exceptions.InvalidDataException;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public abstract class AbstractExpenseValidationStrategy implements ExpenseDivisionValidationStrategy{
     protected void validatePayers(ExpenseInputDTO dto) {

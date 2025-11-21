@@ -8,7 +8,6 @@ import mr.limpios.smart_divide_backend.domain.models.*;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class ExpenseModelAssembler {
     public static List<ExpenseParticipant> createExpenseParticipantsFromValidatedParticipants(

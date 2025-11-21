@@ -48,6 +48,12 @@ public class ExpenseGroupBalanceRepositoryImp implements ExpenseGroupBalanceRepo
   }
 
   @Override
+  public List<ExpenseGroupBalance> findByGroupIdAndParticipant(String groupId, String participantId) {
+    return jpaExpenseGroupBalanceRepository.findByGroupIdAndParticipantId(groupId, participantId).stream()
+        .map(ExpenseGroupBalanceMapper::toModel).collect(Collectors.toList());
+  }
+
+  @Override
   public void deleteExpenseGroupBalance(Integer id) {
     jpaExpenseGroupBalanceRepository.deleteById(id);
   }
