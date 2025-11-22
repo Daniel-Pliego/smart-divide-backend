@@ -1,131 +1,107 @@
 package mr.limpios.smart_divide_backend.aplication.assemblers;
 
-import mr.limpios.smart_divide_backend.aplication.utils.CollectionUtils;
-import mr.limpios.smart_divide_backend.domain.dto.ExpenseDebtorDTO;
-import mr.limpios.smart_divide_backend.domain.dto.ExpenseInputDTO;
-import mr.limpios.smart_divide_backend.domain.models.*;
-
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
+
+import mr.limpios.smart_divide_backend.aplication.utils.CollectionUtils;
+import mr.limpios.smart_divide_backend.domain.dto.ExpenseInputDTO;
+import mr.limpios.smart_divide_backend.domain.dto.ExpenseParticipantDTO;
+import mr.limpios.smart_divide_backend.domain.models.*;
 
 public class ExpenseModelAssembler {
-    public static List<ExpenseParticipant> createExpenseParticipantsFromValidatedParticipants(
-            ExpenseInputDTO addExpenseDTO,
-            Map<String, User> groupMembersMap) {
+  public static List<ExpenseParticipant> createExpenseParticipantsFromValidatedParticipants(
+      ExpenseInputDTO addExpenseDTO, Map<String, User> groupMembersMap) {
 
-        Map<String, BigDecimal> payersMap = CollectionUtils.toMap(
-                addExpenseDTO.payers(),
-                ExpenseDebtorDTO::debtorId,
-                payer -> BigDecimal.valueOf(payer.amount())
-        );
+    Map<String, BigDecimal> payersMap = CollectionUtils.toMap(addExpenseDTO.payers(),
+        ExpenseParticipantDTO::userId, payer -> BigDecimal.valueOf(payer.amount()));
 
-        Map<String, BigDecimal> participantsMap = CollectionUtils.toMap(
-                addExpenseDTO.participants(),
-                ExpenseDebtorDTO::debtorId,
-                participant -> BigDecimal.valueOf(participant.amount())
-        );
+    Map<String, BigDecimal> participantsMap = CollectionUtils.toMap(addExpenseDTO.participants(),
+        ExpenseParticipantDTO::userId, participant -> BigDecimal.valueOf(participant.amount()));
 
-        Set<String> allMemberIds = new HashSet<>();
-        allMemberIds.addAll(payersMap.keySet());
-        allMemberIds.addAll(participantsMap.keySet());
+    Set<String> allMemberIds = new HashSet<>();
+    allMemberIds.addAll(payersMap.keySet());
+    allMemberIds.addAll(participantsMap.keySet());
 
-        List<ExpenseParticipant> result = new ArrayList<>();
-        for (String memberId : allMemberIds) {
-            User user = groupMembersMap.get(memberId);
-            BigDecimal amountPaid = payersMap.getOrDefault(memberId, BigDecimal.ZERO);
-            BigDecimal mustPaid = participantsMap.getOrDefault(memberId, BigDecimal.ZERO);
+    List<ExpenseParticipant> result = new ArrayList<>();
+    for (String memberId : allMemberIds) {
+      User user = groupMembersMap.get(memberId);
+      BigDecimal amountPaid = payersMap.getOrDefault(memberId, BigDecimal.ZERO);
+      BigDecimal mustPaid = participantsMap.getOrDefault(memberId, BigDecimal.ZERO);
 
-            result.add(new ExpenseParticipant(
-                    null,
-                    user,
-                    amountPaid,
-                    mustPaid
-            ));
-        }
-
-        return result;
+      result.add(new ExpenseParticipant(null, user, amountPaid, mustPaid));
     }
 
-    private static List<String> filterIds(Map<String, BigDecimal> balances, Predicate<BigDecimal> predicate) {
-        return balances.entrySet().stream()
-                .filter(e -> predicate.test(e.getValue()))
-                .map(Map.Entry::getKey)
-                .toList();
+    return result;
+  }
+
+  private static List<String> filterIds(Map<String, BigDecimal> balances,
+      Predicate<BigDecimal> predicate) {
+    return balances.entrySet().stream().filter(e -> predicate.test(e.getValue()))
+        .map(Map.Entry::getKey).toList();
+  }
+
+  private static Map<String, BigDecimal> balanceCalculation(Map<String, BigDecimal> payersMap,
+      Map<String, BigDecimal> participantsMap) {
+    Map<String, BigDecimal> balances = new HashMap<>();
+    Set<String> allIds = new HashSet<>();
+    allIds.addAll(payersMap.keySet());
+    allIds.addAll(participantsMap.keySet());
+
+    for (String id : allIds) {
+      BigDecimal paid = payersMap.getOrDefault(id, BigDecimal.ZERO);
+      BigDecimal mustPay = participantsMap.getOrDefault(id, BigDecimal.ZERO);
+      BigDecimal balance = paid.subtract(mustPay);
+      balances.put(id, balance);
     }
 
-    private static Map<String, BigDecimal> balanceCalculation(Map<String, BigDecimal> payersMap, Map<String, BigDecimal> participantsMap) {
-        Map<String, BigDecimal> balances = new HashMap<>();
-        Set<String> allIds = new HashSet<>();
-        allIds.addAll(payersMap.keySet());
-        allIds.addAll(participantsMap.keySet());
+    return balances;
+  }
 
-        for (String id : allIds) {
-            BigDecimal paid = payersMap.getOrDefault(id, BigDecimal.ZERO);
-            BigDecimal mustPay = participantsMap.getOrDefault(id, BigDecimal.ZERO);
-            BigDecimal balance = paid.subtract(mustPay);
-            balances.put(id, balance);
-        }
+  public static List<ExpenseBalance> createExpenseBalanceFromValidatedParticipants(
+      ExpenseInputDTO addExpenseDTO, Map<String, User> groupMembersMap) {
 
-        return balances;
+    Map<String, BigDecimal> payersMap = CollectionUtils.toMap(addExpenseDTO.payers(),
+        ExpenseParticipantDTO::userId, payer -> BigDecimal.valueOf(payer.amount()));
+
+    Map<String, BigDecimal> participantsMap = CollectionUtils.toMap(addExpenseDTO.participants(),
+        ExpenseParticipantDTO::userId, participant -> BigDecimal.valueOf(participant.amount()));
+
+    Map<String, BigDecimal> balances = balanceCalculation(payersMap, participantsMap);
+
+    List<String> creditors = filterIds(balances, b -> b.compareTo(BigDecimal.ZERO) > 0);
+    List<String> debtors = filterIds(balances, b -> b.compareTo(BigDecimal.ZERO) < 0);
+
+    List<ExpenseBalance> result = new ArrayList<>();
+    int iCred = 0;
+    int iDebt = 0;
+
+    while (iCred < creditors.size() && iDebt < debtors.size()) {
+
+      String creditor = creditors.get(iCred);
+      String debtor = debtors.get(iDebt);
+
+      BigDecimal credBal = balances.get(creditor);
+      BigDecimal debtBal = balances.get(debtor).abs();
+
+      BigDecimal amount = credBal.min(debtBal);
+
+      result.add(new ExpenseBalance(null, groupMembersMap.get(creditor),
+          groupMembersMap.get(debtor), amount));
+
+      balances.put(creditor, credBal.subtract(amount));
+      balances.put(debtor, balances.get(debtor).add(amount));
+
+      if (balances.get(creditor).compareTo(BigDecimal.ZERO) == 0) {
+        iCred++;
+      }
+
+      if (balances.get(debtor).compareTo(BigDecimal.ZERO) == 0) {
+        iDebt++;
+      }
     }
 
-    public static List<ExpenseBalance> createExpenseBalanceFromValidatedParticipants(
-            ExpenseInputDTO addExpenseDTO,
-            Map<String, User> groupMembersMap) {
-
-        Map<String, BigDecimal> payersMap = CollectionUtils.toMap(
-                addExpenseDTO.payers(),
-                ExpenseDebtorDTO::debtorId,
-                payer -> BigDecimal.valueOf(payer.amount())
-        );
-
-        Map<String, BigDecimal> participantsMap = CollectionUtils.toMap(
-                addExpenseDTO.participants(),
-                ExpenseDebtorDTO::debtorId,
-                participant -> BigDecimal.valueOf(participant.amount())
-        );
-
-        Map<String, BigDecimal> balances = balanceCalculation(payersMap, participantsMap);
-
-        List<String> creditors = filterIds(balances, b -> b.compareTo(BigDecimal.ZERO) > 0);
-        List<String> debtors   = filterIds(balances, b -> b.compareTo(BigDecimal.ZERO) < 0);
-
-        List<ExpenseBalance> result = new ArrayList<>();
-        int iCred = 0;
-        int iDebt = 0;
-
-        while (iCred < creditors.size() && iDebt < debtors.size()) {
-
-            String creditor = creditors.get(iCred);
-            String debtor = debtors.get(iDebt);
-
-            BigDecimal credBal = balances.get(creditor);
-            BigDecimal debtBal = balances.get(debtor).abs();
-
-            BigDecimal amount = credBal.min(debtBal);
-
-            result.add(new ExpenseBalance(
-                    null,
-                    groupMembersMap.get(creditor),
-                    groupMembersMap.get(debtor),
-                    amount
-            ));
-
-            balances.put(creditor, credBal.subtract(amount));
-            balances.put(debtor, balances.get(debtor).add(amount));
-
-            if (balances.get(creditor).compareTo(BigDecimal.ZERO) == 0) {
-                iCred++;
-            }
-
-            if (balances.get(debtor).compareTo(BigDecimal.ZERO) == 0) {
-                iDebt++;
-            }
-        }
-
-        return result;
-    }
+    return result;
+  }
 
 }
