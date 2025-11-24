@@ -124,8 +124,8 @@ public class ExpenseService {
     BigDecimal userBalance =
         payer != null ? payer.amountPaid().subtract(payer.mustPaid()) : BigDecimal.ZERO;
 
-    return new ExpenseDetailDTO(expense.type(), expense.description(), expense.amount(),
-        expense.createdAt(), payers, userBalance);
+    return new ExpenseDetailDTO(expense.id(), expense.type(), expense.description(),
+        expense.amount(), expense.createdAt(), payers, userBalance);
   }
 
 }
