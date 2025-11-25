@@ -10,6 +10,7 @@ import mr.limpios.smart_divide_backend.aplication.repositories.PaymentRepository
 import mr.limpios.smart_divide_backend.domain.models.Payment;
 import mr.limpios.smart_divide_backend.infraestructure.mappers.PaymentMapper;
 import mr.limpios.smart_divide_backend.infraestructure.repositories.jpa.JPAPaymentRepository;
+import mr.limpios.smart_divide_backend.infraestructure.schemas.PaymentSchema;
 
 @Repository
 public class PaymentRepositoryImp implements PaymentRepository {
@@ -20,5 +21,11 @@ public class PaymentRepositoryImp implements PaymentRepository {
   public List<Payment> findByGroupId(String groupId) {
     return jpaPaymentRepository.findByGroupId(groupId).stream().map(PaymentMapper::toModel)
         .collect(Collectors.toList());
+  }
+
+  @Override
+  public Payment savePayment(Payment payment) {
+    PaymentSchema paymentSchema = this.jpaPaymentRepository.save(PaymentMapper.toSchema(payment));
+    return PaymentMapper.toModel(paymentSchema);
   }
 }

@@ -20,7 +20,6 @@ public interface JPAExpenseGroupBalanceRepository
 
   List<ExpenseGroupBalanceSchema> findByGroupIdAndDebtorId(String groupId, String debtorId);
 
-
   @Query("""
       SELECT COALESCE(SUM(e.amount), 0)
       FROM expense_group_balance e
@@ -37,5 +36,5 @@ public interface JPAExpenseGroupBalanceRepository
       """)
   BigDecimal sumCreditsByGroupAndDebtor(String groupId, String userId);
 
-
+  List<ExpenseGroupBalanceSchema> findAllByGroupId(String groupId);
 }

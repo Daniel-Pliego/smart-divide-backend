@@ -62,4 +62,10 @@ public class ExpenseGroupBalanceRepositoryImp implements ExpenseGroupBalanceRepo
     return jpaExpenseGroupBalanceRepository.sumCreditsByGroupAndDebtor(groupId, userId);
   }
 
+  @Override
+  public List<ExpenseGroupBalance> findAllByGroup(String groupId) {
+    List<ExpenseGroupBalanceSchema> schemas = jpaExpenseGroupBalanceRepository.findAllByGroupId(groupId);
+    return schemas.stream().map(ExpenseGroupBalanceMapper::toModel).collect(Collectors.toList());
+  }
+
 }
