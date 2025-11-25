@@ -1,5 +1,6 @@
 package mr.limpios.smart_divide_backend.aplication.services;
 
+import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.EXPENSE_NOT_FOUND;
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.GROUP_NOT_FOUND;
 
 import java.math.BigDecimal;
@@ -11,6 +12,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import mr.limpios.smart_divide_backend.aplication.repositories.ExpenseBalanceRepository;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +45,9 @@ public class ExpenseService {
   private final GroupRepository groupRepository;
   private final ExpenseValidationStrategyFactory strategyFactory;
   private final ApplicationEventPublisher eventPublisher;
-  private final ExpenseGroupBalanceRepository balanceRepository;
+  private final ExpenseGroupBalanceRepository groupBalanceRepository;
+  private final ExpenseBalanceRepository expenseBalanceRepository;
+  private final ExpenseGroupBalanceService expenseGroupBalanceService;
 
   @Transactional
   public void addExpense(ExpenseInputDTO addExpenseDTO, String userId, String groupId) {
@@ -74,10 +78,10 @@ public class ExpenseService {
 
   public List<UserBalanceDTO> getUserBalancesByGroup(String groupId, String userId) {
     List<ExpenseGroupBalance> asCreditor =
-        balanceRepository.findByGroupIdAndCreditorId(groupId, userId);
+            groupBalanceRepository.findByGroupIdAndCreditorId(groupId, userId);
 
     List<ExpenseGroupBalance> asDebtor =
-        balanceRepository.findByGroupIdAndDebtorId(groupId, userId);
+            groupBalanceRepository.findByGroupIdAndDebtorId(groupId, userId);
 
     Stream<UserBalanceDTO> creditorStream =
         asCreditor.stream().map(balance -> new UserBalanceDTO(balance.debtor().id(),
@@ -126,6 +130,29 @@ public class ExpenseService {
 
     return new ExpenseDetailDTO(expense.id(), expense.type(), expense.description(),
         expense.amount(), expense.createdAt(), payers, userBalance);
+  }
+
+  @Transactional
+  public void deleteExpense(String expenseId) {
+
+      Expense expenseToDelete = expenseRepository.findById(expenseId);
+      if (Objects.isNull(expenseToDelete)) {
+          throw new ResourceNotFoundException(EXPENSE_NOT_FOUND);
+      }
+      Group group = expenseToDelete.group();
+      List<ExpenseBalance> transactionsToReverse = expenseBalanceRepository.findAllByExpenseId(expenseId);
+
+      for (ExpenseBalance expenseBalance : transactionsToReverse) {
+
+          expenseGroupBalanceService.applyReverseBalance(
+                  expenseBalance.creditor(),
+                  expenseBalance.debtor(),
+                  expenseBalance.amountToPaid(),
+                  group
+          );
+
+          expenseRepository.deleteById(expenseId);
+      }
   }
 
 }

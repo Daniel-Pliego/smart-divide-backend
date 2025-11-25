@@ -24,4 +24,5 @@ public class ExceptionsConstants {
     public static final String BOTH_USERS_MUST_BE_MEMBERS_OF_GROUP = "Both users must be members of the group";
     public static final String NO_EXISTING_DEBTS_FOR_USER_PAIR = "No existing debts found for this user pair in the group";
     public static final String PAYMENT_AMOUNT_EXCEEDS_DEBT = "Payment amount exceeds existing debt";
+    public static final String EXPENSE_NOT_FOUND = "Expense not found";
 }

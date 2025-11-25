@@ -67,4 +67,31 @@ public class ExpenseGroupBalanceService {
     return new GetGroupBalancesDTO(groupId, balanceDetails);
   }
 
+   @Transactional
+   public void applyReverseBalance(User originalCreditor, User originalDebtor, BigDecimal amountToReverse, Group group) {
+
+       String groupId = group.id();
+       var forwardBalanceOpt = balanceRepository.findByCreditorAndDebtorAndGroup(originalCreditor.id(), originalDebtor.id(), groupId);
+       var reverseBalanceOpt = balanceRepository.findByCreditorAndDebtorAndGroup(originalDebtor.id(), originalCreditor.id(), groupId);
+
+       if (forwardBalanceOpt.isPresent()) {
+           ExpenseGroupBalance currentBalance = forwardBalanceOpt.get();
+           BigDecimal newAmount = currentBalance.amount().subtract(amountToReverse);
+
+
+           ExpenseGroupBalance updatedBalance = new ExpenseGroupBalance(
+                   currentBalance.id(),
+                   currentBalance.creditor(),
+                   currentBalance.debtor(),
+                   newAmount,
+                   currentBalance.group()
+           );
+
+           balanceRepository.saveExpenseGroupBalance(updatedBalance);
+
+       }
+       normalize(originalCreditor, originalDebtor, group);
+   }
+
+
 }
