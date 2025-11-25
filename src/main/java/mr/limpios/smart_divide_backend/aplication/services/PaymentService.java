@@ -67,8 +67,8 @@ public class PaymentService {
     }
 
     Optional<ExpenseGroupBalance> existingBalance = balanceRepository.findByCreditorAndDebtorAndGroup(
+      toUser.id(),
         fromUser.id(),
-        toUser.id(),
         groupId);
     if (existingBalance.isEmpty()) {
       throw new InvalidDataException(NO_EXISTING_DEBTS_FOR_USER_PAIR);
