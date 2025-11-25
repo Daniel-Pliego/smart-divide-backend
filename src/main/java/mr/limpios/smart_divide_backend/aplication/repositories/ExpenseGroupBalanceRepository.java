@@ -24,4 +24,6 @@ public interface ExpenseGroupBalanceRepository {
 
   BigDecimal getTotalCreditsByGroupAndDebtor(String groupId, String userId);
 
+  List<ExpenseGroupBalance> findAllByGroup(String groupId);
+
 }

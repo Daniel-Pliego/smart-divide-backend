@@ -43,4 +43,6 @@ public interface JPAExpenseGroupBalanceRepository
         (b.creditor.id = :userId OR b.debtor.id = :userId)
       """)
   List<ExpenseGroupBalanceSchema> findByGroupIdAndParticipantId(String groupId, String userId);
+
+  List<ExpenseGroupBalanceSchema> findAllByGroupId(String groupId);
 }
