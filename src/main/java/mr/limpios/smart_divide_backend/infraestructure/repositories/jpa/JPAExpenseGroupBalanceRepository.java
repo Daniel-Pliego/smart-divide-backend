@@ -36,13 +36,5 @@ public interface JPAExpenseGroupBalanceRepository
       """)
   BigDecimal sumCreditsByGroupAndDebtor(String groupId, String userId);
 
-  @Query("""
-        SELECT b
-        FROM expense_group_balance b
-        WHERE b.group.id = :groupId AND
-        (b.creditor.id = :userId OR b.debtor.id = :userId)
-      """)
-  List<ExpenseGroupBalanceSchema> findByGroupIdAndParticipantId(String groupId, String userId);
-
   List<ExpenseGroupBalanceSchema> findAllByGroupId(String groupId);
 }
