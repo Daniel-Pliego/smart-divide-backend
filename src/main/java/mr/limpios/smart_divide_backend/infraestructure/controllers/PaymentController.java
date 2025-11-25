@@ -18,7 +18,7 @@ import mr.limpios.smart_divide_backend.domain.dto.WrapperResponse;
 
 @RestController
 @RequestMapping("user/{userId}/groups/{groupId}")
-@CrossOrigin(maxAge = 3600, methods = { RequestMethod.POST }, origins = { "*" })
+@CrossOrigin(maxAge = 3600, methods = { RequestMethod.OPTIONS, RequestMethod.POST }, origins = { "*" })
 @Tag(name = "Payments", description = "Endpoints to manage payments")
 public class PaymentController {
 

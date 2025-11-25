@@ -67,7 +67,7 @@ public class PaymentService {
     }
 
     Optional<ExpenseGroupBalance> existingBalance = balanceRepository.findByCreditorAndDebtorAndGroup(
-      toUser.id(),
+        toUser.id(),
         fromUser.id(),
         groupId);
     if (existingBalance.isEmpty()) {
