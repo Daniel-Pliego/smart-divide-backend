@@ -3,6 +3,8 @@ package mr.limpios.smart_divide_backend.infraestructure.controllers;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,7 +14,7 @@ import mr.limpios.smart_divide_backend.domain.dto.GetGroupBalancesDTO;
 import mr.limpios.smart_divide_backend.domain.dto.WrapperResponse;
 
 @RestController
-@CrossOrigin(maxAge = 3600, methods = {}, origins = {
+@CrossOrigin(maxAge = 3600, methods = { RequestMethod.OPTIONS, RequestMethod.GET }, origins = {
         "*" })
 @Tag(name = "Group Balances", description = "Endpoints for managing group balances")
 public class GroupBalanceController {
@@ -24,7 +26,7 @@ public class GroupBalanceController {
 
     @Operation(summary = "Get all balances by group")
     @GetMapping("groups/{groupId}/balances")
-    public ResponseEntity<WrapperResponse<GetGroupBalancesDTO>> getAllBalancesByGroup(String groupId) {
+    public ResponseEntity<WrapperResponse<GetGroupBalancesDTO>> getAllBalancesByGroup(@PathVariable String groupId) {
         GetGroupBalancesDTO balances = expenseGroupBalanceService.getAllBalancesByGroup(groupId);
         return ResponseEntity.ok(
                 new WrapperResponse<>(true, "Balances retrieved successfully", balances));
