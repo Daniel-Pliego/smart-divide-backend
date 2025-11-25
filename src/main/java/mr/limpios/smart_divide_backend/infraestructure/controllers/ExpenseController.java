@@ -17,7 +17,7 @@ import mr.limpios.smart_divide_backend.domain.dto.ExpenseInputDTO;
 import mr.limpios.smart_divide_backend.domain.dto.WrapperResponse;
 
 @RestController
-@RequestMapping("user/{userId}/group/{groupId}/expense")
+@RequestMapping("user/{userId}/groups/{groupId}/expense")
 @CrossOrigin(maxAge = 3600, methods = { RequestMethod.OPTIONS, RequestMethod.POST }, origins = {
         "*" })
 @Tag(name = "Expense", description = "Endpoints for managing expenses")

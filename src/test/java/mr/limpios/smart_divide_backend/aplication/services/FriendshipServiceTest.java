@@ -21,6 +21,7 @@ import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundExcepti
 import mr.limpios.smart_divide_backend.domain.models.Friendship;
 import mr.limpios.smart_divide_backend.domain.models.User;
 import mr.limpios.smart_divide_backend.domain.dto.FriendshipDTO;
+import static org.instancio.Select.field;
 
 @ExtendWith(MockitoExtension.class)
 public class FriendshipServiceTest {
@@ -42,6 +43,14 @@ public class FriendshipServiceTest {
         Set<Friendship> friendshipsDTO = Instancio.ofSet(Friendship.class)
             .size(3)
             .create();
+        Friendship friendship = new Friendship(
+            1,
+            Instancio.of(User.class).set(field("id"), "user-id").create(),
+            Instancio.create(User.class),
+            true
+        );
+
+        friendshipsDTO.add(friendship);
 
         when(userRepository.getUserbyId("user-id"))
             .thenReturn(user);
