@@ -76,7 +76,7 @@ class ExpenseMapperTest {
 
             ExpenseSchema result = ExpenseMapper.toSchema(expense);
 
-            assertNotNull(result.getCreatedAt(), "CreatedAt should be null in schema if model is null");
+            assertNotNull(result.getCreatedAt(), "CreatedAt should not be null even if model createdAt is null");
             
             assertEquals(expense.id(), result.getId());
         }
