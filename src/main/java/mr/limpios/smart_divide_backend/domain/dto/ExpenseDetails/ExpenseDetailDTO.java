@@ -5,12 +5,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public record ExpenseDetailDTO(
-                String id,
-                String type,
-                String description,
-                BigDecimal amount,
-                LocalDateTime createdAt,
-                String evidenceUrl,
-                List<ExpensePayerDetail> payers,
-                List<ExpenseBalanceDTO> balances) {
+        String id,
+        String type,
+        String description,
+        BigDecimal amount,
+        LocalDateTime createdAt,
+        String evidenceUrl,
+        List<ExpenseBalanceDTO> balances) {
 }
