@@ -26,7 +26,7 @@ public class ExpenseController {
 
   @Operation(summary = "Create a new expense")
   @PostMapping
-  public ResponseEntity<WrapperResponse<Object>> AddExpense(@PathVariable String userId,
+  public ResponseEntity<WrapperResponse<Object>> addExpense(@PathVariable String userId,
       @PathVariable String groupId, @RequestBody ExpenseInputDTO expenseInputDTO) {
     expenseService.addExpense(expenseInputDTO, userId, groupId);
     return new ResponseEntity<>(new WrapperResponse<>(true, "Expense created successfully", null),
@@ -37,7 +37,7 @@ public class ExpenseController {
   @Operation(summary = "Get expense details")
   @GetMapping("{expenseId}")
   public ResponseEntity<WrapperResponse<ExpenseDetailDTO>> getExpenseDetail(
-      @PathVariable String expenseId, @PathVariable String userId, @PathVariable String groupId) {
+      @PathVariable String userId, @PathVariable String groupId, @PathVariable String expenseId) {
     ExpenseDetailDTO expenseDetailDTO =
         expenseService.getExpenseDetails(expenseId, userId, groupId);
 

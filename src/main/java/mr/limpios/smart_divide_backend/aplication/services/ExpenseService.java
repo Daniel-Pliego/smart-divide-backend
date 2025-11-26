@@ -2,6 +2,7 @@ package mr.limpios.smart_divide_backend.aplication.services;
 
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.EXPENSE_NOT_FOUND;
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.GROUP_NOT_FOUND;
+import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.USER_NOT_MEMBER_OF_GROUP;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -84,12 +85,24 @@ public class ExpenseService {
       throw new ResourceNotFoundException(EXPENSE_NOT_FOUND);
     }
 
+    validateUserAccessToExpense(expense, userId, groupId);
+    return ExpenseDetailAssembler.buildExpenseDetailDTO(expense);
+  }
+
+  private void validateUserAccessToExpense(Expense expense, String userId, String groupId) {
+    if (!expense.group().id().equals(groupId)) {
+      throw new ResourceNotFoundException(EXPENSE_NOT_FOUND);
+    }
+
     Group group = groupRepository.getGroupById(groupId);
     if (Objects.isNull(group)) {
       throw new ResourceNotFoundException(GROUP_NOT_FOUND);
     }
 
-    return ExpenseDetailAssembler.buildExpenseDetailDTO(expense);
+    boolean isMember = group.members().stream().anyMatch(member -> member.id().equals(userId));
+    if (!isMember) {
+      throw new ResourceNotFoundException(USER_NOT_MEMBER_OF_GROUP);
+    }
   }
 
   public List<UserBalanceDTO> getUserBalancesByGroup(String groupId, String userId) {
