@@ -1,8 +1,13 @@
 package mr.limpios.smart_divide_backend.infraestructure.repositories.impl;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import mr.limpios.smart_divide_backend.domain.models.ExpenseGroupBalance;
+import mr.limpios.smart_divide_backend.infraestructure.mappers.GroupMapper;
+import mr.limpios.smart_divide_backend.infraestructure.schemas.GroupSchema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -32,4 +37,18 @@ public class ExpenseRepositoryImp implements ExpenseRepository {
     return jpaExpenseRepository.findByGroupId(groupId).stream().map(ExpenseMapper::toModel)
         .collect(Collectors.toList());
   }
+
+    @Override
+    public Expense findById(String expenseId) {
+        ExpenseSchema expenseSchema = jpaExpenseRepository.findById(expenseId).orElse(null);
+        if (Objects.isNull(expenseSchema)) {
+            return null;
+        }
+        return ExpenseMapper.toModel(expenseSchema);
+    }
+
+    @Override
+    public void deleteById(String expenseId) {
+        this.jpaExpenseRepository.deleteById(expenseId);
+    }
 }
