@@ -14,8 +14,8 @@ import org.instancio.Instancio;
 import org.instancio.Select;
 import org.junit.jupiter.api.Test;
 
+import mr.limpios.smart_divide_backend.domain.dto.CreateExpenseParticipantDTO;
 import mr.limpios.smart_divide_backend.domain.dto.ExpenseInputDTO;
-import mr.limpios.smart_divide_backend.domain.dto.ExpenseParticipantDTO;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundException;
 import mr.limpios.smart_divide_backend.domain.models.User;
 
@@ -28,8 +28,8 @@ class ExpenseValidatorTest {
         Map<String, User> membersMap = Map.of("u1", u1, "u2", u2);
         String creatorId = "u1";
 
-        ExpenseParticipantDTO payer = new ExpenseParticipantDTO("u1", 100.0);
-        ExpenseParticipantDTO participant = new ExpenseParticipantDTO("u2", 100.0);
+        CreateExpenseParticipantDTO payer = new CreateExpenseParticipantDTO("u1", 100.0);
+        CreateExpenseParticipantDTO participant = new CreateExpenseParticipantDTO("u2", 100.0);
 
         ExpenseInputDTO dto = Instancio.of(ExpenseInputDTO.class)
             .set(Select.field(ExpenseInputDTO::payers), List.of(payer))
@@ -56,8 +56,8 @@ class ExpenseValidatorTest {
         Map<String, User> membersMap = Map.of("u1", Instancio.create(User.class));
         String creatorId = "u1";
 
-        ExpenseParticipantDTO validPayer = new ExpenseParticipantDTO("u1", 100.0);
-        ExpenseParticipantDTO invalidParticipant = new ExpenseParticipantDTO("unknown-user", 100.0);
+        CreateExpenseParticipantDTO validPayer = new CreateExpenseParticipantDTO("u1", 100.0);
+        CreateExpenseParticipantDTO invalidParticipant = new CreateExpenseParticipantDTO("unknown-user", 100.0);
 
         ExpenseInputDTO dto = Instancio.of(ExpenseInputDTO.class)
             .set(Select.field(ExpenseInputDTO::payers), List.of(validPayer))
@@ -75,8 +75,8 @@ class ExpenseValidatorTest {
         Map<String, User> membersMap = Map.of("u1", Instancio.create(User.class));
         String creatorId = "u1";
 
-        ExpenseParticipantDTO invalidPayer = new ExpenseParticipantDTO("unknown-user", 100.0);
-        ExpenseParticipantDTO validParticipant = new ExpenseParticipantDTO("u1", 100.0);
+        CreateExpenseParticipantDTO invalidPayer = new CreateExpenseParticipantDTO("unknown-user", 100.0);
+        CreateExpenseParticipantDTO validParticipant = new CreateExpenseParticipantDTO("u1", 100.0);
 
         ExpenseInputDTO dto = Instancio.of(ExpenseInputDTO.class)
             .set(Select.field(ExpenseInputDTO::payers), List.of(invalidPayer))

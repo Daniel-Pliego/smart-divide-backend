@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.domain.dto;
+package mr.limpios.smart_divide_backend.domain.dto.ExpenseDetails;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -10,6 +10,6 @@ public record ExpenseDetailDTO(
         String description,
         BigDecimal amount,
         LocalDateTime createdAt,
-        List<ExpensePayerDTO> payers,
-        BigDecimal userBalance
-) {}
+        String evidenceUrl,
+        List<ExpenseBalanceDTO> balances) {
+}

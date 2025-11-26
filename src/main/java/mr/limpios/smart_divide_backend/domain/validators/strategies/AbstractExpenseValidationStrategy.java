@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants;
+import mr.limpios.smart_divide_backend.domain.dto.CreateExpenseParticipantDTO;
 import mr.limpios.smart_divide_backend.domain.dto.ExpenseInputDTO;
-import mr.limpios.smart_divide_backend.domain.dto.ExpenseParticipantDTO;
 import mr.limpios.smart_divide_backend.domain.exceptions.InvalidDataException;
 
 public abstract class AbstractExpenseValidationStrategy
@@ -19,7 +19,7 @@ public abstract class AbstractExpenseValidationStrategy
     }
   }
 
-  protected BigDecimal getSumOfAmount(List<ExpenseParticipantDTO> memberList) {
+  protected BigDecimal getSumOfAmount(List<CreateExpenseParticipantDTO> memberList) {
     return memberList.stream().map(p -> BigDecimal.valueOf(p.amount())).reduce(BigDecimal.ZERO,
         BigDecimal::add);
   }

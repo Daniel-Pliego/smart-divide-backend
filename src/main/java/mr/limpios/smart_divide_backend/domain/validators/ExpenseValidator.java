@@ -6,8 +6,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import mr.limpios.smart_divide_backend.domain.dto.CreateExpenseParticipantDTO;
 import mr.limpios.smart_divide_backend.domain.dto.ExpenseInputDTO;
-import mr.limpios.smart_divide_backend.domain.dto.ExpenseParticipantDTO;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundException;
 import mr.limpios.smart_divide_backend.domain.models.User;
 
@@ -21,9 +21,9 @@ public class ExpenseValidator {
     HashSet<String> memberIds = new HashSet<>(membersMap.keySet());
 
     HashSet<String> dtoParticipantsIds = dto.participants().stream()
-        .map(ExpenseParticipantDTO::userId).collect(Collectors.toCollection(HashSet::new));
+        .map(CreateExpenseParticipantDTO::userId).collect(Collectors.toCollection(HashSet::new));
 
-    HashSet<String> dtoPayersIds = dto.payers().stream().map(ExpenseParticipantDTO::userId)
+    HashSet<String> dtoPayersIds = dto.payers().stream().map(CreateExpenseParticipantDTO::userId)
         .collect(Collectors.toCollection(HashSet::new));
 
     if (!memberIds.containsAll(dtoParticipantsIds)) {

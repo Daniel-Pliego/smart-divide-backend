@@ -5,8 +5,8 @@ import java.util.*;
 import java.util.function.Predicate;
 
 import mr.limpios.smart_divide_backend.aplication.utils.CollectionUtils;
+import mr.limpios.smart_divide_backend.domain.dto.CreateExpenseParticipantDTO;
 import mr.limpios.smart_divide_backend.domain.dto.ExpenseInputDTO;
-import mr.limpios.smart_divide_backend.domain.dto.ExpenseParticipantDTO;
 import mr.limpios.smart_divide_backend.domain.models.*;
 
 public class ExpenseModelAssembler {
@@ -14,10 +14,11 @@ public class ExpenseModelAssembler {
       ExpenseInputDTO addExpenseDTO, Map<String, User> groupMembersMap) {
 
     Map<String, BigDecimal> payersMap = CollectionUtils.toMap(addExpenseDTO.payers(),
-        ExpenseParticipantDTO::userId, payer -> BigDecimal.valueOf(payer.amount()));
+        CreateExpenseParticipantDTO::userId, payer -> BigDecimal.valueOf(payer.amount()));
 
-    Map<String, BigDecimal> participantsMap = CollectionUtils.toMap(addExpenseDTO.participants(),
-        ExpenseParticipantDTO::userId, participant -> BigDecimal.valueOf(participant.amount()));
+    Map<String, BigDecimal> participantsMap =
+        CollectionUtils.toMap(addExpenseDTO.participants(), CreateExpenseParticipantDTO::userId,
+            participant -> BigDecimal.valueOf(participant.amount()));
 
     Set<String> allMemberIds = new HashSet<>();
     allMemberIds.addAll(payersMap.keySet());
@@ -62,10 +63,11 @@ public class ExpenseModelAssembler {
       ExpenseInputDTO addExpenseDTO, Map<String, User> groupMembersMap) {
 
     Map<String, BigDecimal> payersMap = CollectionUtils.toMap(addExpenseDTO.payers(),
-        ExpenseParticipantDTO::userId, payer -> BigDecimal.valueOf(payer.amount()));
+        CreateExpenseParticipantDTO::userId, payer -> BigDecimal.valueOf(payer.amount()));
 
-    Map<String, BigDecimal> participantsMap = CollectionUtils.toMap(addExpenseDTO.participants(),
-        ExpenseParticipantDTO::userId, participant -> BigDecimal.valueOf(participant.amount()));
+    Map<String, BigDecimal> participantsMap =
+        CollectionUtils.toMap(addExpenseDTO.participants(), CreateExpenseParticipantDTO::userId,
+            participant -> BigDecimal.valueOf(participant.amount()));
 
     Map<String, BigDecimal> balances = balanceCalculation(payersMap, participantsMap);
 

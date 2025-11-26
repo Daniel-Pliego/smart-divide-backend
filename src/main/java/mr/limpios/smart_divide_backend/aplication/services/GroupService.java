@@ -143,7 +143,7 @@ public class GroupService {
     }
 
     List<UserBalanceDTO> userBalances = expenseService.getUserBalancesByGroup(groupId, userId);
-    List<ExpenseDetailDTO> expenses =
+    List<ExpenseSummaryDTO> expenses =
         expenseService.getExpensesByGroup(groupId, userBalances, userId);
     List<PaymentDetailDTO> payments = paymentService.getPaymentsByGroup(groupId);
 

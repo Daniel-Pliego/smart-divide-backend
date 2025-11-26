@@ -33,8 +33,8 @@ import mr.limpios.smart_divide_backend.aplication.assemblers.ExpenseModelAssembl
 import mr.limpios.smart_divide_backend.aplication.repositories.ExpenseGroupBalanceRepository;
 import mr.limpios.smart_divide_backend.aplication.repositories.ExpenseRepository;
 import mr.limpios.smart_divide_backend.aplication.repositories.GroupRepository;
-import mr.limpios.smart_divide_backend.domain.dto.ExpenseDetailDTO;
 import mr.limpios.smart_divide_backend.domain.dto.ExpenseInputDTO;
+import mr.limpios.smart_divide_backend.domain.dto.ExpenseSummaryDTO;
 import mr.limpios.smart_divide_backend.domain.dto.UserBalanceDTO;
 import mr.limpios.smart_divide_backend.domain.events.ExpenseCreatedEvent;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundException;
@@ -212,12 +212,12 @@ public class ExpenseServiceTest {
         when(expenseRepository.findByGroupId(groupId)).thenReturn(List.of(expense));
 
         // Act
-        List<ExpenseDetailDTO> result = expenseService.getExpensesByGroup(groupId, userBalances, userId);
+        List<ExpenseSummaryDTO> result = expenseService.getExpensesByGroup(groupId, userBalances, userId);
 
         // Assert
         assertNotNull(result);
         assertEquals(1, result.size());
-        ExpenseDetailDTO detail = result.get(0);
+        ExpenseSummaryDTO detail = result.get(0);
 
         assertEquals(expense.id(), detail.id());
 

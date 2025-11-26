@@ -10,6 +10,6 @@ public record GroupTransactionHistoryDTO(
         String type,
         List<UserBalanceDTO> userBalance,
         List<PaymentDetailDTO> payments,
-        List<ExpenseDetailDTO> expenses
+        List<ExpenseSummaryDTO> expenses
 ) {
 }

@@ -7,8 +7,8 @@ import java.math.RoundingMode;
 
 import org.springframework.stereotype.Component;
 
+import mr.limpios.smart_divide_backend.domain.dto.CreateExpenseParticipantDTO;
 import mr.limpios.smart_divide_backend.domain.dto.ExpenseInputDTO;
-import mr.limpios.smart_divide_backend.domain.dto.ExpenseParticipantDTO;
 import mr.limpios.smart_divide_backend.domain.exceptions.InvalidDataException;
 
 @Component
@@ -31,7 +31,7 @@ public class EqualDivisionValidationStrategy extends AbstractExpenseValidationSt
     BigDecimal expectedShare = totalAmount.divide(count, 2, RoundingMode.HALF_UP);
     BigDecimal tolerance = new BigDecimal("0.01");
 
-    for (ExpenseParticipantDTO participant : dto.participants()) {
+    for (CreateExpenseParticipantDTO participant : dto.participants()) {
       BigDecimal actualShare = BigDecimal.valueOf(participant.amount());
       BigDecimal difference = actualShare.subtract(expectedShare).abs();
 
