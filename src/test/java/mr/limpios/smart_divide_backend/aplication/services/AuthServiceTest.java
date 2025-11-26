@@ -3,9 +3,11 @@ package mr.limpios.smart_divide_backend.aplication.services;
 import mr.limpios.smart_divide_backend.aplication.repositories.UserRepository;
 import mr.limpios.smart_divide_backend.domain.exceptions.InvalidDataException;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceExistException;
+import mr.limpios.smart_divide_backend.domain.exceptions.UnauthorizedAccessException;
 import mr.limpios.smart_divide_backend.domain.models.User;
 import mr.limpios.smart_divide_backend.infraestructure.security.JWTService;
 import mr.limpios.smart_divide_backend.domain.dto.Auth.AuthenticatedDTO;
+import mr.limpios.smart_divide_backend.domain.dto.Auth.UserSignInDTO;
 import mr.limpios.smart_divide_backend.domain.dto.Auth.UserSignUpDTO;
 
 import org.junit.jupiter.api.DisplayName;
@@ -19,6 +21,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+
+import org.instancio.Instancio;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
@@ -75,5 +79,44 @@ class AuthServiceTest {
         assertThrows(InvalidDataException.class, () -> authService.signUp(dto));
 
         verify(userRepository, never()).saveUser(any());
+    }
+
+    @Test
+    @DisplayName("Should throw UnauthorizedException when password not matches")
+    void signIn_passwordNotMatches_throwsUnauthorizedException() {
+        UserSignInDTO dto = new UserSignInDTO("", "wrongPass");
+
+        when(userRepository.findUserByEmail(dto.email())).thenReturn(Instancio.create(User.class));
+        assertThrows(UnauthorizedAccessException.class, () -> authService.signIn(dto));
+    }
+
+    @Test
+    @DisplayName("Should throw UnauthorizedException when user does not exist")
+    void signIn_userNotExist_throwsUnauthorizedException() {
+        UserSignInDTO dto = new UserSignInDTO("", "somePass");
+
+        when(userRepository.findUserByEmail(dto.email())).thenReturn(null);
+
+        assertThrows(UnauthorizedAccessException.class, () -> authService.signIn(dto));
+    }
+
+    @Test
+    @DisplayName("Should sign in successfully when credentials are valid")
+    void signIn_success() {
+        UserSignInDTO dto = new UserSignInDTO("john@example.com", "correctPass");
+        User existingUser = new User("uid-1", "John", "Doe", dto.email(), "correctPass",
+                "photo.jpg", false, null);
+
+        when(userRepository.findUserByEmail(dto.email())).thenReturn(existingUser);
+        when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
+        when(jwtService.generateAccessToken(existingUser.email())).thenReturn("jwt-token");
+
+        AuthenticatedDTO result = authService.signIn(dto);
+
+        assertEquals(existingUser.id(), result.userId());
+        assertEquals(existingUser.email(), result.email());
+        assertEquals(existingUser.name(), result.name());
+        assertEquals(existingUser.lastName(), result.lastName());
+        assertEquals("jwt-token", result.token());
     }
 }
