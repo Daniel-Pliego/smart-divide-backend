@@ -27,7 +27,8 @@ public class ExpenseDetailAssembler {
   private static List<ExpensePayerDetail> buildPayersDetails(
       List<ExpenseParticipant> participants) {
     return participants.stream().filter(p -> p.amountPaid().compareTo(BigDecimal.ZERO) > 0)
-        .map(p -> new ExpensePayerDetail(toExpenseParticipantDTO(p.payer()), p.amountPaid()))
+        .map(p -> new ExpensePayerDetail(toExpenseParticipantDTO(p.payer()), p.amountPaid(),
+            p.amountPaid().subtract(p.mustPaid())))
         .toList();
   }
 
