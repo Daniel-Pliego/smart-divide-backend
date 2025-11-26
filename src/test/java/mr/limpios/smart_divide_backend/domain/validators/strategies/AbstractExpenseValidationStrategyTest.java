@@ -12,8 +12,8 @@ import org.instancio.Instancio;
 import org.instancio.Select;
 import org.junit.jupiter.api.Test;
 
+import mr.limpios.smart_divide_backend.domain.dto.CreateExpenseParticipantDTO;
 import mr.limpios.smart_divide_backend.domain.dto.ExpenseInputDTO;
-import mr.limpios.smart_divide_backend.domain.dto.ExpenseParticipantDTO;
 import mr.limpios.smart_divide_backend.domain.exceptions.InvalidDataException;
 
 class AbstractExpenseValidationStrategyTest {
@@ -28,8 +28,8 @@ class AbstractExpenseValidationStrategyTest {
 
     @Test
     void validatePayers_success_amountsMatch() {
-        ExpenseParticipantDTO payer1 = new ExpenseParticipantDTO("u1", 60.00);
-        ExpenseParticipantDTO payer2 = new ExpenseParticipantDTO("u2", 40.00);
+        CreateExpenseParticipantDTO payer1 = new CreateExpenseParticipantDTO("u1", 60.00);
+        CreateExpenseParticipantDTO payer2 = new CreateExpenseParticipantDTO("u2", 40.00);
 
         ExpenseInputDTO dto = Instancio.of(ExpenseInputDTO.class)
             .set(Select.field(ExpenseInputDTO::amount), 100.00)
@@ -41,8 +41,8 @@ class AbstractExpenseValidationStrategyTest {
 
     @Test
     void validatePayers_fail_amountsMismatch() {
-        ExpenseParticipantDTO payer1 = new ExpenseParticipantDTO("u1", 60.00);
-        ExpenseParticipantDTO payer2 = new ExpenseParticipantDTO("u2", 30.00);
+        CreateExpenseParticipantDTO payer1 = new CreateExpenseParticipantDTO("u1", 60.00);
+        CreateExpenseParticipantDTO payer2 = new CreateExpenseParticipantDTO("u2", 30.00);
 
         ExpenseInputDTO dto = Instancio.of(ExpenseInputDTO.class)
             .set(Select.field(ExpenseInputDTO::amount), 100.00)
@@ -55,9 +55,9 @@ class AbstractExpenseValidationStrategyTest {
 
     @Test
     void getSumOfAmount_calculatesCorrectly() {
-        ExpenseParticipantDTO p1 = new ExpenseParticipantDTO("u1", 10.50);
-        ExpenseParticipantDTO p2 = new ExpenseParticipantDTO("u2", 20.25);
-        List<ExpenseParticipantDTO> list = List.of(p1, p2);
+        CreateExpenseParticipantDTO p1 = new CreateExpenseParticipantDTO("u1", 10.50);
+        CreateExpenseParticipantDTO p2 = new CreateExpenseParticipantDTO("u2", 20.25);
+        List<CreateExpenseParticipantDTO> list = List.of(p1, p2);
 
         BigDecimal result = strategy.getSumOfAmount(list);
 

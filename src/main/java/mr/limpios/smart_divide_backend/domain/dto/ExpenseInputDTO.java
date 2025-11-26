@@ -9,6 +9,6 @@ public record ExpenseInputDTO(
         double amount,
         String evidenceUrl,
         DivisionType divisionType,
-        List<ExpenseParticipantDTO> payers,
-        List<ExpenseParticipantDTO> participants
+        List<CreateExpenseParticipantDTO> payers,
+        List<CreateExpenseParticipantDTO> participants
 ) {}

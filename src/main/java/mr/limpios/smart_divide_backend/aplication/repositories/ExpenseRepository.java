@@ -1,7 +1,6 @@
 package mr.limpios.smart_divide_backend.aplication.repositories;
 
 import java.util.List;
-import java.util.Optional;
 
 import mr.limpios.smart_divide_backend.domain.models.Expense;
 

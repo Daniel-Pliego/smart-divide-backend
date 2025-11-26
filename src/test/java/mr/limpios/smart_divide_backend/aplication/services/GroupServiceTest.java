@@ -25,7 +25,7 @@ import mr.limpios.smart_divide_backend.domain.models.Group;
 import mr.limpios.smart_divide_backend.domain.models.User;
 import mr.limpios.smart_divide_backend.domain.dto.AddMemberDTO;
 import mr.limpios.smart_divide_backend.domain.dto.CreateGroupDTO;
-import mr.limpios.smart_divide_backend.domain.dto.ExpenseDetailDTO;
+import mr.limpios.smart_divide_backend.domain.dto.ExpenseSummaryDTO;
 import mr.limpios.smart_divide_backend.domain.dto.GroupResumeDTO;
 import mr.limpios.smart_divide_backend.domain.dto.GroupTransactionHistoryDTO;
 import mr.limpios.smart_divide_backend.domain.dto.PaymentDetailDTO;
@@ -281,7 +281,7 @@ public class GroupServiceTest {
                 List<UserBalanceDTO> balances = Instancio.ofList(UserBalanceDTO.class)
                                 .size(3)
                                 .create();
-                List<ExpenseDetailDTO> expenses = Instancio.ofList(ExpenseDetailDTO.class)
+                List<ExpenseSummaryDTO> expenses = Instancio.ofList(ExpenseSummaryDTO.class)
                                 .size(5)
                                 .create();
                 List<PaymentDetailDTO> payments = Instancio.ofList(PaymentDetailDTO.class)

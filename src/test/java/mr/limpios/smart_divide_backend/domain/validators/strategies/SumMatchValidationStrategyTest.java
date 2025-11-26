@@ -12,8 +12,8 @@ import org.instancio.Instancio;
 import org.instancio.Select;
 import org.junit.jupiter.api.Test;
 
+import mr.limpios.smart_divide_backend.domain.dto.CreateExpenseParticipantDTO;
 import mr.limpios.smart_divide_backend.domain.dto.ExpenseInputDTO;
-import mr.limpios.smart_divide_backend.domain.dto.ExpenseParticipantDTO;
 import mr.limpios.smart_divide_backend.domain.exceptions.InvalidDataException;
 
 class SumMatchValidationStrategyTest {
@@ -22,10 +22,10 @@ class SumMatchValidationStrategyTest {
 
     @Test
     void validate_success_sumsMatch() {
-        ExpenseParticipantDTO part1 = new ExpenseParticipantDTO("u1", 40.00);
-        ExpenseParticipantDTO part2 = new ExpenseParticipantDTO("u2", 60.00);
+        CreateExpenseParticipantDTO part1 = new CreateExpenseParticipantDTO("u1", 40.00);
+        CreateExpenseParticipantDTO part2 = new CreateExpenseParticipantDTO("u2", 60.00);
         
-        ExpenseParticipantDTO payer1 = new ExpenseParticipantDTO("u1", 100.00);
+        CreateExpenseParticipantDTO payer1 = new CreateExpenseParticipantDTO("u1", 100.00);
 
         ExpenseInputDTO dto = Instancio.of(ExpenseInputDTO.class)
             .set(Select.field(ExpenseInputDTO::amount), 100.00)
@@ -38,10 +38,10 @@ class SumMatchValidationStrategyTest {
 
     @Test
     void validate_fail_participantsSumMismatch() {
-        ExpenseParticipantDTO part1 = new ExpenseParticipantDTO("u1", 40.00);
-        ExpenseParticipantDTO part2 = new ExpenseParticipantDTO("u2", 40.00); 
+        CreateExpenseParticipantDTO part1 = new CreateExpenseParticipantDTO("u1", 40.00);
+        CreateExpenseParticipantDTO part2 = new CreateExpenseParticipantDTO("u2", 40.00); 
         
-        ExpenseParticipantDTO payer1 = new ExpenseParticipantDTO("u1", 100.00);
+        CreateExpenseParticipantDTO payer1 = new CreateExpenseParticipantDTO("u1", 100.00);
 
         ExpenseInputDTO dto = Instancio.of(ExpenseInputDTO.class)
             .set(Select.field(ExpenseInputDTO::amount), 100.00)
@@ -55,10 +55,10 @@ class SumMatchValidationStrategyTest {
 
     @Test
     void validate_fail_payersSumMismatch() {
-        ExpenseParticipantDTO part1 = new ExpenseParticipantDTO("u1", 50.00);
-        ExpenseParticipantDTO part2 = new ExpenseParticipantDTO("u2", 50.00);
+        CreateExpenseParticipantDTO part1 = new CreateExpenseParticipantDTO("u1", 50.00);
+        CreateExpenseParticipantDTO part2 = new CreateExpenseParticipantDTO("u2", 50.00);
         
-        ExpenseParticipantDTO payer1 = new ExpenseParticipantDTO("u1", 90.00); 
+        CreateExpenseParticipantDTO payer1 = new CreateExpenseParticipantDTO("u1", 90.00); 
 
         ExpenseInputDTO dto = Instancio.of(ExpenseInputDTO.class)
             .set(Select.field(ExpenseInputDTO::amount), 100.00)

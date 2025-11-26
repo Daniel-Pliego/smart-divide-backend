@@ -11,8 +11,8 @@ import java.util.List;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 
+import mr.limpios.smart_divide_backend.domain.dto.CreateExpenseParticipantDTO;
 import mr.limpios.smart_divide_backend.domain.dto.ExpenseInputDTO;
-import mr.limpios.smart_divide_backend.domain.dto.ExpenseParticipantDTO;
 import mr.limpios.smart_divide_backend.domain.exceptions.InvalidDataException;
 
 class EqualDivisionValidationStrategyTest {
@@ -21,10 +21,10 @@ class EqualDivisionValidationStrategyTest {
 
     @Test
     void validate_success_exactDivision() {
-        ExpenseParticipantDTO p1 = new ExpenseParticipantDTO("u1", 50.00);
-        ExpenseParticipantDTO p2 = new ExpenseParticipantDTO("u2", 50.00);
+        CreateExpenseParticipantDTO p1 = new CreateExpenseParticipantDTO("u1", 50.00);
+        CreateExpenseParticipantDTO p2 = new CreateExpenseParticipantDTO("u2", 50.00);
         
-        ExpenseParticipantDTO payer = new ExpenseParticipantDTO("u1", 100.00);
+        CreateExpenseParticipantDTO payer = new CreateExpenseParticipantDTO("u1", 100.00);
 
         ExpenseInputDTO dto = Instancio.of(ExpenseInputDTO.class)
             .set(org.instancio.Select.field(ExpenseInputDTO::amount), 100.00)
@@ -37,11 +37,11 @@ class EqualDivisionValidationStrategyTest {
 
     @Test
     void validate_success_withRoundingCents() {
-        ExpenseParticipantDTO p1 = new ExpenseParticipantDTO("u1", 33.33);
-        ExpenseParticipantDTO p2 = new ExpenseParticipantDTO("u2", 33.33);
-        ExpenseParticipantDTO p3 = new ExpenseParticipantDTO("u3", 33.34);
+        CreateExpenseParticipantDTO p1 = new CreateExpenseParticipantDTO("u1", 33.33);
+        CreateExpenseParticipantDTO p2 = new CreateExpenseParticipantDTO("u2", 33.33);
+        CreateExpenseParticipantDTO p3 = new CreateExpenseParticipantDTO("u3", 33.34);
         
-        ExpenseParticipantDTO payer = new ExpenseParticipantDTO("u1", 100.00);
+        CreateExpenseParticipantDTO payer = new CreateExpenseParticipantDTO("u1", 100.00);
 
         ExpenseInputDTO dto = Instancio.of(ExpenseInputDTO.class)
             .set(org.instancio.Select.field(ExpenseInputDTO::amount), 100.00)
@@ -54,10 +54,10 @@ class EqualDivisionValidationStrategyTest {
 
     @Test
     void validate_fail_totalAmountMismatch() {
-        ExpenseParticipantDTO p1 = new ExpenseParticipantDTO("u1", 40.00);
-        ExpenseParticipantDTO p2 = new ExpenseParticipantDTO("u2", 40.00);
+        CreateExpenseParticipantDTO p1 = new CreateExpenseParticipantDTO("u1", 40.00);
+        CreateExpenseParticipantDTO p2 = new CreateExpenseParticipantDTO("u2", 40.00);
         
-        ExpenseParticipantDTO payer = new ExpenseParticipantDTO("u1", 100.00);
+        CreateExpenseParticipantDTO payer = new CreateExpenseParticipantDTO("u1", 100.00);
 
         ExpenseInputDTO dto = Instancio.of(ExpenseInputDTO.class)
             .set(org.instancio.Select.field(ExpenseInputDTO::amount), 100.00)
@@ -71,10 +71,10 @@ class EqualDivisionValidationStrategyTest {
 
     @Test
     void validate_fail_unequalDivision() {
-        ExpenseParticipantDTO p1 = new ExpenseParticipantDTO("u1", 20.00);
-        ExpenseParticipantDTO p2 = new ExpenseParticipantDTO("u2", 80.00);
+        CreateExpenseParticipantDTO p1 = new CreateExpenseParticipantDTO("u1", 20.00);
+        CreateExpenseParticipantDTO p2 = new CreateExpenseParticipantDTO("u2", 80.00);
         
-        ExpenseParticipantDTO payer = new ExpenseParticipantDTO("u1", 100.00);
+        CreateExpenseParticipantDTO payer = new CreateExpenseParticipantDTO("u1", 100.00);
 
         ExpenseInputDTO dto = Instancio.of(ExpenseInputDTO.class)
             .set(org.instancio.Select.field(ExpenseInputDTO::amount), 100.00)
