@@ -10,6 +10,7 @@ public record ExpenseDetailDTO(
                 String description,
                 BigDecimal amount,
                 LocalDateTime createdAt,
+                String evidenceUrl,
                 List<ExpensePayerDetail> payers,
                 List<ExpenseBalanceDTO> balances) {
 }

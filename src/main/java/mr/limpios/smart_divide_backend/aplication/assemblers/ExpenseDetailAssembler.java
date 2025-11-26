@@ -21,7 +21,7 @@ public class ExpenseDetailAssembler {
     List<ExpenseBalanceDTO> balances = buildBalancesDetails(expense.balances());
 
     return new ExpenseDetailDTO(expense.id(), expense.type(), expense.description(),
-        expense.amount(), expense.createdAt(), payers, balances);
+        expense.amount(), expense.createdAt(), expense.evidenceUrl(), payers, balances);
   }
 
   private static List<ExpensePayerDetail> buildPayersDetails(
