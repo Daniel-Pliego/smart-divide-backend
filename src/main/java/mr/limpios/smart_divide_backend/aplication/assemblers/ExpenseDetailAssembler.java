@@ -1,15 +1,16 @@
 package mr.limpios.smart_divide_backend.aplication.assemblers;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import mr.limpios.smart_divide_backend.domain.dto.ExpenseDetails.DebtorBalanceDTO;
 import mr.limpios.smart_divide_backend.domain.dto.ExpenseDetails.ExpenseBalanceDTO;
 import mr.limpios.smart_divide_backend.domain.dto.ExpenseDetails.ExpenseDetailDTO;
 import mr.limpios.smart_divide_backend.domain.dto.ExpenseDetails.ExpenseParticipantDTO;
 import mr.limpios.smart_divide_backend.domain.dto.ExpenseDetails.ExpensePayerDetailDTO;
+import mr.limpios.smart_divide_backend.domain.dto.ExpenseDetails.ExpenseUserAmountDTO;
 import mr.limpios.smart_divide_backend.domain.models.Expense;
 import mr.limpios.smart_divide_backend.domain.models.ExpenseBalance;
 import mr.limpios.smart_divide_backend.domain.models.ExpenseParticipant;
@@ -26,8 +27,18 @@ public class ExpenseDetailAssembler {
     List<ExpenseBalanceDTO> balances =
         groupBalancesByCreditor(expense.balances(), participantsByUser);
 
+    List<ExpenseUserAmountDTO> paidBy =
+        participants.stream().filter(p -> p.amountPaid().compareTo(BigDecimal.ZERO) > 0)
+            .map(p -> new ExpenseUserAmountDTO(toExpenseParticipantDTO(p.payer()), p.amountPaid()))
+            .toList();
+
+    List<ExpenseUserAmountDTO> distribution = participants.stream()
+        .map(p -> new ExpenseUserAmountDTO(toExpenseParticipantDTO(p.payer()), p.mustPaid()))
+        .toList();
+
     return new ExpenseDetailDTO(expense.id(), expense.type(), expense.description(),
-        expense.amount(), expense.createdAt(), expense.evidenceUrl(), balances);
+        expense.amount(), expense.createdAt(), expense.evidenceUrl(), paidBy, distribution,
+        balances);
   }
 
   private static List<ExpenseBalanceDTO> groupBalancesByCreditor(List<ExpenseBalance> balances,
@@ -46,8 +57,8 @@ public class ExpenseDetailAssembler {
     ExpensePayerDetailDTO payer = new ExpensePayerDetailDTO(toExpenseParticipantDTO(creditor),
         participant.amountPaid(), participant.amountPaid().subtract(participant.mustPaid()));
 
-    List<DebtorBalanceDTO> debtors = balancesForCreditor.stream()
-        .map(b -> new DebtorBalanceDTO(toExpenseParticipantDTO(b.debtor()), b.amountToPaid()))
+    List<ExpenseUserAmountDTO> debtors = balancesForCreditor.stream()
+        .map(b -> new ExpenseUserAmountDTO(toExpenseParticipantDTO(b.debtor()), b.amountToPaid()))
         .toList();
 
     return new ExpenseBalanceDTO(payer, debtors);
