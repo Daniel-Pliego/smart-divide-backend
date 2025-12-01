@@ -6,27 +6,33 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import mr.limpios.smart_divide_backend.aplication.repositories.FriendshipRepository;
 import mr.limpios.smart_divide_backend.aplication.repositories.UserRepository;
+import mr.limpios.smart_divide_backend.domain.dto.FriendshipDTO;
+import mr.limpios.smart_divide_backend.domain.events.FriendRequestCreatedEvent;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundException;
 import mr.limpios.smart_divide_backend.domain.models.Friendship;
 import mr.limpios.smart_divide_backend.domain.models.User;
-import mr.limpios.smart_divide_backend.domain.dto.FriendshipDTO;
 
 @Service
 public class FriendshipService {
 
   private final FriendshipRepository friendshipRepository;
   private final UserRepository userRepository;
+  private final ApplicationEventPublisher eventPublisher;
 
-  public FriendshipService(FriendshipRepository friendshipRepository,
-      UserRepository userRepository) {
+  public FriendshipService(FriendshipRepository friendshipRepository, UserRepository userRepository,
+      ApplicationEventPublisher eventPublisher) {
     this.friendshipRepository = friendshipRepository;
     this.userRepository = userRepository;
+    this.eventPublisher = eventPublisher;
   }
 
+  @Transactional
   public void createFriendRequest(String fromUserId, String toUserId) {
 
     User fromUser = userRepository.getUserbyId(fromUserId);
@@ -39,6 +45,7 @@ public class FriendshipService {
     Friendship friendship = new Friendship(null, fromUser, toUser, true);
 
     friendshipRepository.createFriendRequest(friendship);
+    eventPublisher.publishEvent(new FriendRequestCreatedEvent(friendship));
   }
 
   public Set<FriendshipDTO> getAllFriendsFromUser(String userId) {

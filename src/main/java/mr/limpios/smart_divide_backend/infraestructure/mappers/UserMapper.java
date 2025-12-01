@@ -21,7 +21,7 @@ public class UserMapper {
         .stream().map(CardMapper::toSchema).collect(Collectors.toSet());
 
     return new UserSchema(user.id(), user.name(), user.lastName(), user.email(), user.password(),
-        user.photoUrl(), user.isVerified(), schemaCards);
+        user.photoUrl(), user.isVerified(), schemaCards, user.pushToken());
   }
 
   public static User toModel(UserSchema userSchema) {
@@ -32,6 +32,6 @@ public class UserMapper {
 
     return new User(userSchema.getId(), userSchema.getName(), userSchema.getLastName(),
         userSchema.getEmail(), userSchema.getPassword(), userSchema.getPhotoUrl(),
-        userSchema.getIsVerified(), modelCards);
+        userSchema.getIsVerified(), modelCards, userSchema.getPushToken());
   }
 }

@@ -12,14 +12,17 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import mr.limpios.smart_divide_backend.aplication.repositories.ExpenseGroupBalanceRepository;
 import mr.limpios.smart_divide_backend.aplication.repositories.FriendshipRepository;
 import mr.limpios.smart_divide_backend.aplication.repositories.GroupRepository;
 import mr.limpios.smart_divide_backend.aplication.repositories.UserRepository;
 import mr.limpios.smart_divide_backend.domain.dto.*;
+import mr.limpios.smart_divide_backend.domain.events.UserAddedToGroupEvent;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundException;
 import mr.limpios.smart_divide_backend.domain.models.Group;
 import mr.limpios.smart_divide_backend.domain.models.User;
@@ -36,17 +39,19 @@ public class GroupService {
   private final PaymentService paymentService;
   @Lazy
   private final ExpenseService expenseService;
+  private final ApplicationEventPublisher eventPublisher;
 
   public GroupService(GroupRepository groupRepository, UserRepository userRepository,
       FriendshipRepository friendshipRepository,
       ExpenseGroupBalanceRepository expenseGroupBalanceRepository, PaymentService paymentService,
-      ExpenseService expenseService) {
+      ExpenseService expenseService, ApplicationEventPublisher eventPublisher) {
     this.groupRepository = groupRepository;
     this.userRepository = userRepository;
     this.friendshipRepository = friendshipRepository;
     this.paymentService = paymentService;
     this.expenseGroupBalanceRepository = expenseGroupBalanceRepository;
     this.expenseService = expenseService;
+    this.eventPublisher = eventPublisher;
   }
 
   public GroupResumeDTO createGroup(CreateGroupDTO group, String ownerId) {
@@ -82,6 +87,7 @@ public class GroupService {
         updatedGroup.description());
   }
 
+  @Transactional
   public NewMemberDTO addMemberToGroup(AddMemberDTO addMemberDTO, String groupId, String ownerId) {
     User owner = this.userRepository.getUserbyId(ownerId);
     User memberToAdd = this.userRepository.getUserbyId(addMemberDTO.memberId());
@@ -103,6 +109,8 @@ public class GroupService {
     }
 
     Group updatedGroup = this.groupRepository.addMemberToGroup(groupId, memberToAdd.id());
+
+    eventPublisher.publishEvent(new UserAddedToGroupEvent(group, memberToAdd.id(), ownerId));
 
     return new NewMemberDTO(updatedGroup.id(), memberToAdd.id(), memberToAdd.name(),
         memberToAdd.lastName(), memberToAdd.photoUrl());

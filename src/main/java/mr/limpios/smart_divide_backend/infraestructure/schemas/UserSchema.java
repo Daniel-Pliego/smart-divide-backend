@@ -47,4 +47,7 @@ public class UserSchema {
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<CardSchema> cards;
+
+  @Column(name = "push_token")
+  private String pushToken;
 }
