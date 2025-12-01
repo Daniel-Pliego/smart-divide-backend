@@ -176,9 +176,9 @@ public class ExpenseService {
 
       expenseGroupBalanceService.applyReverseBalance(expenseBalance.creditor(),
           expenseBalance.debtor(), expenseBalance.amountToPaid(), group);
-
-      expenseRepository.deleteById(expenseId);
     }
+
+    expenseRepository.deleteById(expenseId);
   }
 
 }
