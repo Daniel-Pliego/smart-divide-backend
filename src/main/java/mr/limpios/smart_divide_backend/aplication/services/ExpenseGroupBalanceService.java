@@ -73,24 +73,38 @@ public class ExpenseGroupBalanceService {
        String groupId = group.id();
        var forwardBalanceOpt = balanceRepository.findByCreditorAndDebtorAndGroup(originalCreditor.id(), originalDebtor.id(), groupId);
        var reverseBalanceOpt = balanceRepository.findByCreditorAndDebtorAndGroup(originalDebtor.id(), originalCreditor.id(), groupId);
+       BigDecimal positiveAmountToReverse = amountToReverse.abs();
 
        if (forwardBalanceOpt.isPresent()) {
            ExpenseGroupBalance currentBalance = forwardBalanceOpt.get();
-           BigDecimal newAmount = currentBalance.amount().subtract(amountToReverse);
-
-
+           BigDecimal newAmount = currentBalance.amount().subtract(positiveAmountToReverse);
+           saveUpdatedGroupBalance(currentBalance, newAmount);
+       } else if (reverseBalanceOpt.isPresent()) {
+           ExpenseGroupBalance currentBalance = reverseBalanceOpt.get();
+           BigDecimal newAmount = currentBalance.amount().add(positiveAmountToReverse);
+           saveUpdatedGroupBalance(currentBalance, newAmount);
+       } else {
            ExpenseGroupBalance updatedBalance = new ExpenseGroupBalance(
-                   currentBalance.id(),
-                   currentBalance.creditor(),
-                   currentBalance.debtor(),
-                   newAmount,
-                   currentBalance.group()
+                   null,
+                   originalDebtor,
+                   originalCreditor,
+                   amountToReverse,
+                   group
            );
-
            balanceRepository.saveExpenseGroupBalance(updatedBalance);
-
        }
        normalize(originalCreditor, originalDebtor, group);
+   }
+
+   private void saveUpdatedGroupBalance(ExpenseGroupBalance currentBalance, BigDecimal newAmount) {
+       ExpenseGroupBalance updatedBalance = new ExpenseGroupBalance(
+               currentBalance.id(),
+               currentBalance.creditor(),
+               currentBalance.debtor(),
+               newAmount,
+               currentBalance.group()
+       );
+       balanceRepository.saveExpenseGroupBalance(updatedBalance);
    }
 
 
