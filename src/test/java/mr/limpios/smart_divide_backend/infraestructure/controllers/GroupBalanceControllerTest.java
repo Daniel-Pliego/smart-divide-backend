@@ -20,13 +20,7 @@ import mr.limpios.smart_divide_backend.aplication.services.ExpenseGroupBalanceSe
 import mr.limpios.smart_divide_backend.domain.dto.GetGroupBalancesDTO;
 import mr.limpios.smart_divide_backend.infraestructure.security.JWTAuthorizationFilter;
 
-@WebMvcTest(
-    controllers = GroupBalanceController.class,
-    excludeFilters = @ComponentScan.Filter(
-        type = FilterType.ASSIGNABLE_TYPE,
-        classes = JWTAuthorizationFilter.class
-    )
-)
+@WebMvcTest(controllers = GroupBalanceController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JWTAuthorizationFilter.class))
 @AutoConfigureMockMvc(addFilters = false)
 class GroupBalanceControllerTest {
 
@@ -45,9 +39,25 @@ class GroupBalanceControllerTest {
 
         mockMvc.perform(get("/groups/{groupId}/balances", groupId)
                 .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.ok").value(true))
-            .andExpect(jsonPath("$.message").value("Balances retrieved successfully"))
-            .andExpect(jsonPath("$.body").exists());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.ok").value(true))
+                .andExpect(jsonPath("$.message").value("Balances retrieved successfully"))
+                .andExpect(jsonPath("$.body").exists());
+    }
+
+    @Test
+    void getAllBalancesByGroupAndUser_success() throws Exception {
+        String groupId = "group-1";
+        String userId = "user-1";
+        GetGroupBalancesDTO responseDTO = Instancio.create(GetGroupBalancesDTO.class);
+
+        when(expenseGroupBalanceService.getBalancesByUserAndGroup(userId, groupId)).thenReturn(responseDTO);
+
+        mockMvc.perform(get("/groups/{groupId}/balances/users/{userId}", groupId, userId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.ok").value(true))
+                .andExpect(jsonPath("$.message").value("Balances retrieved successfully"))
+                .andExpect(jsonPath("$.body").exists());
     }
 }
