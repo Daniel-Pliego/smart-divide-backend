@@ -75,15 +75,9 @@ public class ExpenseGroupBalanceService {
   }
 
   public GetGroupBalancesDTO getBalancesByUserAndGroup(String userId, String groupId) {
-    List<ExpenseGroupBalance> credits =
-        balanceRepository.findByGroupIdAndCreditorId(groupId, userId);
     List<ExpenseGroupBalance> debts = balanceRepository.findByGroupIdAndDebtorId(groupId, userId);
 
-    List<ExpenseGroupBalance> allBalances = new java.util.ArrayList<>();
-    allBalances.addAll(credits);
-    allBalances.addAll(debts);
-
-    List<BalanceDetailDTO> balanceDetails = allBalances.stream()
+    List<BalanceDetailDTO> balanceDetails = debts.stream()
         .map(balance -> new BalanceDetailDTO(
             new ExpenseParticipantDTO(balance.creditor().id(), balance.creditor().name(),
                 balance.creditor().lastName(), balance.creditor().photoUrl()),
