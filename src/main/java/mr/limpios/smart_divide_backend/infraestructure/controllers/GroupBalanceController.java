@@ -14,21 +14,31 @@ import mr.limpios.smart_divide_backend.domain.dto.GetGroupBalancesDTO;
 import mr.limpios.smart_divide_backend.domain.dto.WrapperResponse;
 
 @RestController
-@CrossOrigin(maxAge = 3600, methods = { RequestMethod.OPTIONS, RequestMethod.GET }, origins = {
-        "*" })
+@CrossOrigin(maxAge = 3600, methods = {RequestMethod.OPTIONS, RequestMethod.GET}, origins = {"*"})
 @Tag(name = "Group Balances", description = "Endpoints for managing group balances")
 public class GroupBalanceController {
-    private final ExpenseGroupBalanceService expenseGroupBalanceService;
+  private final ExpenseGroupBalanceService expenseGroupBalanceService;
 
-    public GroupBalanceController(ExpenseGroupBalanceService expenseGroupBalanceService) {
-        this.expenseGroupBalanceService = expenseGroupBalanceService;
-    }
+  public GroupBalanceController(ExpenseGroupBalanceService expenseGroupBalanceService) {
+    this.expenseGroupBalanceService = expenseGroupBalanceService;
+  }
 
-    @Operation(summary = "Get all balances by group")
-    @GetMapping("groups/{groupId}/balances")
-    public ResponseEntity<WrapperResponse<GetGroupBalancesDTO>> getAllBalancesByGroup(@PathVariable String groupId) {
-        GetGroupBalancesDTO balances = expenseGroupBalanceService.getAllBalancesByGroup(groupId);
-        return ResponseEntity.ok(
-                new WrapperResponse<>(true, "Balances retrieved successfully", balances));
-    }
+  @Operation(summary = "Get all balances by group")
+  @GetMapping("groups/{groupId}/balances")
+  public ResponseEntity<WrapperResponse<GetGroupBalancesDTO>> getAllBalancesByGroup(
+      @PathVariable String groupId) {
+    GetGroupBalancesDTO balances = expenseGroupBalanceService.getAllBalancesByGroup(groupId);
+    return ResponseEntity
+        .ok(new WrapperResponse<>(true, "Balances retrieved successfully", balances));
+  }
+
+  @Operation(summary = "Get all balances by group and user")
+  @GetMapping("groups/{groupId}/balances/users/{userId}")
+  public ResponseEntity<WrapperResponse<GetGroupBalancesDTO>> getAllBalancesByGroupAndUser(
+      @PathVariable String groupId, @PathVariable String userId) {
+    GetGroupBalancesDTO balances =
+        expenseGroupBalanceService.getBalancesByUserAndGroup(userId, groupId);
+    return ResponseEntity
+        .ok(new WrapperResponse<>(true, "Balances retrieved successfully", balances));
+  }
 }
