@@ -9,11 +9,12 @@ public class CardMapper {
 
   public static CardSchema toSchema(Card card) {
     return new CardSchema(card.id(), card.lastDigits(), card.brand(), card.expMonth(),
-        card.expYear(), card.token(), null);
+        card.expYear(), card.type(), card.fundingMethod(), null);
   }
 
   public static Card toModel(CardSchema cardSchema) {
     return new Card(cardSchema.getId(), cardSchema.getLastDigits(), cardSchema.getBrand(),
-        cardSchema.getExpMonth(), cardSchema.getExpYear(), cardSchema.getToken());
+        cardSchema.getExpMonth(), cardSchema.getExpYear(), cardSchema.getType(),
+        cardSchema.getFundingMethod());
   }
 }

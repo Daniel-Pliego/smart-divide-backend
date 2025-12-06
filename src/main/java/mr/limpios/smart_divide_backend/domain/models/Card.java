@@ -6,4 +6,6 @@ public record Card(
         String brand,
         String expMonth,
         String expYear,
-        String token) {}
+        String type,
+        String fundingMethod
+        ) {}

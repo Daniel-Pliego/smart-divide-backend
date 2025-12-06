@@ -21,7 +21,7 @@ import mr.limpios.smart_divide_backend.infraestructure.security.JWTAuthorization
 public class SecurityConfig {
 
   private static final String[] PUBLIC_URLS = {"/auth/**", "/actuator/**", "/v3/api-docs/**",
-      "/swagger-ui/**", "/swagger-ui.html", "/docs"};
+      "/swagger-ui/**", "/swagger-ui.html", "/docs", "/stripe/webhook/**"};
 
   private final JWTAuthorizationFilter jwtAuthorizationFilter;
   private final UserDetailsService userDetailsService;
