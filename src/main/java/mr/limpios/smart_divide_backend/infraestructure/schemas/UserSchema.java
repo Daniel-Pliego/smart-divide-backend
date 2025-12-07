@@ -1,14 +1,10 @@
 package mr.limpios.smart_divide_backend.infraestructure.schemas;
 
-import java.util.Set;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -44,7 +40,4 @@ public class UserSchema {
   @Column(nullable = false)
   @Builder.Default
   private Boolean isVerified = false;
-
-  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<CardSchema> cards;
 }

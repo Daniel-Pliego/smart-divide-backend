@@ -43,7 +43,7 @@ public class AuthService {
     }
 
     User savedUser = userRepository.saveUser(new User(null, user.name(), user.lastName(),
-        user.email(), passwordEncoder.encode(user.password()), user.photoUrl(), false, null));
+        user.email(), passwordEncoder.encode(user.password()), user.photoUrl(), false));
 
     return new AuthenticatedDTO(savedUser.id(), savedUser.email(), savedUser.name(),
         savedUser.lastName(), savedUser.photoUrl(), jwtService.generateAccessToken(user.email()));

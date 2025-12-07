@@ -49,7 +49,7 @@ class PaymentControllerTest {
         String groupId = "group-1";
         CreatePaymentDTO inputDTO = Instancio.create(CreatePaymentDTO.class);
 
-        doNothing().when(paymentService).createPayment(eq(userId), eq(groupId), any(CreatePaymentDTO.class));
+        doNothing().when(paymentService).createPayment(eq(userId), eq(groupId), any(CreatePaymentDTO.class), eq(false));
 
         mockMvc.perform(post("/user/{userId}/groups/{groupId}/payments", userId, groupId)
                 .contentType(MediaType.APPLICATION_JSON)

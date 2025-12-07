@@ -66,12 +66,11 @@ public class PaymentServiceTest {
     @InjectMocks
     private PaymentService paymentService;
 
-
     @Test
     @DisplayName("Create Payment - Success: Valid data, debt exists and amount is correct")
     public void createPayment_success() {
         try (MockedStatic<PaymentValidator> mockedValidator = Mockito.mockStatic(PaymentValidator.class)) {
-            
+
             String groupId = "group-1";
             String fromUserId = "user-payer";
             String toUserId = "user-receiver";
@@ -85,25 +84,25 @@ public class PaymentServiceTest {
             CreatePaymentDTO paymentDTO = new CreatePaymentDTO(fromUserId, toUserId, paymentAmount);
 
             ExpenseGroupBalance existingBalance = new ExpenseGroupBalance(
-                1, toUser, fromUser, debtAmount, group
-            );
+                    1, toUser, fromUser, debtAmount, group);
 
             when(groupRepository.getGroupById(groupId)).thenReturn(group);
             when(userRepository.getUserbyId(fromUserId)).thenReturn(fromUser);
             when(userRepository.getUserbyId(toUserId)).thenReturn(toUser);
-            
-            when(balanceRepository.findByCreditorAndDebtorAndGroup(toUserId, fromUserId, groupId))
-                .thenReturn(Optional.of(existingBalance));
 
-            Payment savedPayment = new Payment("test-id", fromUser, toUser, paymentAmount, group, LocalDateTime.now());
+            when(balanceRepository.findByCreditorAndDebtorAndGroup(toUserId, fromUserId, groupId))
+                    .thenReturn(Optional.of(existingBalance));
+
+            Payment savedPayment = new Payment("test-id", fromUser, toUser, paymentAmount, group, false,
+                    LocalDateTime.now());
             when(paymentRepository.savePayment(any(Payment.class))).thenReturn(savedPayment);
 
-            paymentService.createPayment(fromUserId, groupId, paymentDTO);
+            paymentService.createPayment(fromUserId, groupId, paymentDTO, false);
 
             ArgumentCaptor<Payment> paymentCaptor = ArgumentCaptor.forClass(Payment.class);
             verify(paymentRepository).savePayment(paymentCaptor.capture());
             Payment capturedPayment = paymentCaptor.getValue();
-            
+
             assertEquals(paymentAmount, capturedPayment.amount());
             assertEquals(fromUserId, capturedPayment.fromUser().id());
             assertEquals(toUserId, capturedPayment.toUser().id());
@@ -121,9 +120,9 @@ public class PaymentServiceTest {
 
         when(groupRepository.getGroupById(groupId)).thenReturn(null);
 
-        ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class, 
-            () -> paymentService.createPayment(userId, groupId, dto));
-        
+        ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class,
+                () -> paymentService.createPayment(userId, groupId, dto, false));
+
         assertEquals(GROUP_NOT_FOUND, ex.getMessage());
         verify(paymentRepository, never()).savePayment(any());
     }
@@ -139,14 +138,14 @@ public class PaymentServiceTest {
             when(groupRepository.getGroupById(groupId)).thenReturn(group);
             when(userRepository.getUserbyId("missing-user")).thenReturn(null);
 
-            ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class, 
-                () -> paymentService.createPayment("missing-user", groupId, dto));
+            ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class,
+                    () -> paymentService.createPayment("missing-user", groupId, dto, false));
 
             assertEquals(USER_NOT_FOUND, ex.getMessage());
         }
     }
 
-        @Test
+    @Test
     @DisplayName("Create Payment - User Not Found: Throws ResourceNotFoundException")
     public void createPayment_userNotFound_throwsException2() {
         try (MockedStatic<PaymentValidator> mockedValidator = Mockito.mockStatic(PaymentValidator.class)) {
@@ -158,8 +157,8 @@ public class PaymentServiceTest {
             when(userRepository.getUserbyId("user-2")).thenReturn(null);
             when(userRepository.getUserbyId("missing-user")).thenReturn(Instancio.create(User.class));
 
-            ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class, 
-                () -> paymentService.createPayment("missing-user", groupId, dto));
+            ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class,
+                    () -> paymentService.createPayment("missing-user", groupId, dto, false));
 
             assertEquals(USER_NOT_FOUND, ex.getMessage());
         }
@@ -181,12 +180,12 @@ public class PaymentServiceTest {
             when(groupRepository.getGroupById(groupId)).thenReturn(group);
             when(userRepository.getUserbyId(fromId)).thenReturn(fromUser);
             when(userRepository.getUserbyId(toId)).thenReturn(toUser);
-            
-            when(balanceRepository.findByCreditorAndDebtorAndGroup(toId, fromId, groupId))
-                .thenReturn(Optional.empty());
 
-            InvalidDataException ex = assertThrows(InvalidDataException.class, 
-                () -> paymentService.createPayment(fromId, groupId, dto));
+            when(balanceRepository.findByCreditorAndDebtorAndGroup(toId, fromId, groupId))
+                    .thenReturn(Optional.empty());
+
+            InvalidDataException ex = assertThrows(InvalidDataException.class,
+                    () -> paymentService.createPayment(fromId, groupId, dto, false));
 
             assertEquals(NO_EXISTING_DEBTS_FOR_USER_PAIR, ex.getMessage());
         }
@@ -203,7 +202,7 @@ public class PaymentServiceTest {
             Group group = Instancio.of(Group.class).set(field("id"), groupId).create();
             User fromUser = Instancio.of(User.class).set(field("id"), fromId).create();
             User toUser = Instancio.of(User.class).set(field("id"), toId).create();
-            
+
             CreatePaymentDTO dto = new CreatePaymentDTO(fromId, toId, new BigDecimal("100.00"));
 
             when(groupRepository.getGroupById(groupId)).thenReturn(group);
@@ -211,29 +210,29 @@ public class PaymentServiceTest {
             when(userRepository.getUserbyId(toId)).thenReturn(toUser);
 
             ExpenseGroupBalance balance = new ExpenseGroupBalance(
-                1, toUser, fromUser, new BigDecimal("50.00"), group
-            );
+                    1, toUser, fromUser, new BigDecimal("50.00"), group);
 
             when(balanceRepository.findByCreditorAndDebtorAndGroup(toId, fromId, groupId))
-                .thenReturn(Optional.of(balance));
+                    .thenReturn(Optional.of(balance));
 
-            InvalidDataException ex = assertThrows(InvalidDataException.class, 
-                () -> paymentService.createPayment(fromId, groupId, dto));
+            InvalidDataException ex = assertThrows(InvalidDataException.class,
+                    () -> paymentService.createPayment(fromId, groupId, dto, false));
 
             assertEquals(PAYMENT_AMOUNT_EXCEEDS_DEBT, ex.getMessage());
             verify(paymentRepository, never()).savePayment(any());
         }
     }
 
-   @Test
+    @Test
     @DisplayName("Get Payments by Group - Success")
     public void getPaymentsByGroup_success() {
         String groupId = "group-1";
-        
+
         List<Payment> payments = Instancio.ofList(Payment.class)
-            .size(3)
-            .supply(field(Payment.class, "group"), () -> Instancio.of(Group.class).set(field("id"), groupId).create())
-            .create();
+                .size(3)
+                .supply(field(Payment.class, "group"),
+                        () -> Instancio.of(Group.class).set(field("id"), groupId).create())
+                .create();
 
         when(paymentRepository.findByGroupId(groupId)).thenReturn(payments);
 
@@ -241,7 +240,7 @@ public class PaymentServiceTest {
 
         assertNotNull(result);
         assertEquals(3, result.size());
-        
+
         assertEquals(payments.get(0).id(), result.get(0).id());
         assertEquals(payments.get(0).amount(), result.get(0).amount());
         assertEquals(payments.get(0).fromUser().name(), result.get(0).fromUser().name());

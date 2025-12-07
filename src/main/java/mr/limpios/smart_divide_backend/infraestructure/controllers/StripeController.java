@@ -6,55 +6,82 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import lombok.RequiredArgsConstructor;
+import com.stripe.exception.StripeException;
+
 import mr.limpios.smart_divide_backend.domain.dto.WrapperResponse;
-import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundException;
-import mr.limpios.smart_divide_backend.infraestructure.repositories.jpa.JPAUserRepository;
-import mr.limpios.smart_divide_backend.infraestructure.schemas.UserSchema;
-import mr.limpios.smart_divide_backend.infraestructure.services.StripeService;
+import mr.limpios.smart_divide_backend.infraestructure.https.stripe.CustomerSessionResponse;
+import mr.limpios.smart_divide_backend.infraestructure.https.stripe.PaymentIntentRequest;
+import mr.limpios.smart_divide_backend.infraestructure.https.stripe.PaymentIntentResponse;
+import mr.limpios.smart_divide_backend.infraestructure.https.stripe.SetUpIntentResponse;
+import mr.limpios.smart_divide_backend.infraestructure.services.StripeCustomerService;
+import mr.limpios.smart_divide_backend.infraestructure.services.StripeExpressAccountService;
 
 @RestController
 @RequestMapping("/api/stripe")
 @CrossOrigin(origins = "*")
-@RequiredArgsConstructor
 public class StripeController {
 
-  private final StripeService stripeService;
-  private final JPAUserRepository userRepository;
+  private final StripeCustomerService stripeCustomerService;
+  private final StripeExpressAccountService stripeExpressAccountService;
+
+  public StripeController(StripeCustomerService stripeCustomerService,
+      StripeExpressAccountService stripeExpressAccountService) {
+    this.stripeCustomerService = stripeCustomerService;
+    this.stripeExpressAccountService = stripeExpressAccountService;
+
+  }
 
   @PostMapping("/onboarding/link")
   public ResponseEntity<WrapperResponse<Map<String, String>>> generateOnboardingLink(
-      @RequestParam String userId, @RequestParam String returnUrl,
-      @RequestParam String refreshUrl) {
+      @RequestParam String userId) throws StripeException {
 
-    UserSchema user = userRepository.findById(userId)
-        .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
-    String accountId = stripeService.createExpressAccount(user);
-    String url = stripeService.createAccountLink(accountId, returnUrl, refreshUrl);
+    String oboardingLink = stripeExpressAccountService.getAccountLink(userId);
 
     Map<String, String> response = new HashMap<>();
-    response.put("url", url);
+    response.put("url", oboardingLink);
 
     return new ResponseEntity<>(new WrapperResponse<>(true, "Onboarding link generated", response),
         HttpStatus.OK);
   }
 
-  @PostMapping("/card")
-  public ResponseEntity<WrapperResponse<Void>> registerCard(@RequestParam String userId,
-      @RequestParam String token) {
+  @GetMapping("/{userId}/customerSession")
+  public ResponseEntity<WrapperResponse<CustomerSessionResponse>> createCustomerSession(
+      @PathVariable String userId) throws StripeException {
 
-    UserSchema user = userRepository.findById(userId)
-        .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    CustomerSessionResponse entity = stripeCustomerService.getCustomerSession(userId);
 
-    stripeService.registerCard(user, token);
+    return new ResponseEntity<>(new WrapperResponse<>(true, "customer session created", entity),
+        HttpStatus.OK);
 
-    return new ResponseEntity<>(new WrapperResponse<>(true, "Card registered successfully", null),
-        HttpStatus.CREATED);
   }
+
+  @GetMapping("/{userId}/setupIntent")
+  public ResponseEntity<WrapperResponse<SetUpIntentResponse>> createSetupIntent(
+      @PathVariable String userId) throws StripeException {
+
+    SetUpIntentResponse entity = stripeCustomerService.handleSetUpIntent(userId);
+
+    return new ResponseEntity<>(new WrapperResponse<>(true, "setup intent created", entity),
+        HttpStatus.OK);
+  }
+
+  @PostMapping("/{groupId}/paymentIntent")
+  public ResponseEntity<WrapperResponse<PaymentIntentResponse>> createPaymentIntent(
+      @RequestBody PaymentIntentRequest request, @PathVariable String groupId)
+      throws StripeException {
+
+    PaymentIntentResponse response = stripeCustomerService.handlePaymentIntent(request, groupId);
+
+    return new ResponseEntity<>(new WrapperResponse<>(true, "payment intent created", response),
+        HttpStatus.OK);
+  }
+
 }

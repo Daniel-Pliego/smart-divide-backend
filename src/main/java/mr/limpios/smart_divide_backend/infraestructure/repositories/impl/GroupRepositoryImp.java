@@ -1,22 +1,21 @@
 package mr.limpios.smart_divide_backend.infraestructure.repositories.impl;
 
-import mr.limpios.smart_divide_backend.domain.exceptions.ResourceExistException;
-import mr.limpios.smart_divide_backend.infraestructure.repositories.jpa.JPAUserRepository;
-import mr.limpios.smart_divide_backend.infraestructure.schemas.UserSchema;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import mr.limpios.smart_divide_backend.aplication.repositories.GroupRepository;
-import mr.limpios.smart_divide_backend.domain.models.Group;
-import mr.limpios.smart_divide_backend.infraestructure.mappers.GroupMapper;
-import mr.limpios.smart_divide_backend.infraestructure.repositories.jpa.JPAGroupRepository;
-import mr.limpios.smart_divide_backend.infraestructure.schemas.GroupSchema;
+import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.EXISTING_FRIEND_IN_THE_GROUP;
 
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.EXISTING_FRIEND_IN_THE_GROUP;
+import org.springframework.stereotype.Repository;
+
+import mr.limpios.smart_divide_backend.aplication.repositories.GroupRepository;
+import mr.limpios.smart_divide_backend.domain.exceptions.ResourceExistException;
+import mr.limpios.smart_divide_backend.domain.models.Group;
+import mr.limpios.smart_divide_backend.infraestructure.mappers.GroupMapper;
+import mr.limpios.smart_divide_backend.infraestructure.repositories.jpa.JPAGroupRepository;
+import mr.limpios.smart_divide_backend.infraestructure.repositories.jpa.JPAUserRepository;
+import mr.limpios.smart_divide_backend.infraestructure.schemas.GroupSchema;
+import mr.limpios.smart_divide_backend.infraestructure.schemas.UserSchema;
 
 @Repository
 public class GroupRepositoryImp implements GroupRepository {
@@ -24,8 +23,8 @@ public class GroupRepositoryImp implements GroupRepository {
   private JPAGroupRepository jpaGroupRepository;
   private JPAUserRepository jpaUserRepository;
 
-  @Autowired
-  public GroupRepositoryImp(JPAGroupRepository jpaGroupRepository, JPAUserRepository jpaUserRepository) {
+  public GroupRepositoryImp(JPAGroupRepository jpaGroupRepository,
+      JPAUserRepository jpaUserRepository) {
     this.jpaGroupRepository = jpaGroupRepository;
     this.jpaUserRepository = jpaUserRepository;
   }
@@ -79,10 +78,8 @@ public class GroupRepositoryImp implements GroupRepository {
 
   @Override
   public Set<Group> getGroupsByUserId(String userId) {
-    return this.jpaGroupRepository.findByMembers_Id(userId)
-        .orElse(null)
-        .stream().map(GroupMapper::toModel)
-        .collect(Collectors.toSet());
+    return this.jpaGroupRepository.findByMembers_Id(userId).orElse(null).stream()
+        .map(GroupMapper::toModel).collect(Collectors.toSet());
 
   }
 

@@ -49,7 +49,8 @@ public class PaymentService {
   }
 
   @Transactional
-  public void createPayment(String userId, String groupId, CreatePaymentDTO createPaymentDTO) {
+  public void createPayment(String userId, String groupId, CreatePaymentDTO createPaymentDTO,
+      Boolean paidByCard) {
     Group group = groupRepository.getGroupById(groupId);
     if (Objects.isNull(group)) {
       throw new ResourceNotFoundException(GROUP_NOT_FOUND);
@@ -66,10 +67,8 @@ public class PaymentService {
       throw new ResourceNotFoundException(USER_NOT_FOUND);
     }
 
-    Optional<ExpenseGroupBalance> existingBalance = balanceRepository.findByCreditorAndDebtorAndGroup(
-        toUser.id(),
-        fromUser.id(),
-        groupId);
+    Optional<ExpenseGroupBalance> existingBalance =
+        balanceRepository.findByCreditorAndDebtorAndGroup(toUser.id(), fromUser.id(), groupId);
     if (existingBalance.isEmpty()) {
       throw new InvalidDataException(NO_EXISTING_DEBTS_FOR_USER_PAIR);
     }
@@ -79,13 +78,8 @@ public class PaymentService {
       throw new InvalidDataException(PAYMENT_AMOUNT_EXCEEDS_DEBT);
     }
 
-    Payment payment = new Payment(
-        null,
-        fromUser,
-        toUser,
-        createPaymentDTO.amount(),
-        group,
-        LocalDateTime.now());
+    Payment payment = new Payment(null, fromUser, toUser, createPaymentDTO.amount(), group,
+        paidByCard, LocalDateTime.now());
     Payment savedPayment = paymentRepository.savePayment(payment);
 
     eventPublisher.publishEvent(new PaymentCreatedEvent(savedPayment, balance));
@@ -93,9 +87,11 @@ public class PaymentService {
 
   private PaymentDetailDTO buildPaymentDetailDTO(Payment payment) {
 
-    PaymentUserDTO fromUser = new PaymentUserDTO(payment.fromUser().name(), payment.fromUser().lastName());
+    PaymentUserDTO fromUser =
+        new PaymentUserDTO(payment.fromUser().name(), payment.fromUser().lastName());
 
-    PaymentUserDTO toUser = new PaymentUserDTO(payment.toUser().name(), payment.toUser().lastName());
+    PaymentUserDTO toUser =
+        new PaymentUserDTO(payment.toUser().name(), payment.toUser().lastName());
 
     return new PaymentDetailDTO(payment.id(), fromUser, toUser, payment.amount(),
         payment.createdAt());

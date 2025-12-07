@@ -47,7 +47,7 @@ class AuthServiceTest {
         when(userRepository.findUserByEmail(dto.email())).thenReturn(null);
 
         User savedUser = new User("uid-1", dto.name(), dto.lastName(), dto.email(), "encodedPass",
-                dto.photoUrl(), false, null);
+                dto.photoUrl(), false);
         when(userRepository.saveUser(any(User.class))).thenReturn(savedUser);
         when(jwtService.generateAccessToken(savedUser.email())).thenReturn("jwt-token");
 
@@ -66,7 +66,7 @@ class AuthServiceTest {
         UserSignUpDTO dto = new UserSignUpDTO("John", "Doe", "john@example.com", "pass123", "photo.jpg");
 
         when(userRepository.findUserByEmail(dto.email()))
-                .thenReturn(new User("u1", "Other", "User", dto.email(), "pw", "url", false, null));
+                .thenReturn(new User("u1", "Other", "User", dto.email(), "pw", "url", false));
 
         assertThrows(ResourceExistException.class, () -> authService.signUp(dto));
     }
@@ -105,7 +105,7 @@ class AuthServiceTest {
     void signIn_success() {
         UserSignInDTO dto = new UserSignInDTO("john@example.com", "correctPass");
         User existingUser = new User("uid-1", "John", "Doe", dto.email(), "correctPass",
-                "photo.jpg", false, null);
+                "photo.jpg", false);
 
         when(userRepository.findUserByEmail(dto.email())).thenReturn(existingUser);
         when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
