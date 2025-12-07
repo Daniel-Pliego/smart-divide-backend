@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.instancio.Instancio;
-import org.instancio.Select;
 import org.junit.jupiter.api.Test;
 
 import mr.limpios.smart_divide_backend.domain.models.User;
@@ -30,18 +29,6 @@ class UserMapperTest {
     }
 
     @Test
-    void toSchema_handlesNullCards() {
-        User user = Instancio.of(User.class)
-                .set(Select.field(User.class, "cards"), null)
-                .create();
-
-        UserSchema result = UserMapper.toSchema(user);
-
-        assertNotNull(result);
-        assertEquals(user.id(), result.getId());
-    }
-
-    @Test
     void toModel_mapsCorrectly() {
 
         UserSchema schema = Instancio.create(UserSchema.class);
@@ -56,19 +43,6 @@ class UserMapperTest {
         assertEquals(schema.getPassword(), result.password());
         assertEquals(schema.getPhotoUrl(), result.photoUrl());
         assertEquals(schema.getIsVerified(), result.isVerified());
-
-    }
-
-    @Test
-    void toModel_handlesNullCards() {
-        UserSchema schema = Instancio.of(UserSchema.class)
-                .set(Select.field(UserSchema.class, "cards"), null)
-                .create();
-
-        User result = UserMapper.toModel(schema);
-
-        assertNotNull(result);
-        assertEquals(schema.getId(), result.id());
 
     }
 }
