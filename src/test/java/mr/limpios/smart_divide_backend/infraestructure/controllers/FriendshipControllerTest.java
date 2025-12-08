@@ -1,13 +1,5 @@
 package mr.limpios.smart_divide_backend.infraestructure.controllers;
 
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import java.util.Set;
 
 import org.instancio.Instancio;
@@ -27,14 +19,16 @@ import mr.limpios.smart_divide_backend.aplication.services.FriendshipService;
 import mr.limpios.smart_divide_backend.domain.dto.CreateFriendshipDTO;
 import mr.limpios.smart_divide_backend.domain.dto.FriendshipDTO;
 import mr.limpios.smart_divide_backend.infraestructure.security.JWTAuthorizationFilter;
+import mr.limpios.smart_divide_backend.infraestructure.utils.SecurityTestUtils;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(
-    controllers = FriendshipController.class,
-    excludeFilters = @ComponentScan.Filter(
-        type = FilterType.ASSIGNABLE_TYPE,
-        classes = JWTAuthorizationFilter.class
-    )    
-)
+@WebMvcTest(controllers = FriendshipController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JWTAuthorizationFilter.class))
 @AutoConfigureMockMvc(addFilters = false)
 class FriendshipControllerTest {
 
@@ -49,6 +43,10 @@ class FriendshipControllerTest {
 
     @Test
     void createFriendRelationship_success() throws Exception {
+        String userId = "user-1";
+
+        SecurityTestUtils.mockAuthenticatedUser(userId);
+
         CreateFriendshipDTO inputDTO = Instancio.create(CreateFriendshipDTO.class);
 
         doNothing().when(friendshipService).createFriendRequest(anyString(), anyString());
@@ -56,24 +54,26 @@ class FriendshipControllerTest {
         mockMvc.perform(post("/friendship")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inputDTO)))
-            .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.ok").value(true))
-            .andExpect(jsonPath("$.message").value("Friend request created successfully"));
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.ok").value(true))
+                .andExpect(jsonPath("$.message").value("Friend request created successfully"));
     }
 
     @Test
     void getAllFriendsFromUser_success() throws Exception {
         String userId = "user-1";
+
+        SecurityTestUtils.mockAuthenticatedUser(userId);
+
         Set<FriendshipDTO> responseSet = Instancio.ofSet(FriendshipDTO.class).create();
 
         when(friendshipService.getAllFriendsFromUser(userId)).thenReturn(responseSet);
 
-        mockMvc.perform(get("/friendship/{userId}", "path-ignored")
-                .param("userId", userId)
+        mockMvc.perform(get("/friendship")
                 .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.ok").value(true))
-            .andExpect(jsonPath("$.message").value("Friendships retrieved successfully"))
-            .andExpect(jsonPath("$.body").isArray());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.ok").value(true))
+                .andExpect(jsonPath("$.message").value("Friendships retrieved successfully"))
+                .andExpect(jsonPath("$.body").isArray());
     }
 }

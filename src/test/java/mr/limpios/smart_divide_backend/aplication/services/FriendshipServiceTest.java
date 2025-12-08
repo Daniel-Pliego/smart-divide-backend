@@ -32,6 +32,9 @@ public class FriendshipServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private NotificationService notificationService;
+
     @InjectMocks
     private FriendshipService friendshipService;
 
@@ -41,23 +44,21 @@ public class FriendshipServiceTest {
 
         User user = Instancio.create(User.class);
         Set<Friendship> friendshipsDTO = Instancio.ofSet(Friendship.class)
-            .size(3)
-            .create();
+                .size(3)
+                .create();
         Friendship friendship = new Friendship(
-            1,
-            Instancio.of(User.class).set(field("id"), "user-id").create(),
-            Instancio.create(User.class),
-            true
-        );
+                1,
+                Instancio.of(User.class).set(field("id"), "user-id").create(),
+                Instancio.create(User.class),
+                true);
 
         friendshipsDTO.add(friendship);
 
         when(userRepository.getUserbyId("user-id"))
-            .thenReturn(user);
+                .thenReturn(user);
 
         when(friendshipRepository.getAllFriendshipsByUserId("user-id"))
-            .thenReturn(friendshipsDTO);
-        
+                .thenReturn(friendshipsDTO);
 
         Set<FriendshipDTO> result = friendshipService.getAllFriendsFromUser("user-id");
 
@@ -70,15 +71,14 @@ public class FriendshipServiceTest {
 
         User user = Instancio.create(User.class);
         Set<Friendship> friendshipsDTO = Instancio.ofSet(Friendship.class)
-            .size(0)
-            .create();
+                .size(0)
+                .create();
 
         when(userRepository.getUserbyId("user-id"))
-            .thenReturn(user);
+                .thenReturn(user);
 
         when(friendshipRepository.getAllFriendshipsByUserId("user-id"))
-            .thenReturn(friendshipsDTO);
-        
+                .thenReturn(friendshipsDTO);
 
         Set<FriendshipDTO> result = friendshipService.getAllFriendsFromUser("user-id");
 
@@ -89,10 +89,10 @@ public class FriendshipServiceTest {
     @DisplayName("Get all friends from non-existing user - Throws ResourceNotFoundException")
     public void getAllFriendsFromUser_nonExistingUser_throwsResourceNotFoundException() {
         when(userRepository.getUserbyId("non-existing-user-id"))
-            .thenReturn(null);
+                .thenReturn(null);
 
         assertThrows(ResourceNotFoundException.class,
-            () -> friendshipService.getAllFriendsFromUser("non-existing-user-id"));
+                () -> friendshipService.getAllFriendsFromUser("non-existing-user-id"));
     }
 
     @Test
@@ -102,13 +102,12 @@ public class FriendshipServiceTest {
         User friend = Instancio.create(User.class);
 
         when(userRepository.getUserbyId("requester-id"))
-            .thenReturn(requester);
+                .thenReturn(requester);
 
         when(userRepository.getUserbyId("friend-id"))
-            .thenReturn(friend);
+                .thenReturn(friend);
 
-        assertDoesNotThrow(() -> 
-            friendshipService.createFriendRequest("requester-id", "friend-id"));
+        assertDoesNotThrow(() -> friendshipService.createFriendRequest("requester-id", "friend-id"));
     }
 
     @Test
@@ -117,13 +116,13 @@ public class FriendshipServiceTest {
         User requester = Instancio.create(User.class);
 
         when(userRepository.getUserbyId("requester-id"))
-            .thenReturn(requester);
+                .thenReturn(requester);
 
         when(userRepository.getUserbyId("non-existing-friend-id"))
-            .thenReturn(null);
+                .thenReturn(null);
 
         assertThrows(ResourceNotFoundException.class,
-            () -> friendshipService.createFriendRequest("requester-id", "non-existing-friend-id"));
+                () -> friendshipService.createFriendRequest("requester-id", "non-existing-friend-id"));
     }
 
     @Test
@@ -131,10 +130,10 @@ public class FriendshipServiceTest {
     public void createFriendship_nonExistingRequester_throwsResourceNotFoundException() {
 
         when(userRepository.getUserbyId("non-existing-requester-id"))
-            .thenReturn(null);
+                .thenReturn(null);
 
         assertThrows(ResourceNotFoundException.class,
-            () -> friendshipService.createFriendRequest("non-existing-requester-id", "friend-id"));
+                () -> friendshipService.createFriendRequest("non-existing-requester-id", "friend-id"));
     }
-    
+
 }

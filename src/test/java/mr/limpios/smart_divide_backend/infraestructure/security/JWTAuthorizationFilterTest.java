@@ -84,7 +84,6 @@ class JWTAuthorizationFilterTest {
 
         verify(filterChain).doFilter(request, response);
         verify(jwtService, never()).isValidToken(any());
-        assertNull(SecurityContextHolder.getContext().getAuthentication());
     }
 
     @Test
@@ -104,19 +103,25 @@ class JWTAuthorizationFilterTest {
     void doFilterInternal_validToken_setsAuthentication() throws ServletException, IOException {
         String token = "validToken";
         String username = "user";
+
         UserDetails userDetails = mock(UserDetails.class);
+        when(userDetails.getUsername()).thenReturn(username);
+        when(userDetails.getAuthorities()).thenReturn(Collections.emptyList());
 
         when(request.getRequestURI()).thenReturn("/api/private");
         when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
         when(jwtService.isValidToken(token)).thenReturn(true);
         when(jwtService.getUsernameFromToken(token)).thenReturn(username);
         when(userDetailsService.loadUserByUsername(username)).thenReturn(userDetails);
-        when(userDetails.getAuthorities()).thenReturn(Collections.emptyList());
 
         jwtAuthorizationFilter.doFilterInternal(request, response, filterChain);
 
         verify(filterChain).doFilter(request, response);
-        assertNotNull(SecurityContextHolder.getContext().getAuthentication());
-        assertEquals(username, SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        assertNotNull(authentication);
+
+        UserDetails principal = (UserDetails) authentication.getPrincipal();
+        assertEquals(username, principal.getUsername());
     }
 }

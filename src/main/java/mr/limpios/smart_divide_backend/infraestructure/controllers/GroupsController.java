@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,9 +20,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import mr.limpios.smart_divide_backend.aplication.services.GroupService;
 import mr.limpios.smart_divide_backend.domain.dto.*;
+import mr.limpios.smart_divide_backend.infraestructure.security.CustomUserDetails;
 
 @RestController
-@RequestMapping("user/{userId}")
+@RequestMapping("groups")
 @CrossOrigin(maxAge = 3600, methods = {RequestMethod.OPTIONS, RequestMethod.POST}, origins = {"*"})
 @Tag(name = "Groups", description = "Endpoints for create and view groups")
 public class GroupsController {
@@ -32,9 +35,13 @@ public class GroupsController {
   }
 
   @Operation(summary = "Create a new group for a user")
-  @PostMapping("groups")
-  public ResponseEntity<WrapperResponse<GroupResumeDTO>> createGroup(@PathVariable String userId,
+  @PostMapping
+  public ResponseEntity<WrapperResponse<GroupResumeDTO>> createGroup(
       @RequestBody CreateGroupDTO groupDataDTO) {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    String userId = userDetails.getUserId();
+
     GroupResumeDTO groupResumeDTO = groupService.createGroup(groupDataDTO, userId);
     return new ResponseEntity<>(
         new WrapperResponse<>(true, "Group created successfully", groupResumeDTO),
@@ -42,11 +49,9 @@ public class GroupsController {
   }
 
   @Operation(summary = "update information on an existing group")
-  @PutMapping("groups/{groupId}")
-  // TODO remove userId if not needed
+  @PutMapping("{groupId}")
   public ResponseEntity<WrapperResponse<UpdateGroupResumeDTO>> updateGroup(
-      @PathVariable String userId, @PathVariable String groupId,
-      @RequestBody CreateGroupDTO groupDataDTO) {
+      @PathVariable String groupId, @RequestBody CreateGroupDTO groupDataDTO) {
 
     UpdateGroupResumeDTO updateGroupResumeDTO = groupService.updateGroup(groupDataDTO, groupId);
     return new ResponseEntity<>(
@@ -55,9 +60,13 @@ public class GroupsController {
   }
 
   @Operation(summary = "Adds a member to an existing group")
-  @PutMapping("groups/{groupId}/members")
-  public ResponseEntity<WrapperResponse<NewMemberDTO>> addMember(@PathVariable String userId,
-      @PathVariable String groupId, @RequestBody AddMemberDTO addMemberDTO) {
+  @PutMapping("{groupId}/members")
+  public ResponseEntity<WrapperResponse<NewMemberDTO>> addMember(@PathVariable String groupId,
+      @RequestBody AddMemberDTO addMemberDTO) {
+
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    String userId = userDetails.getUserId();
 
     NewMemberDTO newMemberDTO = groupService.addMemberToGroup(addMemberDTO, groupId, userId);
     return new ResponseEntity<>(
@@ -65,18 +74,25 @@ public class GroupsController {
   }
 
   @Operation(summary = "Get all groups of a user")
-  @GetMapping("groups")
-  public ResponseEntity<WrapperResponse<List<GroupResumeDTO>>> getUserGroups(
-      @PathVariable String userId) {
+  @GetMapping
+  public ResponseEntity<WrapperResponse<List<GroupResumeDTO>>> getUserGroups() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    String userId = userDetails.getUserId();
+
     List<GroupResumeDTO> groups = groupService.getUserGroups(userId);
     return new ResponseEntity<>(
         new WrapperResponse<>(true, "User groups retrieved successfully", groups), HttpStatus.OK);
   }
 
   @Operation(summary = "Get all group transactions")
-  @GetMapping("groups/{groupId}/transactions")
+  @GetMapping("{groupId}/transactions")
   public ResponseEntity<WrapperResponse<GroupTransactionHistoryDTO>> getGroupTransactions(
-      @PathVariable String groupId, @PathVariable String userId) {
+      @PathVariable String groupId) {
+
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    String userId = userDetails.getUserId();
 
     GroupTransactionHistoryDTO history = groupService.getGroupTransactionHistory(groupId, userId);
 
@@ -84,9 +100,9 @@ public class GroupsController {
   }
 
   @Operation(summary = "Get the list of members of a specific group")
-  @GetMapping("groups/{groupId}/members")
+  @GetMapping("{groupId}/members")
   public ResponseEntity<WrapperResponse<List<MemberResumeDTO>>> getGroupMembers(
-      @PathVariable String userId, @PathVariable String groupId) {
+      @PathVariable String groupId) {
     List<MemberResumeDTO> members = groupService.getGroupMembers(groupId);
     return new ResponseEntity<>(
         new WrapperResponse<>(true, "Group members retrieved successfully", members),

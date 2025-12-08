@@ -16,7 +16,7 @@ import mr.limpios.smart_divide_backend.aplication.services.NotificationService;
 import mr.limpios.smart_divide_backend.infraestructure.security.CustomUserDetails;
 
 @RestController
-@RequestMapping("/api/notifications")
+@RequestMapping("/notifications")
 @CrossOrigin(maxAge = 3600, methods = {RequestMethod.OPTIONS, RequestMethod.POST}, origins = {"*"})
 @Tag(name = "Notifications", description = "Endpoints to register device tokens")
 public class NotificationController {

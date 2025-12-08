@@ -47,6 +47,8 @@ public class GroupServiceTest {
         private ExpenseService expenseService;
         @Mock
         private PaymentService paymentService;
+        @Mock
+        private NotificationService notificationService;
         @InjectMocks
         private GroupService groupService;
 
@@ -304,7 +306,6 @@ public class GroupServiceTest {
 
                 assertEquals(result, groupService.getGroupTransactionHistory("group-id", userId));
         }
-
 
         @Test
         @DisplayName("Get group members no group found throws ResourceNotFoundException")

@@ -61,6 +61,9 @@ public class PaymentServiceTest {
     private ExpenseGroupBalanceRepository balanceRepository;
 
     @Mock
+    private NotificationService notificationService;
+
+    @Mock
     private ApplicationEventPublisher eventPublisher;
 
     @InjectMocks

@@ -23,14 +23,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import mr.limpios.smart_divide_backend.aplication.services.PaymentService;
 import mr.limpios.smart_divide_backend.domain.dto.CreatePaymentDTO;
 import mr.limpios.smart_divide_backend.infraestructure.security.JWTAuthorizationFilter;
+import mr.limpios.smart_divide_backend.infraestructure.utils.SecurityTestUtils;
 
-@WebMvcTest(
-    controllers = PaymentController.class,
-    excludeFilters = @ComponentScan.Filter(
-        type = FilterType.ASSIGNABLE_TYPE,
-        classes = JWTAuthorizationFilter.class
-    )
-)
+@WebMvcTest(controllers = PaymentController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JWTAuthorizationFilter.class))
 @AutoConfigureMockMvc(addFilters = false)
 class PaymentControllerTest {
 
@@ -47,15 +42,18 @@ class PaymentControllerTest {
     void createPayment_success() throws Exception {
         String userId = "user-1";
         String groupId = "group-1";
+
+        SecurityTestUtils.mockAuthenticatedUser(userId);
+
         CreatePaymentDTO inputDTO = Instancio.create(CreatePaymentDTO.class);
 
         doNothing().when(paymentService).createPayment(eq(userId), eq(groupId), any(CreatePaymentDTO.class), eq(false));
 
-        mockMvc.perform(post("/user/{userId}/groups/{groupId}/payments", userId, groupId)
+        mockMvc.perform(post("/groups/{groupId}/payments", groupId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inputDTO)))
-            .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.ok").value(true))
-            .andExpect(jsonPath("$.message").value("Payment created successfully"));
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.ok").value(true))
+                .andExpect(jsonPath("$.message").value("Payment created successfully"));
     }
 }

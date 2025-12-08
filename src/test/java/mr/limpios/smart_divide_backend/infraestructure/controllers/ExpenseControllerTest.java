@@ -23,14 +23,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import mr.limpios.smart_divide_backend.aplication.services.ExpenseService;
 import mr.limpios.smart_divide_backend.domain.dto.ExpenseInputDTO;
 import mr.limpios.smart_divide_backend.infraestructure.security.JWTAuthorizationFilter;
+import mr.limpios.smart_divide_backend.infraestructure.utils.SecurityTestUtils;
 
-@WebMvcTest(
-    controllers = ExpenseController.class,
-    excludeFilters = @ComponentScan.Filter(
-        type = FilterType.ASSIGNABLE_TYPE,
-        classes = JWTAuthorizationFilter.class
-    )
-)
+@WebMvcTest(controllers = ExpenseController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JWTAuthorizationFilter.class))
 @AutoConfigureMockMvc(addFilters = false)
 class ExpenseControllerTest {
 
@@ -47,15 +42,18 @@ class ExpenseControllerTest {
     void addExpense_success() throws Exception {
         String userId = "user-1";
         String groupId = "group-1";
+
+        SecurityTestUtils.mockAuthenticatedUser(userId);
+
         ExpenseInputDTO inputDTO = Instancio.create(ExpenseInputDTO.class);
 
         doNothing().when(expenseService).addExpense(any(ExpenseInputDTO.class), eq(userId), eq(groupId));
 
-        mockMvc.perform(post("/user/{userId}/groups/{groupId}/expense", userId, groupId)
+        mockMvc.perform(post("/groups/{groupId}/expense", groupId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inputDTO)))
-            .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.ok").value(true))
-            .andExpect(jsonPath("$.message").value("Expense created successfully"));
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.ok").value(true))
+                .andExpect(jsonPath("$.message").value("Expense created successfully"));
     }
 }

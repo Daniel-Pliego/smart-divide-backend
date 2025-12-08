@@ -5,13 +5,14 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.stripe.exception.StripeException;
@@ -21,11 +22,12 @@ import mr.limpios.smart_divide_backend.infraestructure.https.stripe.CustomerSess
 import mr.limpios.smart_divide_backend.infraestructure.https.stripe.PaymentIntentRequest;
 import mr.limpios.smart_divide_backend.infraestructure.https.stripe.PaymentIntentResponse;
 import mr.limpios.smart_divide_backend.infraestructure.https.stripe.SetUpIntentResponse;
+import mr.limpios.smart_divide_backend.infraestructure.security.CustomUserDetails;
 import mr.limpios.smart_divide_backend.infraestructure.services.StripeCustomerService;
 import mr.limpios.smart_divide_backend.infraestructure.services.StripeExpressAccountService;
 
 @RestController
-@RequestMapping("/api/stripe")
+@RequestMapping("/stripe")
 @CrossOrigin(origins = "*")
 public class StripeController {
 
@@ -40,8 +42,12 @@ public class StripeController {
   }
 
   @PostMapping("/onboarding/link")
-  public ResponseEntity<WrapperResponse<Map<String, String>>> generateOnboardingLink(
-      @RequestParam String userId) throws StripeException {
+  public ResponseEntity<WrapperResponse<Map<String, String>>> generateOnboardingLink()
+      throws StripeException {
+
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    String userId = userDetails.getUserId();
 
     String oboardingLink = stripeExpressAccountService.getAccountLink(userId);
 
@@ -52,9 +58,13 @@ public class StripeController {
         HttpStatus.OK);
   }
 
-  @GetMapping("/{userId}/customerSession")
-  public ResponseEntity<WrapperResponse<CustomerSessionResponse>> createCustomerSession(
-      @PathVariable String userId) throws StripeException {
+  @GetMapping("/customerSession")
+  public ResponseEntity<WrapperResponse<CustomerSessionResponse>> createCustomerSession()
+      throws StripeException {
+
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    String userId = userDetails.getUserId();
 
     CustomerSessionResponse entity = stripeCustomerService.getCustomerSession(userId);
 
@@ -63,9 +73,13 @@ public class StripeController {
 
   }
 
-  @GetMapping("/{userId}/setupIntent")
-  public ResponseEntity<WrapperResponse<SetUpIntentResponse>> createSetupIntent(
-      @PathVariable String userId) throws StripeException {
+  @GetMapping("/setupIntent")
+  public ResponseEntity<WrapperResponse<SetUpIntentResponse>> createSetupIntent()
+      throws StripeException {
+
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    String userId = userDetails.getUserId();
 
     SetUpIntentResponse entity = stripeCustomerService.handleSetUpIntent(userId);
 
