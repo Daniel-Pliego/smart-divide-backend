@@ -10,21 +10,23 @@ import org.springframework.stereotype.Service;
 
 import mr.limpios.smart_divide_backend.aplication.repositories.FriendshipRepository;
 import mr.limpios.smart_divide_backend.aplication.repositories.UserRepository;
+import mr.limpios.smart_divide_backend.domain.dto.FriendshipDTO;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundException;
 import mr.limpios.smart_divide_backend.domain.models.Friendship;
 import mr.limpios.smart_divide_backend.domain.models.User;
-import mr.limpios.smart_divide_backend.domain.dto.FriendshipDTO;
 
 @Service
 public class FriendshipService {
 
   private final FriendshipRepository friendshipRepository;
+  private final NotificationService notificationService;
   private final UserRepository userRepository;
 
-  public FriendshipService(FriendshipRepository friendshipRepository,
-      UserRepository userRepository) {
+  public FriendshipService(FriendshipRepository friendshipRepository, UserRepository userRepository,
+      NotificationService notificationService) {
     this.friendshipRepository = friendshipRepository;
     this.userRepository = userRepository;
+    this.notificationService = notificationService;
   }
 
   public void createFriendRequest(String fromUserId, String toUserId) {
@@ -39,6 +41,7 @@ public class FriendshipService {
     Friendship friendship = new Friendship(null, fromUser, toUser, true);
 
     friendshipRepository.createFriendRequest(friendship);
+    notificationService.notifyFriendshipRequest(fromUser, toUser);
   }
 
   public Set<FriendshipDTO> getAllFriendsFromUser(String userId) {

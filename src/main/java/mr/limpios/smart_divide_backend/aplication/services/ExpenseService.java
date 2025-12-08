@@ -24,6 +24,7 @@ import mr.limpios.smart_divide_backend.aplication.repositories.ExpenseBalanceRep
 import mr.limpios.smart_divide_backend.aplication.repositories.ExpenseGroupBalanceRepository;
 import mr.limpios.smart_divide_backend.aplication.repositories.ExpenseRepository;
 import mr.limpios.smart_divide_backend.aplication.repositories.GroupRepository;
+import mr.limpios.smart_divide_backend.aplication.repositories.UserRepository;
 import mr.limpios.smart_divide_backend.aplication.utils.CollectionUtils;
 import mr.limpios.smart_divide_backend.domain.dto.ExpenseDetails.ExpenseDetailDTO;
 import mr.limpios.smart_divide_backend.domain.dto.ExpenseInputDTO;
@@ -51,6 +52,8 @@ public class ExpenseService {
   private final ExpenseGroupBalanceRepository groupBalanceRepository;
   private final ExpenseBalanceRepository expenseBalanceRepository;
   private final ExpenseGroupBalanceService expenseGroupBalanceService;
+  private final UserRepository userRepository;
+  private final NotificationService notificationService;
 
   @Transactional
   public void addExpense(ExpenseInputDTO addExpenseDTO, String userId, String groupId) {
@@ -77,6 +80,9 @@ public class ExpenseService {
 
     Expense savedExpense = this.expenseRepository.saveExpense(expense);
     eventPublisher.publishEvent(new ExpenseCreatedEvent(savedExpense));
+
+    User actor = userRepository.getUserbyId(userId);
+    notificationService.notifyExpenseCreated(actor, group, savedExpense);
   }
 
   public ExpenseDetailDTO getExpenseDetails(String expenseId, String userId, String groupId) {
@@ -162,7 +168,7 @@ public class ExpenseService {
   }
 
   @Transactional
-  public void deleteExpense(String expenseId) {
+  public void deleteExpense(String expenseId, String userId) {
 
     Expense expenseToDelete = expenseRepository.findById(expenseId);
     if (Objects.isNull(expenseToDelete)) {
@@ -179,6 +185,9 @@ public class ExpenseService {
     }
 
     expenseRepository.deleteById(expenseId);
+
+    User actor = userRepository.getUserbyId(userId);
+    notificationService.notifyExpenseDeleted(actor, group, expenseToDelete);
   }
 
 }

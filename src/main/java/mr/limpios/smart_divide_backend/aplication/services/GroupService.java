@@ -36,17 +36,19 @@ public class GroupService {
   private final PaymentService paymentService;
   @Lazy
   private final ExpenseService expenseService;
+  private final NotificationService notificationService;
 
   public GroupService(GroupRepository groupRepository, UserRepository userRepository,
       FriendshipRepository friendshipRepository,
       ExpenseGroupBalanceRepository expenseGroupBalanceRepository, PaymentService paymentService,
-      ExpenseService expenseService) {
+      ExpenseService expenseService, NotificationService notificationService) {
     this.groupRepository = groupRepository;
     this.userRepository = userRepository;
     this.friendshipRepository = friendshipRepository;
     this.paymentService = paymentService;
     this.expenseGroupBalanceRepository = expenseGroupBalanceRepository;
     this.expenseService = expenseService;
+    this.notificationService = notificationService;
   }
 
   public GroupResumeDTO createGroup(CreateGroupDTO group, String ownerId) {
@@ -103,6 +105,7 @@ public class GroupService {
     }
 
     Group updatedGroup = this.groupRepository.addMemberToGroup(groupId, memberToAdd.id());
+    notificationService.notifyMemberAdded(owner, group, memberToAdd);
 
     return new NewMemberDTO(updatedGroup.id(), memberToAdd.id(), memberToAdd.name(),
         memberToAdd.lastName(), memberToAdd.photoUrl());

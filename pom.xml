@@ -120,6 +120,17 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>io.github.hlspablo</groupId>
+			<artifactId>expo-server-sdk-java</artifactId>
+			<version>3.1.6</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>okhttp</artifactId>
+			<version>4.12.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

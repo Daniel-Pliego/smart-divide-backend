@@ -41,6 +41,7 @@ public class PaymentService {
   private final GroupRepository groupRepository;
   private final ExpenseGroupBalanceRepository balanceRepository;
   private final ApplicationEventPublisher eventPublisher;
+  private final NotificationService notificationService;
 
   public List<PaymentDetailDTO> getPaymentsByGroup(String groupId) {
     List<Payment> payments = paymentRepository.findByGroupId(groupId);
@@ -83,6 +84,7 @@ public class PaymentService {
     Payment savedPayment = paymentRepository.savePayment(payment);
 
     eventPublisher.publishEvent(new PaymentCreatedEvent(savedPayment, balance));
+    notificationService.notifyPayment(fromUser, toUser, group, savedPayment);
   }
 
   private PaymentDetailDTO buildPaymentDetailDTO(Payment payment) {

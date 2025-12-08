@@ -1,11 +1,9 @@
 package mr.limpios.smart_divide_backend.infraestructure.security;
 
-
 import java.util.Collections;
 import java.util.Objects;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -32,7 +30,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
       throw new UsernameNotFoundException("Username not found!");
     }
 
-    return new User(userSchema.email(), userSchema.password(), true, true, true, true,
+    return new CustomUserDetails(userSchema,
         Collections.singletonList(new SimpleGrantedAuthority("GENERIC")));
   }
 }

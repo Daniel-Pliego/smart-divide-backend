@@ -48,8 +48,9 @@ public class ExpenseController {
 
   @Operation(summary = "Deletes an existing expense")
   @DeleteMapping("{expenseId}")
-  public ResponseEntity<Void> deleteExpense(@PathVariable String expenseId) {
-    expenseService.deleteExpense(expenseId);
+  public ResponseEntity<Void> deleteExpense(@PathVariable String expenseId,
+      @PathVariable String userId) {
+    expenseService.deleteExpense(expenseId, userId);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 }
