@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.aplication.services;
+package mr.limpios.smart_divide_backend.application.services;
 
 import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -17,20 +17,20 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import mr.limpios.smart_divide_backend.aplication.repositories.GroupRepository;
-import mr.limpios.smart_divide_backend.aplication.repositories.ExpenseGroupBalanceRepository;
-import mr.limpios.smart_divide_backend.aplication.repositories.UserRepository;
+import mr.limpios.smart_divide_backend.application.repositories.GroupRepository;
+import mr.limpios.smart_divide_backend.application.repositories.ExpenseGroupBalanceRepository;
+import mr.limpios.smart_divide_backend.application.repositories.UserRepository;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundException;
 import mr.limpios.smart_divide_backend.domain.models.Group;
 import mr.limpios.smart_divide_backend.domain.models.User;
-import mr.limpios.smart_divide_backend.domain.dto.AddMemberDTO;
-import mr.limpios.smart_divide_backend.domain.dto.CreateGroupDTO;
-import mr.limpios.smart_divide_backend.domain.dto.ExpenseSummaryDTO;
-import mr.limpios.smart_divide_backend.domain.dto.GroupResumeDTO;
-import mr.limpios.smart_divide_backend.domain.dto.GroupTransactionHistoryDTO;
-import mr.limpios.smart_divide_backend.domain.dto.PaymentDetailDTO;
-import mr.limpios.smart_divide_backend.domain.dto.UserBalanceDTO;
-import mr.limpios.smart_divide_backend.infraestructure.repositories.impl.FriendShipRepositoryImp;
+import mr.limpios.smart_divide_backend.application.dtos.AddMemberDTO;
+import mr.limpios.smart_divide_backend.application.dtos.CreateGroupDTO;
+import mr.limpios.smart_divide_backend.application.dtos.ExpenseSummaryDTO;
+import mr.limpios.smart_divide_backend.application.dtos.GroupResumeDTO;
+import mr.limpios.smart_divide_backend.application.dtos.GroupTransactionHistoryDTO;
+import mr.limpios.smart_divide_backend.application.dtos.PaymentDetailDTO;
+import mr.limpios.smart_divide_backend.application.dtos.UserBalanceDTO;
+import mr.limpios.smart_divide_backend.infrastructure.repositories.impl.FriendShipRepositoryImp;
 
 @ExtendWith(MockitoExtension.class)
 public class GroupServiceTest {

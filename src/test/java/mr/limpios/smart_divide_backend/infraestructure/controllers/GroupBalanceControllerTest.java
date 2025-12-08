@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.infraestructure.controllers;
+package mr.limpios.smart_divide_backend.infrastructure.controllers;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -16,9 +16,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import mr.limpios.smart_divide_backend.aplication.services.ExpenseGroupBalanceService;
-import mr.limpios.smart_divide_backend.domain.dto.GetGroupBalancesDTO;
-import mr.limpios.smart_divide_backend.infraestructure.security.JWTAuthorizationFilter;
+import mr.limpios.smart_divide_backend.application.services.ExpenseGroupBalanceService;
+import mr.limpios.smart_divide_backend.application.dtos.GetGroupBalancesDTO;
+import mr.limpios.smart_divide_backend.infrastructure.security.JWTAuthorizationFilter;
 
 @WebMvcTest(controllers = GroupBalanceController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JWTAuthorizationFilter.class))
 @AutoConfigureMockMvc(addFilters = false)

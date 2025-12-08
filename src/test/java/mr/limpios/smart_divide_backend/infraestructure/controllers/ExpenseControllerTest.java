@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.infraestructure.controllers;
+package mr.limpios.smart_divide_backend.infrastructure.controllers;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -20,10 +20,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import mr.limpios.smart_divide_backend.aplication.services.ExpenseService;
-import mr.limpios.smart_divide_backend.domain.dto.ExpenseInputDTO;
-import mr.limpios.smart_divide_backend.infraestructure.security.JWTAuthorizationFilter;
-import mr.limpios.smart_divide_backend.infraestructure.utils.SecurityTestUtils;
+import mr.limpios.smart_divide_backend.application.services.ExpenseService;
+import mr.limpios.smart_divide_backend.application.dtos.ExpenseInputDTO;
+import mr.limpios.smart_divide_backend.infrastructure.security.JWTAuthorizationFilter;
+import mr.limpios.smart_divide_backend.infrastructure.utils.SecurityTestUtils;
 
 @WebMvcTest(controllers = ExpenseController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JWTAuthorizationFilter.class))
 @AutoConfigureMockMvc(addFilters = false)

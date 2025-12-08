@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.domain.validators;
+package mr.limpios.smart_divide_backend.application.validators;
 
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.AMOUNT_MUST_BE_POSITIVE;
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.BOTH_USERS_MUST_BE_MEMBERS_OF_GROUP;
@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 
 import org.junit.jupiter.api.Test;
 
-import mr.limpios.smart_divide_backend.domain.dto.CreatePaymentDTO;
+import mr.limpios.smart_divide_backend.application.dtos.CreatePaymentDTO;
 import mr.limpios.smart_divide_backend.domain.exceptions.InvalidDataException;
 import mr.limpios.smart_divide_backend.domain.models.Group;
 

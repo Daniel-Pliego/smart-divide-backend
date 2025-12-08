@@ -1,6 +1,6 @@
-package mr.limpios.smart_divide_backend.infraestructure.utils;
+package mr.limpios.smart_divide_backend.infrastructure.utils;
 
-import mr.limpios.smart_divide_backend.infraestructure.security.CustomUserDetails;
+import mr.limpios.smart_divide_backend.infrastructure.security.CustomUserDetails;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;

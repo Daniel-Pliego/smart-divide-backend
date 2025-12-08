@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.infraestructure.mappers;
+package mr.limpios.smart_divide_backend.infrastructure.mappers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -7,7 +7,7 @@ import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 
 import mr.limpios.smart_divide_backend.domain.models.User;
-import mr.limpios.smart_divide_backend.infraestructure.schemas.UserSchema;
+import mr.limpios.smart_divide_backend.infrastructure.schemas.UserSchema;
 
 class UserMapperTest {
 

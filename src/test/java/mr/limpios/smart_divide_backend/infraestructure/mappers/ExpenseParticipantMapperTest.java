@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.infraestructure.mappers;
+package mr.limpios.smart_divide_backend.infrastructure.mappers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -13,9 +13,9 @@ import org.mockito.Mockito;
 
 import mr.limpios.smart_divide_backend.domain.models.ExpenseParticipant;
 import mr.limpios.smart_divide_backend.domain.models.User;
-import mr.limpios.smart_divide_backend.infraestructure.schemas.ExpenseParticipantSchema;
-import mr.limpios.smart_divide_backend.infraestructure.schemas.ExpenseSchema;
-import mr.limpios.smart_divide_backend.infraestructure.schemas.UserSchema;
+import mr.limpios.smart_divide_backend.infrastructure.schemas.ExpenseParticipantSchema;
+import mr.limpios.smart_divide_backend.infrastructure.schemas.ExpenseSchema;
+import mr.limpios.smart_divide_backend.infrastructure.schemas.UserSchema;
 
 class ExpenseParticipantMapperTest {
 

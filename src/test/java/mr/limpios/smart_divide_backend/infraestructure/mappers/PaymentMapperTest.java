@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.infraestructure.mappers;
+package mr.limpios.smart_divide_backend.infrastructure.mappers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -12,9 +12,9 @@ import org.mockito.Mockito;
 import mr.limpios.smart_divide_backend.domain.models.Group;
 import mr.limpios.smart_divide_backend.domain.models.Payment;
 import mr.limpios.smart_divide_backend.domain.models.User;
-import mr.limpios.smart_divide_backend.infraestructure.schemas.GroupSchema;
-import mr.limpios.smart_divide_backend.infraestructure.schemas.PaymentSchema;
-import mr.limpios.smart_divide_backend.infraestructure.schemas.UserSchema;
+import mr.limpios.smart_divide_backend.infrastructure.schemas.GroupSchema;
+import mr.limpios.smart_divide_backend.infrastructure.schemas.PaymentSchema;
+import mr.limpios.smart_divide_backend.infrastructure.schemas.UserSchema;
 
 class PaymentMapperTest {
 

@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.infraestructure.security;
+package mr.limpios.smart_divide_backend.infrastructure.security;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -15,7 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import mr.limpios.smart_divide_backend.aplication.repositories.UserRepository;
+import mr.limpios.smart_divide_backend.application.repositories.UserRepository;
 import mr.limpios.smart_divide_backend.domain.models.User;
 
 @ExtendWith(MockitoExtension.class)

@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.infraestructure.repositories.impl;
+package mr.limpios.smart_divide_backend.infrastructure.repositories.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -18,9 +18,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import mr.limpios.smart_divide_backend.domain.models.User;
-import mr.limpios.smart_divide_backend.infraestructure.mappers.UserMapper;
-import mr.limpios.smart_divide_backend.infraestructure.repositories.jpa.JPAUserRepository;
-import mr.limpios.smart_divide_backend.infraestructure.schemas.UserSchema;
+import mr.limpios.smart_divide_backend.infrastructure.mappers.UserMapper;
+import mr.limpios.smart_divide_backend.infrastructure.repositories.jpa.JPAUserRepository;
+import mr.limpios.smart_divide_backend.infrastructure.schemas.UserSchema;
 
 @ExtendWith(MockitoExtension.class)
 class UserRepositoryImpTest {

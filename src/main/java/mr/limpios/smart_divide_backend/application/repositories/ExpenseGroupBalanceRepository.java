@@ -1,0 +1,27 @@
+package mr.limpios.smart_divide_backend.application.repositories;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
+
+import mr.limpios.smart_divide_backend.domain.models.ExpenseGroupBalance;
+
+public interface ExpenseGroupBalanceRepository {
+  ExpenseGroupBalance saveExpenseGroupBalance(ExpenseGroupBalance expenseGroupBalance);
+
+  Optional<ExpenseGroupBalance> findByCreditorAndDebtorAndGroup(String creditorId, String debtorId,
+      String groupId);
+
+  List<ExpenseGroupBalance> findByGroupIdAndCreditorId(String groupId, String creditorId);
+
+  List<ExpenseGroupBalance> findByGroupIdAndDebtorId(String groupId, String debtorId);
+
+  void deleteExpenseGroupBalance(Integer id);
+
+  BigDecimal getTotalDebtsByGroupAndDebtor(String groupId, String userId);
+
+  BigDecimal getTotalCreditsByGroupAndDebtor(String groupId, String userId);
+
+  List<ExpenseGroupBalance> findAllByGroup(String groupId);
+
+}

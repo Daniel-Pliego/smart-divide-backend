@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.aplication.listeners;
+package mr.limpios.smart_divide_backend.application.listeners;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
@@ -18,9 +18,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import mr.limpios.smart_divide_backend.aplication.repositories.ExpenseGroupBalanceRepository;
-import mr.limpios.smart_divide_backend.aplication.services.ExpenseGroupBalanceService;
-import mr.limpios.smart_divide_backend.domain.events.ExpenseCreatedEvent;
+import mr.limpios.smart_divide_backend.application.repositories.ExpenseGroupBalanceRepository;
+import mr.limpios.smart_divide_backend.application.services.ExpenseGroupBalanceService;
+import mr.limpios.smart_divide_backend.application.events.ExpenseCreatedEvent;
 import mr.limpios.smart_divide_backend.domain.models.Expense;
 import mr.limpios.smart_divide_backend.domain.models.ExpenseBalance;
 import mr.limpios.smart_divide_backend.domain.models.ExpenseGroupBalance;

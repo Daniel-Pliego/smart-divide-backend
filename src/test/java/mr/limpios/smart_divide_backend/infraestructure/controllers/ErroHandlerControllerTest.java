@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.infraestructure.controllers;
+package mr.limpios.smart_divide_backend.infrastructure.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import mr.limpios.smart_divide_backend.domain.dto.WrapperResponse;
+import mr.limpios.smart_divide_backend.infrastructure.dtos.WrapperResponse;
 import mr.limpios.smart_divide_backend.domain.exceptions.InvalidDataException;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceExistException;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundException;

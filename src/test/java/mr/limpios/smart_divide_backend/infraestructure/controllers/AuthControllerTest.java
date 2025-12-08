@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.infraestructure.controllers;
+package mr.limpios.smart_divide_backend.infrastructure.controllers;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -19,11 +19,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import mr.limpios.smart_divide_backend.aplication.services.AuthService;
-import mr.limpios.smart_divide_backend.domain.dto.Auth.AuthenticatedDTO;
-import mr.limpios.smart_divide_backend.domain.dto.Auth.UserSignInDTO;
-import mr.limpios.smart_divide_backend.domain.dto.Auth.UserSignUpDTO;
-import mr.limpios.smart_divide_backend.infraestructure.security.JWTAuthorizationFilter;
+import mr.limpios.smart_divide_backend.application.services.AuthService;
+import mr.limpios.smart_divide_backend.application.dtos.Auth.AuthenticatedDTO;
+import mr.limpios.smart_divide_backend.application.dtos.Auth.UserSignInDTO;
+import mr.limpios.smart_divide_backend.application.dtos.Auth.UserSignUpDTO;
+import mr.limpios.smart_divide_backend.infrastructure.security.JWTAuthorizationFilter;
 
 @WebMvcTest(
     controllers = AuthController.class,

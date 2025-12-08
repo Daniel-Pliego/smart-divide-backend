@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.domain.validators;
+package mr.limpios.smart_divide_backend.application.validators;
 
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.INVALID_EMAIL_FORMAT;
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.MISSING_REQUIRED_FIELDS;
@@ -10,7 +10,7 @@ import org.instancio.Instancio;
 import org.instancio.Select;
 import org.junit.jupiter.api.Test;
 
-import mr.limpios.smart_divide_backend.domain.dto.Auth.UserSignUpDTO;
+import mr.limpios.smart_divide_backend.application.dtos.Auth.UserSignUpDTO;
 import mr.limpios.smart_divide_backend.domain.exceptions.InvalidDataException;
 
 class UserSingUpValidatorTest {

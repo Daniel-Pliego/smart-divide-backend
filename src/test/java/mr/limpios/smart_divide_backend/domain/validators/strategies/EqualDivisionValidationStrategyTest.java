@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.domain.validators.strategies;
+package mr.limpios.smart_divide_backend.application.validators.strategies;
 
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.DEBTORS_AMOUNT_MISMATCH;
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.EQUAL_DIVISION_AMOUNT_MISMATCH;
@@ -11,8 +11,8 @@ import java.util.List;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 
-import mr.limpios.smart_divide_backend.domain.dto.CreateExpenseParticipantDTO;
-import mr.limpios.smart_divide_backend.domain.dto.ExpenseInputDTO;
+import mr.limpios.smart_divide_backend.application.dtos.CreateExpenseParticipantDTO;
+import mr.limpios.smart_divide_backend.application.dtos.ExpenseInputDTO;
 import mr.limpios.smart_divide_backend.domain.exceptions.InvalidDataException;
 
 class EqualDivisionValidationStrategyTest {

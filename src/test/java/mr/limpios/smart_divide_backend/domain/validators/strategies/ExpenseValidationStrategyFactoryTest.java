@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.domain.validators.strategies;
+package mr.limpios.smart_divide_backend.application.validators.strategies;
 
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

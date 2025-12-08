@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.infraestructure.repositories.impl;
+package mr.limpios.smart_divide_backend.infrastructure.repositories.impl;
 
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.FRIENDSHIP_ALREADY_EXISTS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,9 +26,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceExistException;
 import mr.limpios.smart_divide_backend.domain.models.Friendship;
-import mr.limpios.smart_divide_backend.infraestructure.mappers.FriendshipMapper;
-import mr.limpios.smart_divide_backend.infraestructure.repositories.jpa.JPAFriendShipRepository;
-import mr.limpios.smart_divide_backend.infraestructure.schemas.FriendshipSchema;
+import mr.limpios.smart_divide_backend.infrastructure.mappers.FriendshipMapper;
+import mr.limpios.smart_divide_backend.infrastructure.repositories.jpa.JPAFriendShipRepository;
+import mr.limpios.smart_divide_backend.infrastructure.schemas.FriendshipSchema;
 
 @ExtendWith(MockitoExtension.class)
 class FriendShipRepositoryImpTest {

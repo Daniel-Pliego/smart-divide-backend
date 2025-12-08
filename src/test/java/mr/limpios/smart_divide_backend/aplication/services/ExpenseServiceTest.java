@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.aplication.services;
+package mr.limpios.smart_divide_backend.application.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -29,24 +29,24 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
-import mr.limpios.smart_divide_backend.aplication.assemblers.ExpenseModelAssembler;
-import mr.limpios.smart_divide_backend.aplication.repositories.ExpenseGroupBalanceRepository;
-import mr.limpios.smart_divide_backend.aplication.repositories.ExpenseRepository;
-import mr.limpios.smart_divide_backend.aplication.repositories.GroupRepository;
-import mr.limpios.smart_divide_backend.aplication.repositories.UserRepository;
-import mr.limpios.smart_divide_backend.domain.dto.ExpenseInputDTO;
-import mr.limpios.smart_divide_backend.domain.dto.ExpenseSummaryDTO;
-import mr.limpios.smart_divide_backend.domain.dto.UserBalanceDTO;
-import mr.limpios.smart_divide_backend.domain.events.ExpenseCreatedEvent;
+import mr.limpios.smart_divide_backend.application.assemblers.ExpenseModelAssembler;
+import mr.limpios.smart_divide_backend.application.repositories.ExpenseGroupBalanceRepository;
+import mr.limpios.smart_divide_backend.application.repositories.ExpenseRepository;
+import mr.limpios.smart_divide_backend.application.repositories.GroupRepository;
+import mr.limpios.smart_divide_backend.application.repositories.UserRepository;
+import mr.limpios.smart_divide_backend.application.dtos.ExpenseInputDTO;
+import mr.limpios.smart_divide_backend.application.dtos.ExpenseSummaryDTO;
+import mr.limpios.smart_divide_backend.application.dtos.UserBalanceDTO;
+import mr.limpios.smart_divide_backend.application.events.ExpenseCreatedEvent;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundException;
 import mr.limpios.smart_divide_backend.domain.models.Expense;
 import mr.limpios.smart_divide_backend.domain.models.ExpenseGroupBalance;
 import mr.limpios.smart_divide_backend.domain.models.ExpenseParticipant;
 import mr.limpios.smart_divide_backend.domain.models.Group;
 import mr.limpios.smart_divide_backend.domain.models.User;
-import mr.limpios.smart_divide_backend.domain.validators.ExpenseValidator;
-import mr.limpios.smart_divide_backend.domain.validators.strategies.AbstractExpenseValidationStrategy;
-import mr.limpios.smart_divide_backend.domain.validators.strategies.ExpenseValidationStrategyFactory;
+import mr.limpios.smart_divide_backend.application.validators.ExpenseValidator;
+import mr.limpios.smart_divide_backend.application.validators.strategies.AbstractExpenseValidationStrategy;
+import mr.limpios.smart_divide_backend.application.validators.strategies.ExpenseValidationStrategyFactory;
 
 @ExtendWith(MockitoExtension.class)
 public class ExpenseServiceTest {

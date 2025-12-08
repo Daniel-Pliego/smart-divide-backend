@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.infraestructure.security;
+package mr.limpios.smart_divide_backend.infrastructure.security;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

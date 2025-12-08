@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.infraestructure.controllers;
+package mr.limpios.smart_divide_backend.infrastructure.controllers;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -24,16 +24,16 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import mr.limpios.smart_divide_backend.aplication.services.GroupService;
-import mr.limpios.smart_divide_backend.domain.dto.AddMemberDTO;
-import mr.limpios.smart_divide_backend.domain.dto.CreateGroupDTO;
-import mr.limpios.smart_divide_backend.domain.dto.GroupResumeDTO;
-import mr.limpios.smart_divide_backend.domain.dto.GroupTransactionHistoryDTO;
-import mr.limpios.smart_divide_backend.domain.dto.MemberResumeDTO;
-import mr.limpios.smart_divide_backend.domain.dto.NewMemberDTO;
-import mr.limpios.smart_divide_backend.domain.dto.UpdateGroupResumeDTO;
-import mr.limpios.smart_divide_backend.infraestructure.security.JWTAuthorizationFilter;
-import mr.limpios.smart_divide_backend.infraestructure.utils.SecurityTestUtils;
+import mr.limpios.smart_divide_backend.application.services.GroupService;
+import mr.limpios.smart_divide_backend.application.dtos.AddMemberDTO;
+import mr.limpios.smart_divide_backend.application.dtos.CreateGroupDTO;
+import mr.limpios.smart_divide_backend.application.dtos.GroupResumeDTO;
+import mr.limpios.smart_divide_backend.application.dtos.GroupTransactionHistoryDTO;
+import mr.limpios.smart_divide_backend.application.dtos.MemberResumeDTO;
+import mr.limpios.smart_divide_backend.application.dtos.NewMemberDTO;
+import mr.limpios.smart_divide_backend.application.dtos.UpdateGroupResumeDTO;
+import mr.limpios.smart_divide_backend.infrastructure.security.JWTAuthorizationFilter;
+import mr.limpios.smart_divide_backend.infrastructure.utils.SecurityTestUtils;
 
 @WebMvcTest(controllers = GroupsController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JWTAuthorizationFilter.class)
 

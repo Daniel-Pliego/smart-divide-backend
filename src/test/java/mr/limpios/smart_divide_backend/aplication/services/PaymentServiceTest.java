@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.aplication.services;
+package mr.limpios.smart_divide_backend.application.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -30,20 +30,20 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
-import mr.limpios.smart_divide_backend.aplication.repositories.ExpenseGroupBalanceRepository;
-import mr.limpios.smart_divide_backend.aplication.repositories.GroupRepository;
-import mr.limpios.smart_divide_backend.aplication.repositories.PaymentRepository;
-import mr.limpios.smart_divide_backend.aplication.repositories.UserRepository;
-import mr.limpios.smart_divide_backend.domain.dto.CreatePaymentDTO;
-import mr.limpios.smart_divide_backend.domain.dto.PaymentDetailDTO;
-import mr.limpios.smart_divide_backend.domain.events.PaymentCreatedEvent;
+import mr.limpios.smart_divide_backend.application.repositories.ExpenseGroupBalanceRepository;
+import mr.limpios.smart_divide_backend.application.repositories.GroupRepository;
+import mr.limpios.smart_divide_backend.application.repositories.PaymentRepository;
+import mr.limpios.smart_divide_backend.application.repositories.UserRepository;
+import mr.limpios.smart_divide_backend.application.dtos.CreatePaymentDTO;
+import mr.limpios.smart_divide_backend.application.dtos.PaymentDetailDTO;
+import mr.limpios.smart_divide_backend.application.events.PaymentCreatedEvent;
 import mr.limpios.smart_divide_backend.domain.exceptions.InvalidDataException;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundException;
 import mr.limpios.smart_divide_backend.domain.models.ExpenseGroupBalance;
 import mr.limpios.smart_divide_backend.domain.models.Group;
 import mr.limpios.smart_divide_backend.domain.models.Payment;
 import mr.limpios.smart_divide_backend.domain.models.User;
-import mr.limpios.smart_divide_backend.domain.validators.PaymentValidator;
+import mr.limpios.smart_divide_backend.application.validators.PaymentValidator;
 
 @ExtendWith(MockitoExtension.class)
 public class PaymentServiceTest {

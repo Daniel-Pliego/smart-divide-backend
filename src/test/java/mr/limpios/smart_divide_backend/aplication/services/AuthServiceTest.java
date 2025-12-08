@@ -1,14 +1,14 @@
-package mr.limpios.smart_divide_backend.aplication.services;
+package mr.limpios.smart_divide_backend.application.services;
 
-import mr.limpios.smart_divide_backend.aplication.repositories.UserRepository;
+import mr.limpios.smart_divide_backend.application.repositories.UserRepository;
 import mr.limpios.smart_divide_backend.domain.exceptions.InvalidDataException;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceExistException;
 import mr.limpios.smart_divide_backend.domain.exceptions.UnauthorizedAccessException;
 import mr.limpios.smart_divide_backend.domain.models.User;
-import mr.limpios.smart_divide_backend.infraestructure.security.JWTService;
-import mr.limpios.smart_divide_backend.domain.dto.Auth.AuthenticatedDTO;
-import mr.limpios.smart_divide_backend.domain.dto.Auth.UserSignInDTO;
-import mr.limpios.smart_divide_backend.domain.dto.Auth.UserSignUpDTO;
+import mr.limpios.smart_divide_backend.infrastructure.security.JWTService;
+import mr.limpios.smart_divide_backend.application.dtos.Auth.AuthenticatedDTO;
+import mr.limpios.smart_divide_backend.application.dtos.Auth.UserSignInDTO;
+import mr.limpios.smart_divide_backend.application.dtos.Auth.UserSignUpDTO;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

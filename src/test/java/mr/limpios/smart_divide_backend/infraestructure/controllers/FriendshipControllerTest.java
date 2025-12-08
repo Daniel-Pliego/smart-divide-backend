@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.infraestructure.controllers;
+package mr.limpios.smart_divide_backend.infrastructure.controllers;
 
 import java.util.Set;
 
@@ -15,11 +15,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import mr.limpios.smart_divide_backend.aplication.services.FriendshipService;
-import mr.limpios.smart_divide_backend.domain.dto.CreateFriendshipDTO;
-import mr.limpios.smart_divide_backend.domain.dto.FriendshipDTO;
-import mr.limpios.smart_divide_backend.infraestructure.security.JWTAuthorizationFilter;
-import mr.limpios.smart_divide_backend.infraestructure.utils.SecurityTestUtils;
+import mr.limpios.smart_divide_backend.application.services.FriendshipService;
+import mr.limpios.smart_divide_backend.application.dtos.CreateFriendshipDTO;
+import mr.limpios.smart_divide_backend.application.dtos.FriendshipDTO;
+import mr.limpios.smart_divide_backend.infrastructure.security.JWTAuthorizationFilter;
+import mr.limpios.smart_divide_backend.infrastructure.utils.SecurityTestUtils;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;

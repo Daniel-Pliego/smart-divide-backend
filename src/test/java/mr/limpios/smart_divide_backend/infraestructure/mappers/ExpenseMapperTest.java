@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.infraestructure.mappers;
+package mr.limpios.smart_divide_backend.infrastructure.mappers;
 
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,10 +16,10 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 import mr.limpios.smart_divide_backend.domain.models.Expense;
-import mr.limpios.smart_divide_backend.infraestructure.schemas.ExpenseSchema;
-import mr.limpios.smart_divide_backend.infraestructure.schemas.GroupSchema;
-import mr.limpios.smart_divide_backend.infraestructure.schemas.ExpenseParticipantSchema;
-import mr.limpios.smart_divide_backend.infraestructure.schemas.ExpenseBalanceSchema;
+import mr.limpios.smart_divide_backend.infrastructure.schemas.ExpenseSchema;
+import mr.limpios.smart_divide_backend.infrastructure.schemas.GroupSchema;
+import mr.limpios.smart_divide_backend.infrastructure.schemas.ExpenseParticipantSchema;
+import mr.limpios.smart_divide_backend.infrastructure.schemas.ExpenseBalanceSchema;
 
 @DisplayName("ExpenseMapper Tests")
 class ExpenseMapperTest {

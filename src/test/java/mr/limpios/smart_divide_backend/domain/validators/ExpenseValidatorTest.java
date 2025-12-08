@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.domain.validators;
+package mr.limpios.smart_divide_backend.application.validators;
 
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.DEBTORS_NOT_IN_GROUP;
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.PAYERS_NOT_IN_GROUP;
@@ -14,8 +14,8 @@ import org.instancio.Instancio;
 import org.instancio.Select;
 import org.junit.jupiter.api.Test;
 
-import mr.limpios.smart_divide_backend.domain.dto.CreateExpenseParticipantDTO;
-import mr.limpios.smart_divide_backend.domain.dto.ExpenseInputDTO;
+import mr.limpios.smart_divide_backend.application.dtos.CreateExpenseParticipantDTO;
+import mr.limpios.smart_divide_backend.application.dtos.ExpenseInputDTO;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundException;
 import mr.limpios.smart_divide_backend.domain.models.User;
 

@@ -1,0 +1,36 @@
+package mr.limpios.smart_divide_backend.infrastructure.schemas;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "user_device_tokens")
+public class UserDeviceTokenSchema {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private String id;
+
+  @OneToOne
+  @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+  private UserSchema user;
+
+  @Column(nullable = false)
+  private String token;
+}

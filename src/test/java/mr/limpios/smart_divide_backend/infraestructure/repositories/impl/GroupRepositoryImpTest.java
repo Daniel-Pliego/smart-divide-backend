@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.infraestructure.repositories.impl;
+package mr.limpios.smart_divide_backend.infrastructure.repositories.impl;
 
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.EXISTING_FRIEND_IN_THE_GROUP;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,11 +25,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceExistException;
 import mr.limpios.smart_divide_backend.domain.models.Group;
-import mr.limpios.smart_divide_backend.infraestructure.mappers.GroupMapper;
-import mr.limpios.smart_divide_backend.infraestructure.repositories.jpa.JPAGroupRepository;
-import mr.limpios.smart_divide_backend.infraestructure.repositories.jpa.JPAUserRepository;
-import mr.limpios.smart_divide_backend.infraestructure.schemas.GroupSchema;
-import mr.limpios.smart_divide_backend.infraestructure.schemas.UserSchema;
+import mr.limpios.smart_divide_backend.infrastructure.mappers.GroupMapper;
+import mr.limpios.smart_divide_backend.infrastructure.repositories.jpa.JPAGroupRepository;
+import mr.limpios.smart_divide_backend.infrastructure.repositories.jpa.JPAUserRepository;
+import mr.limpios.smart_divide_backend.infrastructure.schemas.GroupSchema;
+import mr.limpios.smart_divide_backend.infrastructure.schemas.UserSchema;
 
 @ExtendWith(MockitoExtension.class)
 class GroupRepositoryImpTest {

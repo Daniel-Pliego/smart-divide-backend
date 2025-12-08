@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.domain.validators;
+package mr.limpios.smart_divide_backend.application.validators;
 
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.DATA_REQUIRED;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -9,7 +9,7 @@ import org.instancio.Instancio;
 import org.instancio.Select;
 import org.junit.jupiter.api.Test;
 
-import mr.limpios.smart_divide_backend.domain.dto.CreateGroupDTO;
+import mr.limpios.smart_divide_backend.application.dtos.CreateGroupDTO;
 import mr.limpios.smart_divide_backend.domain.exceptions.InvalidDataException;
 
 class GroupValidatorTest {

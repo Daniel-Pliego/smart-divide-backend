@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.infraestructure.repositories.impl;
+package mr.limpios.smart_divide_backend.infrastructure.repositories.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -18,9 +18,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import mr.limpios.smart_divide_backend.domain.models.Expense;
-import mr.limpios.smart_divide_backend.infraestructure.mappers.ExpenseMapper;
-import mr.limpios.smart_divide_backend.infraestructure.repositories.jpa.JPAExpenseRepository;
-import mr.limpios.smart_divide_backend.infraestructure.schemas.ExpenseSchema;
+import mr.limpios.smart_divide_backend.infrastructure.mappers.ExpenseMapper;
+import mr.limpios.smart_divide_backend.infrastructure.repositories.jpa.JPAExpenseRepository;
+import mr.limpios.smart_divide_backend.infrastructure.schemas.ExpenseSchema;
 
 @ExtendWith(MockitoExtension.class)
 class ExpenseRepositoryImpTest {

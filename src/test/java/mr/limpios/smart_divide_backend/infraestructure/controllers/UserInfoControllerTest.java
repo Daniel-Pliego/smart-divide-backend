@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.infraestructure.controllers;
+package mr.limpios.smart_divide_backend.infrastructure.controllers;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -16,9 +16,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import mr.limpios.smart_divide_backend.aplication.services.UserInfoService;
-import mr.limpios.smart_divide_backend.domain.dto.UserDetailsDTO;
-import mr.limpios.smart_divide_backend.infraestructure.security.JWTAuthorizationFilter;
+import mr.limpios.smart_divide_backend.application.services.UserInfoService;
+import mr.limpios.smart_divide_backend.application.dtos.UserDetailsDTO;
+import mr.limpios.smart_divide_backend.infrastructure.security.JWTAuthorizationFilter;
 
 @WebMvcTest(
     controllers = UserInfoController.class,

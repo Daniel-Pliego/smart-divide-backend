@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.aplication.services;
+package mr.limpios.smart_divide_backend.application.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -11,10 +11,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import mr.limpios.smart_divide_backend.aplication.repositories.UserRepository;
+import mr.limpios.smart_divide_backend.application.repositories.UserRepository;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundException;
 import mr.limpios.smart_divide_backend.domain.models.User;
-import mr.limpios.smart_divide_backend.domain.dto.UserDetailsDTO;
+import mr.limpios.smart_divide_backend.application.dtos.UserDetailsDTO;
 
 @ExtendWith(MockitoExtension.class)
 public class UserInfoServiceTest {

@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.aplication.services;
+package mr.limpios.smart_divide_backend.application.services;
 
 import static org.mockito.Mockito.when;
 import static org.junit.Assert.assertThrows;
@@ -15,12 +15,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import mr.limpios.smart_divide_backend.aplication.repositories.FriendshipRepository;
-import mr.limpios.smart_divide_backend.aplication.repositories.UserRepository;
+import mr.limpios.smart_divide_backend.application.repositories.FriendshipRepository;
+import mr.limpios.smart_divide_backend.application.repositories.UserRepository;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundException;
 import mr.limpios.smart_divide_backend.domain.models.Friendship;
 import mr.limpios.smart_divide_backend.domain.models.User;
-import mr.limpios.smart_divide_backend.domain.dto.FriendshipDTO;
+import mr.limpios.smart_divide_backend.application.dtos.FriendshipDTO;
 import static org.instancio.Select.field;
 
 @ExtendWith(MockitoExtension.class)

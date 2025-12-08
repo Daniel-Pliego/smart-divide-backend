@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.infraestructure.repositories.impl;
+package mr.limpios.smart_divide_backend.infrastructure.repositories.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -18,9 +18,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import mr.limpios.smart_divide_backend.domain.models.Payment;
-import mr.limpios.smart_divide_backend.infraestructure.mappers.PaymentMapper;
-import mr.limpios.smart_divide_backend.infraestructure.repositories.jpa.JPAPaymentRepository;
-import mr.limpios.smart_divide_backend.infraestructure.schemas.PaymentSchema;
+import mr.limpios.smart_divide_backend.infrastructure.mappers.PaymentMapper;
+import mr.limpios.smart_divide_backend.infrastructure.repositories.jpa.JPAPaymentRepository;
+import mr.limpios.smart_divide_backend.infrastructure.schemas.PaymentSchema;
 
 @ExtendWith(MockitoExtension.class)
 class PaymentRepositoryImpTest {
