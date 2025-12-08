@@ -42,8 +42,7 @@ class UserInfoControllerTest {
         UserDetailsDTO responseDTO = Instancio.create(UserDetailsDTO.class);
 
         when(userInfoService.getUserInfo(userId)).thenReturn(responseDTO);
-        mockMvc.perform(get("/user/{userId}", "path-ignored")
-                .param("userId", userId)
+        mockMvc.perform(get("/user/{userId}", userId)
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.ok").value(true))

@@ -45,5 +45,9 @@ public class PaymentSchema {
 
   @Builder.Default
   @Column(nullable = false)
+  private Boolean paidWithCard = false;
+
+  @Builder.Default
+  @Column(nullable = false)
   private LocalDateTime createdAt = LocalDateTime.now();
 }

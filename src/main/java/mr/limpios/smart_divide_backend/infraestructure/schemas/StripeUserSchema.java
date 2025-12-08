@@ -6,7 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,28 +18,19 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "card")
-public class CardSchema {
+@Entity(name = "stripe_user_info")
+public class StripeUserSchema {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   private String id;
 
-  @Column(nullable = false, length = 4)
-  private String lastDigits;
+  @Column(name = "stripe_account_id", unique = true)
+  private String stripeAccountId;
 
-  @Column(nullable = false)
-  private String brand;
+  @Column(name = "stripe_customer_id", unique = true)
+  private String stripeCustomerId;
 
-  @Column(nullable = false, length = 2)
-  private String expMonth;
-
-  @Column(nullable = false, length = 2)
-  private String expYear;
-
-  @Column(nullable = false)
-  private String token;
-
-  @ManyToOne(optional = false)
-  @JoinColumn(name = "user_id", nullable = false)
+  @OneToOne(optional = false)
+  @JoinColumn(name = "user_id", nullable = false, unique = true)
   private UserSchema user;
 }

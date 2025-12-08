@@ -18,23 +18,23 @@ import mr.limpios.smart_divide_backend.domain.dto.WrapperResponse;
 
 @RestController
 @RequestMapping("user/{userId}/groups/{groupId}")
-@CrossOrigin(maxAge = 3600, methods = { RequestMethod.OPTIONS, RequestMethod.POST }, origins = { "*" })
+@CrossOrigin(maxAge = 3600, methods = {RequestMethod.OPTIONS, RequestMethod.POST}, origins = {"*"})
 @Tag(name = "Payments", description = "Endpoints to manage payments")
 public class PaymentController {
 
-    private final PaymentService paymentService;
+  private final PaymentService paymentService;
 
-    public PaymentController(PaymentService paymentService) {
-        this.paymentService = paymentService;
-    }
+  public PaymentController(PaymentService paymentService) {
+    this.paymentService = paymentService;
+  }
 
-    @Operation(summary = "Endpoint to create a new payment")
-    @PostMapping("payments")
-    public ResponseEntity<WrapperResponse<Void>> createPayment(@PathVariable String userId,
-            @PathVariable String groupId, @RequestBody CreatePaymentDTO createPaymentDTO) {
-        paymentService.createPayment(userId, groupId, createPaymentDTO);
-        return new ResponseEntity<>(new WrapperResponse<>(true, "Payment created successfully", null),
-                HttpStatus.CREATED);
-    }
+  @Operation(summary = "Endpoint to create a new payment")
+  @PostMapping("payments")
+  public ResponseEntity<WrapperResponse<Void>> createPayment(@PathVariable String userId,
+      @PathVariable String groupId, @RequestBody CreatePaymentDTO createPaymentDTO) {
+    paymentService.createPayment(userId, groupId, createPaymentDTO, false);
+    return new ResponseEntity<>(new WrapperResponse<>(true, "Payment created successfully", null),
+        HttpStatus.CREATED);
+  }
 
 }

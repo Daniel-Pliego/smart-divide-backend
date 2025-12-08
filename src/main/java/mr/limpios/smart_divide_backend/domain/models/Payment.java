@@ -9,4 +9,5 @@ public record Payment(
         User toUser,
         BigDecimal amount,
         Group group,
+        Boolean paidByCard,
         LocalDateTime createdAt) {}
