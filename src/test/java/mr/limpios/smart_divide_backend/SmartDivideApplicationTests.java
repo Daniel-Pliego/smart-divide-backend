@@ -9,7 +9,7 @@ import org.springframework.test.context.TestPropertySource;
 @SpringBootTest
 @TestPropertySource(properties = { "jwt.secret.key=test-secret-key-for-testing-purposes-only-do-not-use-in-production",
 		"jwt.expiration.time=3600000", "stripe.api.key=api_key_test_123",
-		"stripe.webhook.secret=webhook_secret_test_123s" })
+		"stripe.webhook.secret=webhook_secret_test_123s", "server.servlet.context-path=/api" })
 class SmartDivideApplicationTests {
 
 	@Test
