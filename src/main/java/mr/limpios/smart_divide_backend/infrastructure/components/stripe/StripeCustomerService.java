@@ -27,10 +27,10 @@ import mr.limpios.smart_divide_backend.application.repositories.UserRepository;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundException;
 import mr.limpios.smart_divide_backend.domain.models.ExpenseGroupBalance;
 import mr.limpios.smart_divide_backend.domain.models.User;
-import mr.limpios.smart_divide_backend.infrastructure.components.stripe.models.CustomerSessionResponse;
-import mr.limpios.smart_divide_backend.infrastructure.components.stripe.models.PaymentIntentRequest;
-import mr.limpios.smart_divide_backend.infrastructure.components.stripe.models.PaymentIntentResponse;
-import mr.limpios.smart_divide_backend.infrastructure.components.stripe.models.SetUpIntentResponse;
+import mr.limpios.smart_divide_backend.infrastructure.dtos.stripe.CustomerSessionResponse;
+import mr.limpios.smart_divide_backend.infrastructure.dtos.stripe.PaymentIntentRequest;
+import mr.limpios.smart_divide_backend.infrastructure.dtos.stripe.PaymentIntentResponse;
+import mr.limpios.smart_divide_backend.infrastructure.dtos.stripe.SetUpIntentResponse;
 import mr.limpios.smart_divide_backend.infrastructure.repositories.impl.StripeUserInfoRepository;
 import mr.limpios.smart_divide_backend.infrastructure.schemas.StripeUserSchema;
 

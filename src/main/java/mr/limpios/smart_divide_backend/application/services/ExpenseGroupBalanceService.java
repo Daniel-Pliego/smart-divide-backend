@@ -63,21 +63,18 @@ public class ExpenseGroupBalanceService {
 
   public GetGroupBalancesDTO getAllBalancesByGroup(String groupId) {
     List<ExpenseGroupBalance> balances = balanceRepository.findAllByGroup(groupId);
-    List<BalanceDetailDTO> balanceDetails = balances.stream()
-        .map(balance -> new BalanceDetailDTO(
-            new ExpenseParticipantDTO(balance.creditor().id(), balance.creditor().name(),
-                balance.creditor().lastName(), balance.creditor().photoUrl()),
-            new ExpenseParticipantDTO(balance.debtor().id(), balance.debtor().name(),
-                balance.debtor().lastName(), balance.debtor().photoUrl()),
-            balance.amount()))
-        .toList();
+    List<BalanceDetailDTO> balanceDetails = mapToBalanceDetailDTOs(balances);
     return new GetGroupBalancesDTO(groupId, balanceDetails);
   }
 
   public GetGroupBalancesDTO getBalancesByUserAndGroup(String userId, String groupId) {
     List<ExpenseGroupBalance> debts = balanceRepository.findByGroupIdAndDebtorId(groupId, userId);
+    List<BalanceDetailDTO> balanceDetails = mapToBalanceDetailDTOs(debts);
+    return new GetGroupBalancesDTO(groupId, balanceDetails);
+  }
 
-    List<BalanceDetailDTO> balanceDetails = debts.stream()
+  private List<BalanceDetailDTO> mapToBalanceDetailDTOs(List<ExpenseGroupBalance> balances) {
+    return balances.stream()
         .map(balance -> new BalanceDetailDTO(
             new ExpenseParticipantDTO(balance.creditor().id(), balance.creditor().name(),
                 balance.creditor().lastName(), balance.creditor().photoUrl()),
@@ -85,8 +82,6 @@ public class ExpenseGroupBalanceService {
                 balance.debtor().lastName(), balance.debtor().photoUrl()),
             balance.amount()))
         .toList();
-
-    return new GetGroupBalancesDTO(groupId, balanceDetails);
   }
 
   @Transactional

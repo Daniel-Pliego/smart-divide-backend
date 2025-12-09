@@ -1,7 +1,7 @@
 package mr.limpios.smart_divide_backend.infrastructure.controllers;
 
-import java.math.BigDecimal;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -13,31 +13,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.stripe.exception.SignatureVerificationException;
-import com.stripe.model.Account;
 import com.stripe.model.Event;
 import com.stripe.model.EventDataObjectDeserializer;
-import com.stripe.model.PaymentIntent;
 import com.stripe.model.StripeObject;
 import com.stripe.net.Webhook;
 
-import lombok.RequiredArgsConstructor;
-import mr.limpios.smart_divide_backend.application.dtos.CreatePaymentDTO;
-import mr.limpios.smart_divide_backend.application.services.PaymentService;
-import mr.limpios.smart_divide_backend.infrastructure.repositories.jpa.JPAStripeRepository;
-import mr.limpios.smart_divide_backend.infrastructure.repositories.jpa.JPAUserRepository;
-import mr.limpios.smart_divide_backend.infrastructure.schemas.UserSchema;
+import mr.limpios.smart_divide_backend.infrastructure.components.stripe.handlers.StripeEventHandler;
+import mr.limpios.smart_divide_backend.infrastructure.components.stripe.handlers.StripeEventHandlerFactory;
 
 @RestController
 @RequestMapping("/stripe/webhook")
-@RequiredArgsConstructor
 public class StripeWebhookController {
 
   @Value("${stripe.webhook.secret}")
   private String endpointSecret;
 
-  private final JPAStripeRepository stripeRepository;
-  private final JPAUserRepository userRepository;
-  private final PaymentService paymentService;
+  private final StripeEventHandlerFactory eventHandlerFactory;
+
+  public StripeWebhookController(StripeEventHandlerFactory eventHandlerFactory) {
+    this.eventHandlerFactory = eventHandlerFactory;
+  }
 
   @PostMapping
   public ResponseEntity<String> handleWebhook(@RequestBody String payload,
@@ -53,63 +48,24 @@ public class StripeWebhookController {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Webhook error");
     }
 
-    if ("account.updated".equals(event.getType())) {
-      EventDataObjectDeserializer dataObjectDeserializer = event.getDataObjectDeserializer();
-      StripeObject stripeObject = null;
-      if (dataObjectDeserializer.getObject().isPresent()) {
-        stripeObject = dataObjectDeserializer.getObject().get();
-      } else {
-        try {
-          stripeObject = dataObjectDeserializer.deserializeUnsafe();
-
-        } catch (Exception e) {
-          return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Webhook error");
-        }
-      }
-
-      Account account = (Account) stripeObject;
-      handleAccountUpdated(account);
-    }
-
-    if ("payment_intent.succeeded".equals(event.getType())) {
-      EventDataObjectDeserializer dataObjectDeserializer = event.getDataObjectDeserializer();
-      StripeObject stripeObject = null;
-      if (dataObjectDeserializer.getObject().isPresent()) {
-        stripeObject = dataObjectDeserializer.getObject().get();
-      } else {
-        try {
-          stripeObject = dataObjectDeserializer.deserializeUnsafe();
-
-        } catch (Exception e) {
-          return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Webhook error");
-        }
-      }
-
-      PaymentIntent paymentIntent = (PaymentIntent) stripeObject;
-      Map<String, String> metadata = paymentIntent.getMetadata();
-      String groupId = metadata.get("groupId");
-      String fromUser = metadata.get("fromUser");
-      String toUser = metadata.get("toUser");
-      String amount = metadata.get("amount");
-
-      paymentService.createPayment(fromUser, groupId,
-          new CreatePaymentDTO(fromUser, toUser, new BigDecimal(amount)), true);
+    Map<String, StripeEventHandler> handlers = eventHandlerFactory.getHandlers();
+    StripeEventHandler handler = handlers.get(event.getType());
+    if (handler != null) {
+      deserializeStripeObject(event.getDataObjectDeserializer()).ifPresent(handler::handle);
     }
 
     return ResponseEntity.ok("Received");
   }
 
-  private void handleAccountUpdated(Account account) {
-    stripeRepository.findByStripeAccountId(account.getId()).ifPresent(stripeUser -> {
-      UserSchema user = stripeUser.getUser();
-
-      if (account.getDetailsSubmitted() || account.getChargesEnabled()) {
-        if (!user.getIsVerified()) {
-          user.setIsVerified(true);
-          userRepository.save(user);
-        }
-      }
-
-    });
+  private Optional<StripeObject> deserializeStripeObject(
+      EventDataObjectDeserializer dataObjectDeserializer) {
+    if (dataObjectDeserializer.getObject().isPresent()) {
+      return dataObjectDeserializer.getObject();
+    }
+    try {
+      return Optional.of(dataObjectDeserializer.deserializeUnsafe());
+    } catch (Exception e) {
+      return Optional.empty();
+    }
   }
 }

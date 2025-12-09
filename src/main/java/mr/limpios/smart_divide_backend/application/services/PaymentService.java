@@ -9,16 +9,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import mr.limpios.smart_divide_backend.application.assemblers.PaymentAssembler;
 import mr.limpios.smart_divide_backend.application.dtos.CreatePaymentDTO;
 import mr.limpios.smart_divide_backend.application.dtos.PaymentDetailDTO;
-import mr.limpios.smart_divide_backend.application.dtos.PaymentUserDTO;
 import mr.limpios.smart_divide_backend.application.events.PaymentCreatedEvent;
 import mr.limpios.smart_divide_backend.application.repositories.ExpenseGroupBalanceRepository;
 import mr.limpios.smart_divide_backend.application.repositories.GroupRepository;
@@ -46,7 +45,7 @@ public class PaymentService {
   public List<PaymentDetailDTO> getPaymentsByGroup(String groupId) {
     List<Payment> payments = paymentRepository.findByGroupId(groupId);
 
-    return payments.stream().map(this::buildPaymentDetailDTO).collect(Collectors.toList());
+    return PaymentAssembler.toPaymentDetailDTOList(payments);
   }
 
   @Transactional
@@ -87,15 +86,4 @@ public class PaymentService {
     notificationService.notifyPayment(fromUser, toUser, group, savedPayment);
   }
 
-  private PaymentDetailDTO buildPaymentDetailDTO(Payment payment) {
-
-    PaymentUserDTO fromUser =
-        new PaymentUserDTO(payment.fromUser().name(), payment.fromUser().lastName());
-
-    PaymentUserDTO toUser =
-        new PaymentUserDTO(payment.toUser().name(), payment.toUser().lastName());
-
-    return new PaymentDetailDTO(payment.id(), fromUser, toUser, payment.amount(),
-        payment.createdAt());
-  }
 }

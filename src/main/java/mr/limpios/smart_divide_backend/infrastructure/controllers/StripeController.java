@@ -19,11 +19,11 @@ import com.stripe.exception.StripeException;
 
 import mr.limpios.smart_divide_backend.infrastructure.components.stripe.StripeCustomerService;
 import mr.limpios.smart_divide_backend.infrastructure.components.stripe.StripeExpressAccountService;
-import mr.limpios.smart_divide_backend.infrastructure.components.stripe.models.CustomerSessionResponse;
-import mr.limpios.smart_divide_backend.infrastructure.components.stripe.models.PaymentIntentRequest;
-import mr.limpios.smart_divide_backend.infrastructure.components.stripe.models.PaymentIntentResponse;
-import mr.limpios.smart_divide_backend.infrastructure.components.stripe.models.SetUpIntentResponse;
 import mr.limpios.smart_divide_backend.infrastructure.dtos.WrapperResponse;
+import mr.limpios.smart_divide_backend.infrastructure.dtos.stripe.CustomerSessionResponse;
+import mr.limpios.smart_divide_backend.infrastructure.dtos.stripe.PaymentIntentRequest;
+import mr.limpios.smart_divide_backend.infrastructure.dtos.stripe.PaymentIntentResponse;
+import mr.limpios.smart_divide_backend.infrastructure.dtos.stripe.SetUpIntentResponse;
 import mr.limpios.smart_divide_backend.infrastructure.security.CustomUserDetails;
 
 @RestController

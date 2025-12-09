@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import mr.limpios.smart_divide_backend.application.assemblers.FriendshipAssembler;
 import mr.limpios.smart_divide_backend.application.dtos.FriendshipDTO;
 import mr.limpios.smart_divide_backend.application.repositories.FriendshipRepository;
 import mr.limpios.smart_divide_backend.application.repositories.UserRepository;
@@ -53,15 +54,8 @@ public class FriendshipService {
 
     Set<Friendship> friendships = friendshipRepository.getAllFriendshipsByUserId(userId);
 
-    return friendships.stream().map(friendship -> mapToFriendshipDTO(friendship, userId))
+    return friendships.stream()
+        .map(friendship -> FriendshipAssembler.toFriendshipDTO(friendship, userId))
         .collect(Collectors.toSet());
-  }
-
-  private FriendshipDTO mapToFriendshipDTO(Friendship friendship, String currentUserId) {
-    User otherUser = friendship.requester().id().equals(currentUserId) ? friendship.friend()
-        : friendship.requester();
-
-    return new FriendshipDTO(String.valueOf(friendship.id()), otherUser.name(),
-        otherUser.lastName(), otherUser.photoUrl(), otherUser.email());
   }
 }

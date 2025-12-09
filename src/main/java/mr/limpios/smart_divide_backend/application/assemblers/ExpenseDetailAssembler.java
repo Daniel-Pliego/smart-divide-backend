@@ -11,6 +11,8 @@ import mr.limpios.smart_divide_backend.application.dtos.ExpenseDetails.ExpenseDe
 import mr.limpios.smart_divide_backend.application.dtos.ExpenseDetails.ExpenseParticipantDTO;
 import mr.limpios.smart_divide_backend.application.dtos.ExpenseDetails.ExpensePayerDetailDTO;
 import mr.limpios.smart_divide_backend.application.dtos.ExpenseDetails.ExpenseUserAmountDTO;
+import mr.limpios.smart_divide_backend.application.dtos.ExpensePayerDTO;
+import mr.limpios.smart_divide_backend.application.dtos.ExpenseSummaryDTO;
 import mr.limpios.smart_divide_backend.domain.models.Expense;
 import mr.limpios.smart_divide_backend.domain.models.ExpenseBalance;
 import mr.limpios.smart_divide_backend.domain.models.ExpenseParticipant;
@@ -66,6 +68,22 @@ public class ExpenseDetailAssembler {
 
   private static ExpenseParticipantDTO toExpenseParticipantDTO(User user) {
     return new ExpenseParticipantDTO(user.id(), user.name(), user.lastName(), user.photoUrl());
+  }
+
+  public static ExpenseSummaryDTO toExpenseSummaryDTO(Expense expense, String userId) {
+    List<ExpensePayerDTO> payers =
+        expense.participants().stream().filter(p -> p.amountPaid().compareTo(BigDecimal.ZERO) > 0)
+            .map(p -> new ExpensePayerDTO(p.payer().id(), p.payer().name(), p.payer().lastName(),
+                p.amountPaid()))
+            .toList();
+    ExpenseParticipant payer = expense.participants().stream()
+        .filter(p -> p.payer().id().equals(userId)).findFirst().orElse(null);
+
+    BigDecimal userBalance =
+        payer != null ? payer.amountPaid().subtract(payer.mustPaid()) : BigDecimal.ZERO;
+
+    return new ExpenseSummaryDTO(expense.id(), expense.type(), expense.description(),
+        expense.amount(), expense.createdAt(), payers, userBalance);
   }
 
 }

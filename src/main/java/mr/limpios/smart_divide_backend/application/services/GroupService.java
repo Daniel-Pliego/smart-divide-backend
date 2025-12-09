@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import mr.limpios.smart_divide_backend.application.assemblers.GroupAssembler;
 import mr.limpios.smart_divide_backend.application.dtos.*;
 import mr.limpios.smart_divide_backend.application.repositories.ExpenseGroupBalanceRepository;
 import mr.limpios.smart_divide_backend.application.repositories.FriendshipRepository;
@@ -63,8 +64,7 @@ public class GroupService {
     Group savedGroup = this.groupRepository.saveGroup(
         new Group(null, group.name(), group.description(), owner, group.type(), List.of(owner)));
 
-    return new GroupResumeDTO(savedGroup.id(), savedGroup.name(), savedGroup.type(),
-        new BigDecimal(0), new BigDecimal(0));
+    return GroupAssembler.toGroupResumeDTO(savedGroup, BigDecimal.ZERO, BigDecimal.ZERO);
   }
 
   public UpdateGroupResumeDTO updateGroup(CreateGroupDTO group, String groupId) {
@@ -80,8 +80,7 @@ public class GroupService {
         this.groupRepository.updateGroupById(groupId, new Group(findedGroup.id(), group.name(),
             group.description(), findedGroup.owner(), findedGroup.type(), findedGroup.members()));
 
-    return new UpdateGroupResumeDTO(updatedGroup.id(), updatedGroup.name(),
-        updatedGroup.description());
+    return GroupAssembler.toUpdateGroupResumeDTO(updatedGroup);
   }
 
   public NewMemberDTO addMemberToGroup(AddMemberDTO addMemberDTO, String groupId, String ownerId) {
@@ -107,8 +106,7 @@ public class GroupService {
     Group updatedGroup = this.groupRepository.addMemberToGroup(groupId, memberToAdd.id());
     notificationService.notifyMemberAdded(owner, group, memberToAdd);
 
-    return new NewMemberDTO(updatedGroup.id(), memberToAdd.id(), memberToAdd.name(),
-        memberToAdd.lastName(), memberToAdd.photoUrl());
+    return GroupAssembler.toNewMemberDTO(updatedGroup, memberToAdd);
 
   }
 
@@ -127,7 +125,7 @@ public class GroupService {
       BigDecimal totalDebts =
           expenseGroupBalanceRepository.getTotalDebtsByGroupAndDebtor(group.id(), userId);
 
-      return new GroupResumeDTO(group.id(), group.name(), group.type(), totalDebts, totalCredits);
+      return GroupAssembler.toGroupResumeDTO(group, totalDebts, totalCredits);
 
     }).collect(Collectors.toList());
   }
@@ -150,8 +148,7 @@ public class GroupService {
         expenseService.getExpensesByGroup(groupId, userBalances, userId);
     List<PaymentDetailDTO> payments = paymentService.getPaymentsByGroup(groupId);
 
-    return new GroupTransactionHistoryDTO(group.id(), group.name(), group.description(),
-        group.owner().id(), group.type(), userBalances, payments, expenses);
+    return GroupAssembler.toGroupTransactionHistoryDTO(group, userBalances, payments, expenses);
   }
 
   public List<MemberResumeDTO> getGroupMembers(String groupId) {
@@ -161,8 +158,8 @@ public class GroupService {
       throw new ResourceNotFoundException(GROUP_NOT_FOUND);
     }
 
-    return group.members().stream().map(member -> new MemberResumeDTO(member.id(), member.name(),
-        member.lastName(), member.photoUrl())).collect(Collectors.toList());
+    return group.members().stream().map(GroupAssembler::toMemberResumeDTO)
+        .collect(Collectors.toList());
 
   }
 }

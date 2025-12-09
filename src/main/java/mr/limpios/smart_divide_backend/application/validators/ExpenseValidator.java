@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import mr.limpios.smart_divide_backend.application.dtos.CreateExpenseParticipantDTO;
 import mr.limpios.smart_divide_backend.application.dtos.ExpenseInputDTO;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundException;
+import mr.limpios.smart_divide_backend.domain.models.Expense;
 import mr.limpios.smart_divide_backend.domain.models.User;
 
 public class ExpenseValidator {
@@ -32,6 +33,18 @@ public class ExpenseValidator {
 
     if (!memberIds.containsAll(dtoPayersIds)) {
       throw new ResourceNotFoundException(PAYERS_NOT_IN_GROUP);
+    }
+  }
+
+  public static void validateExpenseAccess(Expense expense, String userId, String groupId) {
+    if (!expense.group().id().equals(groupId)) {
+      throw new ResourceNotFoundException(EXPENSE_NOT_FOUND);
+    }
+
+    boolean isMember =
+        expense.group().members().stream().anyMatch(member -> member.id().equals(userId));
+    if (!isMember) {
+      throw new ResourceNotFoundException(USER_NOT_MEMBER_OF_GROUP);
     }
   }
 }

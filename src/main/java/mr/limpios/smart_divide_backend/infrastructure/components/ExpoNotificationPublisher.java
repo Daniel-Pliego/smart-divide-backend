@@ -54,7 +54,6 @@ public class ExpoNotificationPublisher implements NotificationPublisher {
       push.setTitle(title);
       push.setBody(body);
 
-      // Convertir data correctamente
       push.setData(new HashMap<>(data));
 
       notifications.add(push);

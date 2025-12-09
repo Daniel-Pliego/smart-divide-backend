@@ -2,7 +2,6 @@ package mr.limpios.smart_divide_backend.application.services;
 
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.EXPENSE_NOT_FOUND;
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.GROUP_NOT_FOUND;
-import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.USER_NOT_MEMBER_OF_GROUP;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -22,7 +21,6 @@ import mr.limpios.smart_divide_backend.application.assemblers.ExpenseDetailAssem
 import mr.limpios.smart_divide_backend.application.assemblers.ExpenseModelAssembler;
 import mr.limpios.smart_divide_backend.application.dtos.ExpenseDetails.ExpenseDetailDTO;
 import mr.limpios.smart_divide_backend.application.dtos.ExpenseInputDTO;
-import mr.limpios.smart_divide_backend.application.dtos.ExpensePayerDTO;
 import mr.limpios.smart_divide_backend.application.dtos.ExpenseSummaryDTO;
 import mr.limpios.smart_divide_backend.application.dtos.UserBalanceDTO;
 import mr.limpios.smart_divide_backend.application.events.ExpenseCreatedEvent;
@@ -91,24 +89,8 @@ public class ExpenseService {
       throw new ResourceNotFoundException(EXPENSE_NOT_FOUND);
     }
 
-    validateUserAccessToExpense(expense, userId, groupId);
+    ExpenseValidator.validateExpenseAccess(expense, userId, groupId);
     return ExpenseDetailAssembler.buildExpenseDetailDTO(expense);
-  }
-
-  private void validateUserAccessToExpense(Expense expense, String userId, String groupId) {
-    if (!expense.group().id().equals(groupId)) {
-      throw new ResourceNotFoundException(EXPENSE_NOT_FOUND);
-    }
-
-    Group group = groupRepository.getGroupById(groupId);
-    if (Objects.isNull(group)) {
-      throw new ResourceNotFoundException(GROUP_NOT_FOUND);
-    }
-
-    boolean isMember = group.members().stream().anyMatch(member -> member.id().equals(userId));
-    if (!isMember) {
-      throw new ResourceNotFoundException(USER_NOT_MEMBER_OF_GROUP);
-    }
   }
 
   public List<UserBalanceDTO> getUserBalancesByGroup(String groupId, String userId) {
@@ -138,33 +120,13 @@ public class ExpenseService {
       List<UserBalanceDTO> userBalances, String userId) {
     List<Expense> expenses = expenseRepository.findByGroupId(groupId);
 
-    Map<String, BigDecimal> balanceMap = userBalances.stream()
-        .collect(Collectors.toMap(UserBalanceDTO::userId, UserBalanceDTO::balance));
-
     List<ExpenseSummaryDTO> result = new ArrayList<>();
 
     for (Expense expense : expenses) {
-      result.add(buildExpenseDetailDTO(expense, balanceMap, userId));
+      result.add(ExpenseDetailAssembler.toExpenseSummaryDTO(expense, userId));
     }
 
     return result;
-  }
-
-  private ExpenseSummaryDTO buildExpenseDetailDTO(Expense expense,
-      Map<String, BigDecimal> balanceMap, String userId) {
-    List<ExpensePayerDTO> payers =
-        expense.participants().stream().filter(p -> p.amountPaid().compareTo(BigDecimal.ZERO) > 0)
-            .map(p -> new ExpensePayerDTO(p.payer().id(), p.payer().name(), p.payer().lastName(),
-                p.amountPaid()))
-            .toList();
-    ExpenseParticipant payer = expense.participants().stream()
-        .filter(p -> p.payer().id().equals(userId)).findFirst().orElse(null);
-
-    BigDecimal userBalance =
-        payer != null ? payer.amountPaid().subtract(payer.mustPaid()) : BigDecimal.ZERO;
-
-    return new ExpenseSummaryDTO(expense.id(), expense.type(), expense.description(),
-        expense.amount(), expense.createdAt(), payers, userBalance);
   }
 
   @Transactional
