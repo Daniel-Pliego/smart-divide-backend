@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.infrastructure.components;
+package mr.limpios.smart_divide_backend.infrastructure.adapters.notifications;
 
 import java.util.ArrayList;
 import java.util.HashMap;

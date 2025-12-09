@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.infrastructure.components.stripe;
+package mr.limpios.smart_divide_backend.infrastructure.adapters.stripe;
 
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.USER_NOT_FOUND;
 

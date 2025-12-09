@@ -1,4 +1,4 @@
-package mr.limpios.smart_divide_backend.infrastructure.components.stripe.handlers;
+package mr.limpios.smart_divide_backend.infrastructure.adapters.stripe.handlers;
 
 import org.springframework.stereotype.Component;
 

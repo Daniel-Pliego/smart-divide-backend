@@ -18,8 +18,8 @@ import com.stripe.model.EventDataObjectDeserializer;
 import com.stripe.model.StripeObject;
 import com.stripe.net.Webhook;
 
-import mr.limpios.smart_divide_backend.infrastructure.components.stripe.handlers.StripeEventHandler;
-import mr.limpios.smart_divide_backend.infrastructure.components.stripe.handlers.StripeEventHandlerFactory;
+import mr.limpios.smart_divide_backend.infrastructure.adapters.stripe.handlers.StripeEventHandler;
+import mr.limpios.smart_divide_backend.infrastructure.adapters.stripe.handlers.StripeEventHandlerFactory;
 
 @RestController
 @RequestMapping("/stripe/webhook")

@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.stripe.exception.StripeException;
 
-import mr.limpios.smart_divide_backend.infrastructure.components.stripe.StripeCustomerService;
-import mr.limpios.smart_divide_backend.infrastructure.components.stripe.StripeExpressAccountService;
+import mr.limpios.smart_divide_backend.infrastructure.adapters.stripe.StripeCustomerService;
+import mr.limpios.smart_divide_backend.infrastructure.adapters.stripe.StripeExpressAccountService;
 import mr.limpios.smart_divide_backend.infrastructure.dtos.WrapperResponse;
 import mr.limpios.smart_divide_backend.infrastructure.dtos.stripe.CustomerSessionResponse;
 import mr.limpios.smart_divide_backend.infrastructure.dtos.stripe.PaymentIntentRequest;
