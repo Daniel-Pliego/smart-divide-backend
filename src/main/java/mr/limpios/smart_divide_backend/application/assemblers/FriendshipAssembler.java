@@ -10,7 +10,7 @@ public class FriendshipAssembler {
     User otherUser = friendship.requester().id().equals(currentUserId) ? friendship.friend()
         : friendship.requester();
 
-    return new FriendshipDTO(String.valueOf(friendship.id()), otherUser.name(),
-        otherUser.lastName(), otherUser.photoUrl(), otherUser.email());
+    return new FriendshipDTO(otherUser.id(), otherUser.name(), otherUser.lastName(),
+        otherUser.photoUrl(), otherUser.email());
   }
 }

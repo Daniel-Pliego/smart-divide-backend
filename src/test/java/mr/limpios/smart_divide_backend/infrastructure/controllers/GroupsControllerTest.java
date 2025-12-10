@@ -104,7 +104,7 @@ class GroupsControllerTest {
                 when(groupService.addMemberToGroup(any(AddMemberDTO.class), eq(groupId), eq(userId)))
                                 .thenReturn(responseDTO);
 
-                mockMvc.perform(put("/groups/{groupId}/members", groupId)
+                mockMvc.perform(post("/groups/{groupId}/members", groupId)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(inputDTO)))
                                 .andExpect(status().isOk())

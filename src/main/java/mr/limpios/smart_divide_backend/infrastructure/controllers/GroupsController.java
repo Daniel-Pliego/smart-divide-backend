@@ -61,7 +61,7 @@ public class GroupsController {
   }
 
   @Operation(summary = "Adds a member to an existing group")
-  @PutMapping("{groupId}/members")
+  @PostMapping("{groupId}/members")
   public ResponseEntity<WrapperResponse<NewMemberDTO>> addMember(@PathVariable String groupId,
       @RequestBody AddMemberDTO addMemberDTO) {
 
