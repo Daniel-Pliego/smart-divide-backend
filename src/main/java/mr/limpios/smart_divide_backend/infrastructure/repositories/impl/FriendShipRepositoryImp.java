@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import mr.limpios.smart_divide_backend.application.repositories.FriendshipRepository;
-import mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants;
-import mr.limpios.smart_divide_backend.domain.exceptions.ResourceExistException;
 import mr.limpios.smart_divide_backend.domain.models.Friendship;
 import mr.limpios.smart_divide_backend.infrastructure.mappers.FriendshipMapper;
 import mr.limpios.smart_divide_backend.infrastructure.repositories.jpa.JPAFriendShipRepository;
@@ -22,14 +20,6 @@ public class FriendShipRepositoryImp implements FriendshipRepository {
 
   @Override
   public void createFriendRequest(Friendship friendship) {
-    String requesterId = friendship.requester().id();
-    String friendId = friendship.friend().id();
-    boolean exists = jpaFriendShipRepository.existsByRequesterIdAndFriendIdOrRequesterIdAndFriendId(
-        requesterId, friendId, friendId, requesterId);
-    if (exists) {
-      throw new ResourceExistException(ExceptionsConstants.FRIENDSHIP_ALREADY_EXISTS);
-    }
-
     jpaFriendShipRepository.save(FriendshipMapper.toSchema(friendship));
   }
 

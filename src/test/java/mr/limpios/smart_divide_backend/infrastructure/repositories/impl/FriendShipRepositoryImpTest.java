@@ -1,10 +1,8 @@
 package mr.limpios.smart_divide_backend.infrastructure.repositories.impl;
 
-import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.FRIENDSHIP_ALREADY_EXISTS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -24,7 +22,6 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import mr.limpios.smart_divide_backend.domain.exceptions.ResourceExistException;
 import mr.limpios.smart_divide_backend.domain.models.Friendship;
 import mr.limpios.smart_divide_backend.infrastructure.mappers.FriendshipMapper;
 import mr.limpios.smart_divide_backend.infrastructure.repositories.jpa.JPAFriendShipRepository;
@@ -44,9 +41,6 @@ class FriendShipRepositoryImpTest {
         try (MockedStatic<FriendshipMapper> mapperMock = Mockito.mockStatic(FriendshipMapper.class)) {
             Friendship friendship = Instancio.create(Friendship.class);
             FriendshipSchema schema = Instancio.create(FriendshipSchema.class);
-
-            when(jpaRepository.existsByRequesterIdAndFriendIdOrRequesterIdAndFriendId(
-                anyString(), anyString(), anyString(), anyString())).thenReturn(false);
             
             mapperMock.when(() -> FriendshipMapper.toSchema(friendship)).thenReturn(schema);
 
@@ -54,20 +48,6 @@ class FriendShipRepositoryImpTest {
 
             verify(jpaRepository).save(schema);
         }
-    }
-
-    @Test
-    void createFriendRequest_alreadyExists_throwsException() {
-        Friendship friendship = Instancio.create(Friendship.class);
-
-        when(jpaRepository.existsByRequesterIdAndFriendIdOrRequesterIdAndFriendId(
-            anyString(), anyString(), anyString(), anyString())).thenReturn(true);
-
-        ResourceExistException ex = assertThrows(ResourceExistException.class,
-            () -> repository.createFriendRequest(friendship));
-
-        assertEquals(FRIENDSHIP_ALREADY_EXISTS, ex.getMessage());
-        verify(jpaRepository, never()).save(any());
     }
 
     @Test

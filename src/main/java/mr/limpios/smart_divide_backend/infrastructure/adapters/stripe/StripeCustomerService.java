@@ -24,6 +24,7 @@ import com.stripe.param.SetupIntentCreateParams;
 import jakarta.annotation.PostConstruct;
 import mr.limpios.smart_divide_backend.application.repositories.ExpenseGroupBalanceRepository;
 import mr.limpios.smart_divide_backend.application.repositories.UserRepository;
+import mr.limpios.smart_divide_backend.domain.exceptions.InvalidDataException;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundException;
 import mr.limpios.smart_divide_backend.domain.models.ExpenseGroupBalance;
 import mr.limpios.smart_divide_backend.domain.models.User;
@@ -64,7 +65,7 @@ public class StripeCustomerService {
         .orElseThrow(() -> new ResourceNotFoundException("Balance not found"));
 
     if (payment.amount().compareTo(balance.amount()) > 0) {
-      throw new IllegalArgumentException("El monto excede el adeudo pendiente.");
+      throw new InvalidDataException("Exceeding balance");
     }
 
     String customerId = stripeUserInfoRepository.getStripeCustomerId(payment.fromUser());
@@ -72,7 +73,7 @@ public class StripeCustomerService {
     String accountId = stripeUserInfoRepository.getStripeAccountId(payment.toUser());
 
     if (accountId == null) {
-      throw new IllegalStateException("El receptor no tiene cuenta Express configurada.");
+      throw new ResourceNotFoundException("Destination account not found");
     }
 
     try {

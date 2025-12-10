@@ -1,5 +1,6 @@
 package mr.limpios.smart_divide_backend.application.services;
 
+import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.FRIENDSHIP_ALREADY_EXISTS;
 import static mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants.USER_NOT_FOUND;
 
 import java.util.Objects;
@@ -12,6 +13,7 @@ import mr.limpios.smart_divide_backend.application.assemblers.FriendshipAssemble
 import mr.limpios.smart_divide_backend.application.dtos.FriendshipDTO;
 import mr.limpios.smart_divide_backend.application.repositories.FriendshipRepository;
 import mr.limpios.smart_divide_backend.application.repositories.UserRepository;
+import mr.limpios.smart_divide_backend.domain.exceptions.ResourceExistException;
 import mr.limpios.smart_divide_backend.domain.exceptions.ResourceNotFoundException;
 import mr.limpios.smart_divide_backend.domain.models.Friendship;
 import mr.limpios.smart_divide_backend.domain.models.User;
@@ -40,6 +42,10 @@ public class FriendshipService {
     }
 
     Friendship friendship = new Friendship(null, fromUser, toUser, true);
+
+    if (friendshipRepository.areFriends(fromUserId, toUserId)) {
+      throw new ResourceExistException(FRIENDSHIP_ALREADY_EXISTS);
+    }
 
     friendshipRepository.createFriendRequest(friendship);
     notificationService.notifyFriendshipRequest(fromUser, toUser);
