@@ -7,6 +7,7 @@ import java.util.Objects;
 import org.springframework.stereotype.Service;
 
 import mr.limpios.smart_divide_backend.application.dtos.RegisterDeviceTokenDTO;
+import mr.limpios.smart_divide_backend.application.interfaces.NotificationPublisher;
 import mr.limpios.smart_divide_backend.application.repositories.DeviceTokenRepository;
 import mr.limpios.smart_divide_backend.application.repositories.UserRepository;
 import mr.limpios.smart_divide_backend.domain.constants.ExceptionsConstants;
@@ -21,11 +22,10 @@ public class NotificationService {
 
   private final DeviceTokenRepository deviceTokenRepository;
   private final UserRepository userRepository;
-  private final mr.limpios.smart_divide_backend.application.interfaces.NotificationPublisher notificationPublisher;
+  private final NotificationPublisher notificationPublisher;
 
   public NotificationService(DeviceTokenRepository deviceTokenRepository,
-      UserRepository userRepository,
-      mr.limpios.smart_divide_backend.application.interfaces.NotificationPublisher notificationPublisher) {
+      UserRepository userRepository, NotificationPublisher notificationPublisher) {
     this.deviceTokenRepository = deviceTokenRepository;
     this.userRepository = userRepository;
     this.notificationPublisher = notificationPublisher;

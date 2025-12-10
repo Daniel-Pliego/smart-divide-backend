@@ -104,7 +104,7 @@ public class GroupService {
     }
 
     Group updatedGroup = this.groupRepository.addMemberToGroup(groupId, memberToAdd.id());
-    notificationService.notifyMemberAdded(owner, group, memberToAdd);
+    notificationService.notifyMemberAdded(owner, updatedGroup, memberToAdd);
 
     return GroupAssembler.toNewMemberDTO(updatedGroup, memberToAdd);
 
