@@ -16,6 +16,7 @@ import com.stripe.model.Customer;
 import com.stripe.model.CustomerSession;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.SetupIntent;
+import com.stripe.net.RequestOptions;
 import com.stripe.param.CustomerCreateParams;
 import com.stripe.param.CustomerSessionCreateParams;
 import com.stripe.param.PaymentIntentCreateParams;
@@ -175,8 +176,10 @@ public class StripeCustomerService {
             .setTransferData(PaymentIntentCreateParams.TransferData.builder()
                 .setDestination(destinationAccountId).build())
             .build();
+    RequestOptions options =
+        RequestOptions.builder().setStripeAccount(destinationAccountId).build();
 
-    return PaymentIntent.create(params);
+    return PaymentIntent.create(params, options);
   }
 
   private String createCustomerAccount(User user) throws StripeException {
